@@ -2,6 +2,16 @@
 #to compile, first: conda activate astropy
 #! /usr/bin/env python
 
+
+#necessary improvements:
+# perché printa anche l'immagine originale nel display_processed? (forse è un problema di plt.close() che non chiude la figura precedente)
+# display del background
+#
+
+
+
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
