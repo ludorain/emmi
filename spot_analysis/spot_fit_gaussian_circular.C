@@ -17,6 +17,9 @@
 #include "TClass.h"
 #include "TCanvas.h"
 #include "TString.h"
+#include <TF2.h>
+
+
 
 using namespace std;
 
@@ -158,13 +161,40 @@ TH2F* make_crop(TH2F* h2, int x_center, int y_center, int size_x=50, int size_y=
 }
 
 
+// Gaussiana 2D circolare + fondo costante
+// par[0] = A
+// par[1] = x0
+// par[2] = y0
+// par[3] = sigma
+// par[4] = B
+// ------------------------------------------------------------
+Double_t gaus2D_circular(Double_t *x, Double_t *par) {
+    Double_t X = x[0];
+    Double_t Y = x[1];
+
+    Double_t A     = par[0];
+    Double_t x0    = par[1];
+    Double_t y0    = par[2];
+    Double_t sigma = par[3];
+    Double_t B     = par[4];
+
+    if (sigma <= 0) return 1e30;
+
+    Double_t dx = X - x0;
+    Double_t dy = Y - y0;
+
+    return A * exp(-(dx*dx + dy*dy) / (2.0 * sigma * sigma)) + B;
+}
+
+
+
 // ------------------------------------------------------------
 // Funzione principale
 // ------------------------------------------------------------
 void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
     
 
-    // prendo il primo TH2F disponibile
+    // PRENDO  il th2f dal file
     TH2F* h2 = get_th2f(rootfile);
     if (!h2) {
         cerr << "Error: no TH2F found in the ROOT file." << endl;
@@ -220,6 +250,15 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
 
     c2->Update();
 
+    TCanvas* c3 = new TCanvas("c3", "Spots LEGO drawing option", 1400, 900);
+    c3->Divide(ncols, nrows);
+
+    for (int i = 0; i < (int)spots.size(); i++) {
+            c3->cd(i + 1);
+            spots[i]->Draw("LEGO");
+        }
+    c3->Update();
+
     /*
     // Saving crops in a new file root:
     TFile* fout = TFile::Open("spots_output.root", "RECREATE");
@@ -232,7 +271,83 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
 
     */
 
+    //5) Fitting the spots with a 2D Gaussian function
     
+    vector<TF2*> fit_functions;
+    fit_functions.reserve(spots.size());
+
+
+    cout << "\n================ FIT RESULTS ================\n";
+
+    for (int i = 0; i < (int)spots.size(); i++) {
+        TH2F* hspot = spots[i];
+        if (!hspot) continue;
+
+        // range del crop
+        double xmin = hspot->GetXaxis()->GetXmin();
+        double xmax = hspot->GetXaxis()->GetXmax();
+        double ymin = hspot->GetYaxis()->GetXmin();
+        double ymax = hspot->GetYaxis()->GetXmax();
+
+        // valori iniziali
+        int maxbinx, maxbiny, maxbinz;
+        hspot->GetMaximumBin(maxbinx, maxbiny, maxbinz);
+
+        double x0_init = hspot->GetXaxis()->GetBinCenter(coords[i].first);
+        double y0_init = hspot->GetYaxis()->GetBinCenter(coords[i].second);
+        double maxval  = hspot->GetMaximum();
+        double minval  = hspot->GetMinimum();
+        double sigma_init = 3.0;   // valore iniziale ragionevole per spot piccoli
+
+        TString fname = Form("f2_spot_%d", i);
+        TF2* f2 = new TF2(fname, gaus2D_circular, xmin, xmax, ymin, ymax, 5);
+        f2->SetParNames("A", "x0", "y0", "sigma", "B");
+
+        f2->SetParameters(maxval - minval, x0_init, y0_init, sigma_init, minval);
+
+        // limiti utili per stabilizzare il fit
+        f2->SetParLimits(0, 0.0, 1e9);         // A > 0
+        f2->SetParLimits(1, xmin, xmax);       // x0 nel crop
+        f2->SetParLimits(2, ymin, ymax);       // y0 nel crop
+        f2->SetParLimits(3, 0.5, 20.0);        // sigma positiva
+        f2->SetParLimits(4, -1e9, 1e9);        // fondo libero
+
+        // fit
+        int fitStatus = hspot->Fit(f2, "RQ");  
+        // R = usa range funzione
+        // Q = meno output ROOT a schermo
+
+        fit_functions.push_back(f2);
+ 
+
+        // stampa risultati
+        cout << "\nSpot " << i
+             << "  [coord approx input = (" << coords[i].first
+             << ", " << coords[i].second << ")]" << endl;
+        cout << "Fit status = " << fitStatus << endl;
+        cout << "A      = " << f2->GetParameter(0) << " +/- " << f2->GetParError(0) << endl;
+        cout << "x0     = " << f2->GetParameter(1) << " +/- " << f2->GetParError(1) << endl;
+        cout << "y0     = " << f2->GetParameter(2) << " +/- " << f2->GetParError(2) << endl;
+        cout << "sigma  = " << f2->GetParameter(3) << " +/- " << f2->GetParError(3) << endl;
+        cout << "B      = " << f2->GetParameter(4) << " +/- " << f2->GetParError(4) << endl;
+    }
+
+    TCanvas* c4 = new TCanvas("c4", "Spots with fit", 1400, 900);
+    c4->Divide(ncols, nrows);
+
+    for (int i = 0; i < (int)spots.size(); i++) {
+        c4->cd(i + 1);
+        spots[i]->Draw("COLZ");
+        //fit_functions[i]->SetNpx(100);
+        //fit_functions[i]->SetNpy(100);
+        //fit_functions[i]->SetLineColor(kRed);
+        fit_functions[i]->Draw("SAME CONT3");
+
+    c4->Update(); }
+
 
 }
+
+
+
 
