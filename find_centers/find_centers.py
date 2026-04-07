@@ -8,10 +8,6 @@
 # display del background
 #
 
-
-
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
@@ -36,7 +32,8 @@ def parse_arguments():
     parser.add_argument('--display_original', action='store_true', help='Display image')
     parser.add_argument('--display_processed', action='store_true', help='Display processed image')
     parser.add_argument('--convolution', action='store_true', help='Apply convolution to the image')
-    parser.add_argument('--coordinates', type=str, required=False, help='Output TXT filename for coordinates')
+    parser.add_argument('--coordinates_python', type=str, required=False, help='Output TXT filename for coordinates')
+    parser.add_argument('--coordinates_root', type=str, required=False, help='Output TXT filename for coordinates')
     parser.add_argument('--focus', type=int, required=False, help='Show a region around the selected defect number (1-based index)')
     return parser.parse_args()    
 
@@ -165,10 +162,16 @@ if __name__ == "__main__":
 
     #Save .txt file with the coordinates of the centers
 
-    if args.coordinates:
-        print(' --- saving coordinates to:', args.coordinates)
-        with open(args.coordinates, 'w') as f:
+    if args.coordinates_python:
+        print(' --- saving coordinates to:', args.coordinates_python)
+        with open(args.coordinates_python, 'w') as f:
             for row in tbl:
                 f.write(f"{row['xcentroid']:.2f}, {row['ycentroid']:.2f}\n")
                 
-
+    if args.coordinates_root:
+        print(' --- saving coordinates to:', args.coordinates_root)
+        with open(args.coordinates_root, 'w') as f:
+            for row in tbl:
+                x = row['xcentroid']
+                y = 1080 - row['ycentroid']
+                f.write(f"{x:.2f}, {y:.2f}\n")

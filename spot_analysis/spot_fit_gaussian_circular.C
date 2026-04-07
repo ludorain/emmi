@@ -20,6 +20,7 @@
 
 using namespace std;
 
+
 // ------------------------------------------------------------
 // Reading coordinates from txt file
 // da valutare se tenere in double
@@ -60,20 +61,47 @@ vector<pair<int,int>> read_coordinates(const char* txtfile) {
 // ------------------------------------------------------------
 // Find TH2F contained in the ROOT file
 // ------------------------------------------------------------
-TH2F* get_first_th2f(TFile* file) {
-    if (!file || file->IsZombie()) return nullptr;
 
-    TIter next(file->GetListOfKeys());
-    TKey* key;
+TH2F* get_th2f(const char* filename, const char* histname = "") {
 
-    while ((key = (TKey*)next())) {
-        TObject* obj = key->ReadObj();
-        if (obj->InheritsFrom("TH2F")) {
-            return (TH2F*)obj;
+    // Apri file
+    TFile* file = TFile::Open(filename, "READ");
+    if (!file || file->IsZombie()) {
+        std::cerr << "Errore: impossibile aprire il file " << filename << std::endl;
+        return nullptr;
+    }
+
+    TH2F* hist = nullptr;
+
+    // Caso 1: nome fornito
+    if (strlen(histname) > 0) {
+        file->GetObject(histname, hist);
+        if (!hist) {
+            std::cerr << "Errore: TH2F \"" << histname << "\" non trovato." << std::endl;
+            return nullptr;
+        }
+    }
+    
+    // Caso 2: cerca automaticamente
+    else {
+        TIter next(file->GetListOfKeys());
+        TKey* key;
+
+        while ((key = (TKey*)next())) {
+            TObject* obj = key->ReadObj();
+            if (obj->InheritsFrom("TH2F")) {
+                hist = (TH2F*)obj;
+                break;
+            }
+        }
+
+        if (!hist) {
+            std::cerr << "Errore: nessun TH2F trovato nel file." << std::endl;
+            return nullptr;
         }
     }
 
-    return nullptr;
+    return hist;
 }
 
 // ------------------------------------------------------------
@@ -81,10 +109,10 @@ TH2F* get_first_th2f(TFile* file) {
 // dimensione: size_x x size_y pixel
 // ------------------------------------------------------------
 
-//prima prova fatta con 100x100, da verificare se altre aree vanno meglio
-//oppure implementare un modo che trovi l'area corretta, magari dal programma python e salvare nel .txt
+//prima prova fatta con 50x50, aree più grandi sono peggio
+//necessario implementare un modo che trovi l'area corretta, magari dal programma python e salvare nel .txt
 
-TH2F* make_crop(TH2F* h2, int x_center, int y_center, int size_x=100, int size_y=100, int index=0) {
+TH2F* make_crop(TH2F* h2, int x_center, int y_center, int size_x=50, int size_y=50, int index=0) {
     if (!h2) return nullptr;
 
     int half_x = size_x / 2;
@@ -129,24 +157,23 @@ TH2F* make_crop(TH2F* h2, int x_center, int y_center, int size_x=100, int size_y
     return hcrop;
 }
 
+
 // ------------------------------------------------------------
 // Funzione principale
 // ------------------------------------------------------------
 void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
-    // 1) open file root
-    TFile* fin = TFile::Open(rootfile, "READ");
-    if (!fin || fin->IsZombie()) {
-        cerr << "Error: impossibile to open ROOT file " << rootfile << endl;
+    
+
+    // prendo il primo TH2F disponibile
+    TH2F* h2 = get_th2f(rootfile);
+    if (!h2) {
+        cerr << "Error: no TH2F found in the ROOT file." << endl;
         return;
     }
 
-    // prendo il primo TH2F disponibile
-    TH2F* h2 = get_first_th2f(fin);
-    if (!h2) {
-        cerr << "Error: no TH2F found in the ROOT file." << endl;
-        fin->Close();
-        return;
-    }
+    TCanvas* c1 = new TCanvas("c1", "TH2F display", 800, 600);
+    h2->Draw("COLZ");
+    c1->Update();
 
     cout << "TH2F found: " << h2->GetName() << endl;
 
@@ -159,7 +186,7 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
 
     if (n_spots == 0) {
         cerr << "Error: no valid coordinates found in the txt file." << endl;
-        fin->Close();
+     //   h2->Close();
         return;
     }
 
@@ -172,28 +199,29 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
         int y = coords[i].second;
 
         
-        TH2F* hspot = make_crop(h2, x, y, 100, 100, i);//again qui da valutare se 100x100 va bene, oppure se è meglio un'altra dimensione o addirittura un modo per trovare la dimensione corretta
+        TH2F* hspot = make_crop(h2, x, y, 50, 50, i);//again qui da valutare se 50x50 va bene, oppure se è meglio un'altra dimensione o addirittura un modo per trovare la dimensione corretta
         if (hspot) {
             spots.push_back(hspot);
             cout << "Created spot_" << i << " centered at (" << x << ", " << y << ")" << endl;
         }
     }
 
-    // Disegno tutti i crop in una canvas
+    // Draw crops in a Canva
     int ncols = std::ceil(std::sqrt(n_spots));
     int nrows = std::ceil((double)n_spots / ncols);
 
-    TCanvas* c1 = new TCanvas("c1", "Spots", 1400, 900);
-    c1->Divide(ncols, nrows);
+    TCanvas* c2 = new TCanvas("c2", "Spots", 1400, 900);
+    c2->Divide(ncols, nrows);
 
     for (int i = 0; i < (int)spots.size(); i++) {
-        c1->cd(i + 1);
+        c2->cd(i + 1);
         spots[i]->Draw("COLZ");
     }
 
-    c1->Update();
+    c2->Update();
 
-    // Se vuoi salvare anche i crop in un nuovo file root:
+    /*
+    // Saving crops in a new file root:
     TFile* fout = TFile::Open("spots_output.root", "RECREATE");
     for (auto h : spots) {
         h->Write();
@@ -202,5 +230,9 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
 
     cout << "Salvati i TH2F ritagliati in spots_output.root" << endl;
 
-    fin->Close();
+    */
+
+    
+
 }
+
