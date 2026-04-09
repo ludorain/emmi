@@ -201,9 +201,9 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
         return;
     }
 
-    TCanvas* c1 = new TCanvas("c1", "TH2F display", 800, 600);
-    h2->Draw("COLZ");
-    c1->Update();
+//    TCanvas* c1 = new TCanvas("c1", "TH2F display", 800, 600);
+//    h2->Draw("COLZ");
+//    c1->Update();
 
     cout << "TH2F found: " << h2->GetName() << endl;
 
@@ -268,13 +268,14 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
     fout->Close();
 
     cout << "Salvati i TH2F ritagliati in spots_output.root" << endl;
+*/
 
-    */
 
     //5) Fitting the spots with a 2D Gaussian function
     
     vector<TF2*> fit_functions;
     fit_functions.reserve(spots.size());
+    vector<int> fit_statuses;
 
 
     cout << "\n================ FIT RESULTS ================\n";
@@ -293,11 +294,23 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
         int maxbinx, maxbiny, maxbinz;
         hspot->GetMaximumBin(maxbinx, maxbiny, maxbinz);
 
+        /*
+        //primo tentativo di inizializzazione dei parametri
         double x0_init = hspot->GetXaxis()->GetBinCenter(coords[i].first);
         double y0_init = hspot->GetYaxis()->GetBinCenter(coords[i].second);
         double maxval  = hspot->GetMaximum();
         double minval  = hspot->GetMinimum();
-        double sigma_init = 3.0;   // valore iniziale ragionevole per spot piccoli
+        double sigma_init = 3.0; 
+        */
+
+        //secondo tentativo di inizializzazione dei parametri
+
+        double x0_init = coords[i].first;
+        double y0_init = coords[i].second;
+        double maxval  = hspot->GetMaximum();
+        double minval  = hspot->GetMinimum();
+        double sigma_init = 2.8;   // valore iniziale preso dai primi fit
+
 
         TString fname = Form("f2_spot_%d", i);
         TF2* f2 = new TF2(fname, gaus2D_circular, xmin, xmax, ymin, ymax, 5);
@@ -313,11 +326,12 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
         f2->SetParLimits(4, -1e9, 1e9);        // fondo libero
 
         // fit
-        int fitStatus = hspot->Fit(f2, "RQ");  
+        int fitStatus = hspot->Fit(f2, "R");  
         // R = usa range funzione
-        // Q = meno output ROOT a schermo
+    
 
         fit_functions.push_back(f2);
+        fit_statuses.push_back(fitStatus);
  
 
         // stampa risultati
@@ -330,22 +344,94 @@ void spot_fit_gaussian_circular(const char* rootfile, const char* txtfile) {
         cout << "y0     = " << f2->GetParameter(2) << " +/- " << f2->GetParError(2) << endl;
         cout << "sigma  = " << f2->GetParameter(3) << " +/- " << f2->GetParError(3) << endl;
         cout << "B      = " << f2->GetParameter(4) << " +/- " << f2->GetParError(4) << endl;
+
+
+        //saving fit results in a csv file
+        ofstream fout("fit_results.csv", ios::app);
+        if (fout.is_open()) {
+            fout << i << "," << coords[i].first << "," << coords[i].second << ","
+                 << f2->GetParameter(0) << "," << f2->GetParError(0) << ","
+                 << f2->GetParameter(1) << "," << f2->GetParError(1) << ","
+                 << f2->GetParameter(2) << "," << f2->GetParError(2) << ","
+                 << f2->GetParameter(3) << "," << f2->GetParError(3) << ","
+                 << f2->GetParameter(4) << "," << f2->GetParError(4) << endl;
+            fout.close();
+        }
+
     }
 
     TCanvas* c4 = new TCanvas("c4", "Spots with fit", 1400, 900);
     c4->Divide(ncols, nrows);
 
-    for (int i = 0; i < (int)spots.size(); i++) {
+    for (int i = 0; i < (int)spots.size(); i++)
+    {
         c4->cd(i + 1);
         spots[i]->Draw("COLZ");
         //fit_functions[i]->SetNpx(100);
         //fit_functions[i]->SetNpy(100);
         //fit_functions[i]->SetLineColor(kRed);
         fit_functions[i]->Draw("SAME CONT3");
+        c4->Update(); 
+    }
 
-    c4->Update(); }
+        TCanvas* c5 = new TCanvas("c5", "Plot of Fit Results", 1400, 900);
+    c5->Divide(2, 3);
 
+    // Numero di parametri del fit
+    const int n_parameters = 5;
 
+    // Nomi parametri
+    const char* par_names[n_parameters]  = {"A", "x0", "y0", "sigma", "B"};
+    const char* par_titles[n_parameters] = {
+        "Fit parameter A",
+        "Fit parameter x0",
+        "Fit parameter y0",
+        "Fit parameter sigma",
+        "Fit parameter B"
+    };
+
+    // Vettore di istogrammi: uno per ciascun parametro
+    vector<TH1F*> parameters_hist;
+    parameters_hist.reserve(n_parameters);
+
+    for (int p = 0; p < n_parameters; p++) {
+        TString hname  = Form("h_%s", par_names[p]);
+        TString htitle = Form("%s;Spot index;%s", par_titles[p], par_names[p]);
+
+        TH1F* hpar = new TH1F(hname, htitle, n_spots, 0.5, n_spots + 0.5);
+
+        // opzionale: etichette asse x
+        for (int i = 0; i < n_spots; i++) {
+            TString label = Form("%d", i);
+            hpar->GetXaxis()->SetBinLabel(i + 1, label);
+        }
+
+        parameters_hist.push_back(hpar);
+    }
+
+    // Riempimento degli istogrammi con i parametri del fit
+    for (int i = 0; i < (int)fit_functions.size(); i++) {
+        // Salviamo solo i fit riusciti
+        if (fit_statuses[i] != 0) continue;
+
+        for (int p = 0; p < n_parameters; p++) {
+            double value = fit_functions[i]->GetParameter(p);
+            double error = fit_functions[i]->GetParError(p);
+
+            parameters_hist[p]->SetBinContent(i + 1, value);
+            parameters_hist[p]->SetBinError(i + 1, error);
+        }
+    }
+
+    // Disegno degli istogrammi
+    for (int p = 0; p < n_parameters; p++) {
+        c5->cd(p + 1);
+        parameters_hist[p]->SetMarkerStyle(20);
+        parameters_hist[p]->SetMarkerSize(0.9);
+        parameters_hist[p]->Draw("E1");
+    }
+
+    c5->Update();
 }
 
 
