@@ -337,6 +337,7 @@ void spot_fit_gaussian_step(const char* rootfile, const char* txtfile) {
         spots[i]->Draw("COLZ");
     }
     c2->Update();
+    c2->SaveAs("spots.png");
 //Draw crops LEGO
     TCanvas* c3 = new TCanvas("c3", "Spots LEGO drawing option", 1400, 900);
     c3->Divide(ncols, nrows);
@@ -345,6 +346,7 @@ void spot_fit_gaussian_step(const char* rootfile, const char* txtfile) {
         spots[i]->Draw("LEGO");
     }
     c3->Update();
+    c3->SaveAs("LEGO.png");
 
 
     // --------------------------------------------------------
@@ -421,6 +423,7 @@ void spot_fit_gaussian_step(const char* rootfile, const char* txtfile) {
         fit_functions[i]->Draw("SAME CONT3");
     }
     c4->Update();
+    c4->SaveAs("fit_results.png");
 
 
     // --------------------------------------------------------
@@ -520,4 +523,5 @@ void spot_fit_gaussian_step(const char* rootfile, const char* txtfile) {
     h_dy->Draw("E1");
 
     c5->Update();
+    c5->SaveAs("fit_parameters.png");
 }
