@@ -32,3 +32,6 @@ mv fit_results.csv ../files/fit_results/images_run=20250826-035846_x=95600_y=506
 
 cd ../
 echo "Done"
+
+
+root -l  'spot_luminosity_radius.C("../files/4th2f/run=20250826-035846_x=95600_y=50600_z=92600_T=22.0_v=58.4_data=diff_processed_th2f.root","../files/3coordinates/run=20250826-035846_x==95600_y=50600_z=92600_T=22.0_v=58.4_data=diff_processed_coords.txt")'

@@ -494,6 +494,11 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
     for (int i = 0; i < (int)spots.size(); i++) {
         c2->cd(i + 1);
         spots[i]->Draw("COLZ");
+        TEllipse *ellipse = new TEllipse(coords[i].first, coords[i].second, 10.0);
+        ellipse->SetLineColor(kRed);
+        ellipse->SetLineWidth(2);
+        ellipse->SetFillStyle(0);
+        ellipse->Draw("SAME");
     }
     c2->Update();
     //c2->SaveAs("spots.png");
@@ -552,13 +557,14 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
 
         csvFile << i << "," << l_area_const << "," << l_area_const_err << "\n";
 
-        /*
+        
         //Valutazione tipologie di luminosità in funzione del raggio 
 
-       vector<double> radii = {10.0, 10.5, 11.0, 11.5, 12.0, 13.0, 14.0, 15.0, 17.5, 20.0};
+       vector<double> radii = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 10.5, 11.0, 11.5, 12.0, 13.0, 14.0, 15.0, 17.5, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0};
 
         TGraphErrors *g_bin  = new TGraphErrors();
         TGraphErrors *g_area = new TGraphErrors();
+        TGraphErrors *g_sum  = new TGraphErrors();
 
         
 
@@ -568,11 +574,16 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
             double l_bin     = luminosity_analytical_bins(hspot, f2, r);
             double l_bin_err = calculate_analytical_bins_error(hspot, f2, fitResult, r);
 
+            double l_sum = luminosity_sum(hspot, f2, r);
+
+
             g_bin->SetPoint(ir, r, l_bin);
             g_bin->SetPointError(ir, 0.0, l_bin_err);
 
             g_area->SetPoint(ir, r, l_area_const);
             g_area->SetPointError(ir, 0.0, l_area_const_err);
+
+            g_sum->SetPoint(ir, r, l_sum);
         }
 
         // Formattazione grafica
@@ -587,6 +598,9 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
         g_area->SetLineStyle(2);
         g_area->SetLineWidth(2);
 
+        g_sum->SetMarkerStyle(22);
+        g_sum->SetMarkerColor(kGreen+2);
+
         // Creazione Canvas
         TCanvas *c_comp = new TCanvas(Form("c_comp_%d", i),
                                     Form("Luminosity Comparison Spot %d", i),
@@ -595,6 +609,7 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
         TMultiGraph *mg = new TMultiGraph();
         mg->Add(g_bin, "LP");
         mg->Add(g_area, "LP");
+        mg->Add(g_sum, "LP");  
 
         mg->SetTitle(Form("Growth Curve Spot %d;Radius [pixels];Luminosity [counts]", i));
         mg->Draw("A");
@@ -602,11 +617,12 @@ void spot_luminosity_radius(const char* rootfile, const char* txtfile) {
         TLegend *leg = new TLegend(0.55, 0.20, 0.88, 0.40);
         leg->AddEntry(g_bin,  "Analytical Bins Integral", "lp");
         leg->AddEntry(g_area, "Total Gaussian Volume (2#pi A#sigma^{2})", "lp");
+        leg->AddEntry(g_sum,  "Direct Bin Sum", "lp");
         leg->Draw();
 
         c_comp->Update();
         // c_comp->SaveAs(Form("growth_curve_%d.png", i));
-        */
+        
 
     //salvataggio dei dati nel file csv
         /*
