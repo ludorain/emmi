@@ -22,6 +22,7 @@ from photutils.segmentation import detect_sources
 from astropy.visualization import SqrtStretch
 from astropy.visualization.mpl_normalize import ImageNormalize
 from photutils.segmentation import SourceCatalog
+from matplotlib.patches import Circle
 
 
 def parse_arguments():
@@ -35,6 +36,7 @@ def parse_arguments():
     parser.add_argument('--coordinates_python', type=str, required=False, help='Output TXT filename for coordinates')
     parser.add_argument('--coordinates_root', type=str, required=False, help='Output TXT filename for coordinates')
     parser.add_argument('--focus', type=int, required=False, help='Show a region around the selected defect number (1-based index)')
+    parser.add_argument('--circles', action='store_true', help='Display background-subtracted image with circles on detected sources')
     return parser.parse_args()    
 
 if __name__ == "__main__":
@@ -77,7 +79,7 @@ if __name__ == "__main__":
         convolved_data = processed
 
     #Detect sources (eventually with convolution)
-    segment_map = detect_sources(convolved_data, threshold, npixels=25)
+    segment_map = detect_sources(convolved_data, threshold, npixels=30)
     print(segment_map)
         
     #Sources properties
@@ -175,3 +177,27 @@ if __name__ == "__main__":
                 x = row['xcentroid']
                 y = 1080 - row['ycentroid']
                 f.write(f"{x:.2f}, {y:.2f}\n")
+
+    #Display background-subtracted image with circles on detected sources
+    if args.circles:
+        norm = ImageNormalize(stretch=SqrtStretch())
+
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.imshow(processed, origin='upper', norm=norm)
+        ax.set_title('Background-subtracted Data with detected sources')
+
+        # Disegna i cerchi
+        for row in tbl:
+            x = row['xcentroid']
+            y = row['ycentroid']
+
+            circle = Circle((x, y), radius=20,
+                            edgecolor='red', facecolor='none', linewidth=1.5)
+            ax.add_patch(circle)
+
+        ax.set_xlim(0, processed.shape[1])
+        ax.set_ylim(processed.shape[0], 0)
+
+        plt.tight_layout()
+        plt.show()
+        plt.close(fig)

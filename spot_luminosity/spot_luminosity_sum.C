@@ -77,7 +77,7 @@ pair<double, double> calculate_luminosity(TH2F* h2, double x0, double y0, double
 }
 
 // Funzione Principale
-void spot_luminosity_sum(const char* rootfile, const char* txtfile, double integration_radius = 10.0) {
+void spot_luminosity_sum(const char* rootfile, const char* txtfile, double integration_radius = 20.0) {
     TH2F* h2 = get_th2f(rootfile);
     if (!h2) {
         cerr << "Errore: TH2F non trovato." << endl;
@@ -106,9 +106,6 @@ void spot_luminosity_sum(const char* rootfile, const char* txtfile, double integ
         // Scrittura su CSV
         csvFile << x_coord << "," << y_coord << "," 
                 << results.first << "," << results.second << endl;
-
-        cout << "Spot " << i << " [" << x_coord << ", " << y_coord << "] -> Lum: " 
-             << results.first << " +/- " << results.second << endl;
     }
 
     csvFile.close();
