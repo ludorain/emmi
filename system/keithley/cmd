@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+
+ADDRESS="keithley-2450"
+PORT="5025"
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [cmd] "
+    exit 1
+fi
+CMD="$1"
+
+/emmi/system/network-device/cmd --address ${ADDRESS} --cmd "${CMD}"

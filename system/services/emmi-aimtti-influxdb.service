@@ -1,0 +1,18 @@
+[Unit]
+Description=EMMI AimTTi InfluxDB Service
+PartOf=emmi.target
+
+BindsTo=emmi-aimtti-read.service
+After=emmi-aimtti-read.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+EnvironmentFile=/etc/emmi/influxdb.env
+ExecStart=/emmi/system/aimtti/influxdb
+Restart=on-failure

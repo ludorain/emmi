@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+#/emmi/system/keithley/cmd "*RST"
+
+while true; do
+
+    data=$(/emmi/system/keithley/cmd "*IDN?;READ? 'defbuffer1', SOURC, READ;OUTPUT?") || exit 1
+    IFS=';' read -r idn read stat <<< "$data"
+    [ -n "$idn" ] && [ -n "$read" ] && [ -n "$stat" ] || exit 1
+    
+    printf '%s\n' "$idn" > /run/emmi/keithley/idn
+    printf '%s\n' "$read" > /run/emmi/keithley/read
+    printf '%s\n' "$stat" > /run/emmi/keithley/stat
+
+    sleep 1s
+    
+done

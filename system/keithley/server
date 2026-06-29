@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+ADDRESS="keithley-2450"
+PORT="5025"
+
+/emmi/system/network-device/server --address ${ADDRESS} --port ${PORT} --timeout 60

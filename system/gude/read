@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+while true; do
+    curl -sS "http://gude-1202/statusjsn.js?components=1" | jq .outputs[].state | paste -sd' ' - > /run/emmi/gude/stat
+    sleep 1s
+done

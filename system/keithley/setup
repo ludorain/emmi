@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+while read -r line; do
+    [[ -z "$line" || "$line" =~ ^# ]] && continue
+    /emmi/system/keithley/cmd "$line"
+done <<'EOF'
+# initialise
+*IDN?
+# end
+EOF

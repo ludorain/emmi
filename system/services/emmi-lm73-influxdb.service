@@ -1,0 +1,18 @@
+[Unit]
+Description=EMMI LM73 InfluxDB Service
+PartOf=emmi.target
+
+BindsTo=emmi-lm73-read.service
+After=emmi-lm73-read.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+EnvironmentFile=/etc/emmi/influxdb.env
+ExecStart=/emmi/system/lm73/influxdb
+Restart=on-failure

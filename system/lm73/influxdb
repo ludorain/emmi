@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+data_file="/run/emmi/lm73/temp"
+initial_time=0
+
+while true; do
+    sleep 1s
+
+    ### check file was updated
+    current_time=$(stat -c %Y ${data_file})
+    if [ "${current_time}" -eq "${initial_time}" ]; then
+        continue
+    fi
+    initial_time=${current_time}
+
+    ### update 
+    temp=$(cat ${data_file} | awk {'print $2'})
+    data="emmi,device=lm73,name=temperature value=${temp}"
+    /emmi/influxdb/write "${data}"
+
+done

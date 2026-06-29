@@ -1,0 +1,25 @@
+[Unit]
+Description=EMMI Peltier Control Service
+PartOf=emmi.target
+
+BindsTo=emmi-aimtti-read.service
+After=emmi-aimtti-read.service
+
+BindsTo=emmi-lm73-read.service
+After=emmi-lm73-read.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+RuntimeDirectory=emmi/peltier
+RuntimeDirectoryMode=0775
+ExecStart=/emmi/system/peltier/control
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

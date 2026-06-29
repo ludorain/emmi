@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+services_file="/emmi/system/services/services.list"
+actions_file="/emmi/system/services/actions.list"
+
+# Read non-empty, non-comment lines
+mapfile -t services < <(grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$services_file")
+mapfile -t actions  < <(grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$actions_file")
+
+# Build first menu: tag = number, item = Description= from systemd
+services_menu=()
+for i in "${!services[@]}"; do
+    unit="${services[i]}"
+    description=$(systemctl show "$unit" -p Description --value 2>/dev/null)
+
+    [[ -z "$description" ]] && description="$unit"
+
+    services_menu+=("$((i + 1))" "$description")
+done
+
+# Build second menu from actions.list
+actions_menu=()
+for i in "${!actions[@]}"; do
+    actions_menu+=("$((i + 1))" "${actions[i]}")
+done
+
+selected_number=$(dialog --keep-tite --menu "EMMI services menu" 19 70 10 "${services_menu[@]}" 2>&1 >/dev/tty)
+[ $? -ne 0 ] && exit 0
+selected_unit="${services[$((selected_number - 1))]}"
+
+selected_number=$(dialog --keep-tite --menu "EMMI ${selected_unit} action" 14 70 10 "${actions_menu[@]}" 2>&1 >/dev/tty)
+[ $? -ne 0 ] && exit 0
+selected_action="${actions[$((selected_number - 1))]}"
+
+if [[ "$selected_action" == "journal" ]]; then
+    journalctl -u "$selected_unit" -r
+else
+    systemctl "$selected_action" "$selected_unit"
+fi

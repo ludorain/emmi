@@ -1,0 +1,18 @@
+[Unit]
+Description=EMMI Keithley InfluxDB Service
+PartOf=emmi.target
+
+BindsTo=emmi-keithley-read.service
+After=emmi-keithley-read.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+EnvironmentFile=/etc/emmi/influxdb.env
+ExecStart=/emmi/system/keithley/influxdb
+Restart=on-failure

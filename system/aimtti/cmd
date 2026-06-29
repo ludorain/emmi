@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+
+ADDRESS="aimtti-pl155"
+PORT="9221"
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [cmd] "
+    exit 1
+fi
+CMD="$1"
+
+/emmi/system/network-device/cmd --address ${ADDRESS} --cmd "${CMD}"

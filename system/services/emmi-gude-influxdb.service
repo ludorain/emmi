@@ -1,0 +1,18 @@
+[Unit]
+Description=EMMI GUDE InfluxDB Service
+PartOf=emmi.target
+
+BindsTo=emmi-gude-read.service
+After=emmi-gude-read.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+EnvironmentFile=/etc/emmi/influxdb.env
+ExecStart=/emmi/system/gude/influxdb
+Restart=on-failure

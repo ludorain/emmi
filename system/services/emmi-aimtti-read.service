@@ -1,0 +1,22 @@
+[Unit]
+Description=EMMI AimTTi Read Service
+PartOf=emmi.target
+
+BindsTo=emmi-aimtti-server.service
+After=emmi-aimtti-server.service
+
+Wants=emmi-aimtti-influxdb.service
+Before=emmi-aimtti-influxdb.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+RuntimeDirectory=emmi/aimtti
+RuntimeDirectoryMode=0775
+ExecStart=/emmi/system/aimtti/read
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

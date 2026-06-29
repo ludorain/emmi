@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+nm=211.62635803222656
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [mm] "
+    exit 1
+fi
+mm=$1
+
+python -c "print( round(${mm} / (${nm} * 1.e-6 )) )"

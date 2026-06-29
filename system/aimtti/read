@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+while true; do
+
+    data=$(/emmi/system/aimtti/cmd "*IDN?;OP1?;V1?;I1?;V1O?;I1O?" | tr -d '\r') || exit 1
+    nlines=$(printf "%s\n" "$data" | wc -l)
+    [ "$nlines" -eq 6 ] || exit 1
+    
+    printf "%s\n" "$data" | sed -n '1p'   > /run/emmi/aimtti/idn
+    printf "%s\n" "$data" | sed -n '2p'   > /run/emmi/aimtti/stat
+    printf "%s\n" "$data" | sed -n '3,4p' > /run/emmi/aimtti/set
+    printf "%s\n" "$data" | sed -n '5,6p' > /run/emmi/aimtti/out
+        
+    sleep 1s
+done

@@ -1,0 +1,18 @@
+#! /usr/bin/env bash
+
+while true; do
+
+    status=$(cat /run/emmi/aimtti/stat)
+    { read voltage; read current; } < /run/emmi/aimtti/out
+    voltage=${voltage%V}
+    current=${current%A}
+    
+    data=""
+    data+="emmi,system=aimtti,name=status value=${status}"$'\n'
+    data+="emmi,system=aimtti,name=voltage value=${voltage}"$'\n'
+    data+="emmi,system=aimtti,name=current value=${current}"$'\n'
+
+    /emmi/influxdb/write "${data}"
+
+    sleep 1s
+done

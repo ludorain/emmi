@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [device] "
+    exit 1
+fi   
+dev=$1
+
+ch=$(awk -v dev="$dev" '$1==dev{print $2}' /emmi/system/gude/gude.conf)
+if [ -z "$ch" ]; then
+    echo " invalid device: ${dev}"
+    exit 1
+fi
+
+idx=$((ch-1))
+curl -sS "http://gude-1202/statusjsn.js?components=1" | jq --argjson idx "$idx" '.outputs[$idx].state'
+

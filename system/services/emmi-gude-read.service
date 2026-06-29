@@ -1,0 +1,19 @@
+[Unit]
+Description=EMMI GUDE Read Service
+PartOf=emmi.target
+
+#Wants=emmi-gude-influxdb.service
+#Before=emmi-gude-influxdb.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+RuntimeDirectory=emmi/gude
+RuntimeDirectoryMode=0775
+ExecStart=/emmi/system/gude/read
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

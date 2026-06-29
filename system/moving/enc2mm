@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+nm=211.62635803222656
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [encoder] "
+    exit 1
+fi
+enc=$1
+
+python -c "print((${enc}*${nm})*1.e-6)"

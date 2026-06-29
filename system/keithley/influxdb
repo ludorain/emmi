@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+while true; do
+
+    status=$(cat /run/emmi/keithley/stat)
+    IFS=, read -r voltage current < /run/emmi/keithley/read
+
+    data=""
+    data+="emmi,system=keithley,name=status value=${status}"$'\n'
+    data+="emmi,system=keithley,name=voltage value=${voltage}"$'\n'
+    data+="emmi,system=keithley,name=current value=${current}"$'\n'
+
+    /emmi/influxdb/write "${data}"
+
+    sleep 1s
+done

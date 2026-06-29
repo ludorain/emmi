@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+ADDRESS="aimtti-pl155"
+PORT="9221"
+
+/emmi/system/network-device/server --address ${ADDRESS} --port ${PORT} --timeout 60

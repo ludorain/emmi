@@ -1,0 +1,15 @@
+[Unit]
+Description=EMMI Keithley Server Service
+PartOf=emmi.target
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+UMask=0007
+ExecStart=/emmi/system/keithley/server
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

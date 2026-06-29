@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+if [ $# -ne 2 ]; then
+   echo " usage: $0 {x|y|z} [position (mm)] "
+   exit 1
+fi
+axis=$1
+pos=$2
+
+enc=$(/emmi/system/moving/mm2enc ${pos})
+/emmi/system/moving/move ${axis} ${enc}

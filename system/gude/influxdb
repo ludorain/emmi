@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+while true; do
+
+    read -ra stat < /run/emmi/gude/stat
+
+    data=""
+    while read -r device channel; do
+        [[ -z "$device" || "$device" =~ ^# ]] && continue
+        status=${stat[$((channel-1))]}
+        data+="emmi,system=gude,channel=${channel},device=${device},name=status value=${status}"$'\n'
+    done < /emmi/system/gude/gude.conf
+    /emmi/influxdb/write "${data}"
+
+    sleep 1s
+done

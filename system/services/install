@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+install -m 644 /emmi/system/services/*.target /etc/systemd/system/.
+install -m 644 /emmi/system/services/*.service /etc/systemd/system/.
+
+systemctl daemon-reload
+
+systemctl enable emmi.target
+systemctl enable emmi-peltier-control.service
+systemctl enable emmi-lm73-read.service
+systemctl enable emmi-gude-read.service
+systemctl enable emmi-aimtti-server.service
+systemctl enable emmi-aimtti-read.service
+systemctl enable emmi-keithley-server.service
+systemctl enable emmi-keithley-read.service
+

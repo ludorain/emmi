@@ -1,0 +1,42 @@
+# board	sensor tag	axis	start	step	count
+31  	A1     ALL	x	90200 	6000	2
+31  	A1     ALL	y	39500 	3000	5
+31  	A1     ALL	z	92600	0	1
+#
+33  	A1     ALL	x	90000 	6000	2
+33  	A1     ALL	y	39500 	3000	5
+33  	A1     ALL	z	92600	0	1
+33  	A1     GOLD	x	96000 	0	1
+33  	A1     GOLD	y	45500 	0	1
+33  	A1     GOLD	z	92600	0	1
+#
+33  	A2     ALL	x	72500 	6000	2
+33  	A2     ALL	y	39500 	3000	5
+33  	A2     ALL	z	92600	0	1
+#
+33  	A3     ALL	x	55000 	6000	2
+33  	A3     ALL	y	39500 	3000	5
+33  	A3     ALL	z	92600	0	1
+#
+33  	A4     ALL	x	37500 	6000	2
+33  	A4     ALL	y	39500 	3000	5
+33  	A4     ALL	z	92600	0	1
+#
+33  	B1     ALL	x	90000 	6000	2
+33  	B1     ALL	y	22000 	3000	5
+33  	B1     ALL	z	92600	0	1
+33  	B1     GOLD	x	96000 	0	1
+33  	B1     GOLD	y	28000 	0	1
+33  	B1     GOLD	z	92600	0	1
+#
+33  	B2     ALL	x	72500 	6000	2
+33  	B2     ALL	y	22000 	3000	5
+33  	B2     ALL	z	92600	0	1
+#
+33  	B3     ALL	x	55000 	6000	2
+33  	B3     ALL	y	22000 	3000	5
+33  	B3     ALL	z	92600	0	1
+#
+33  	B4     ALL	x	37500 	6000	2
+33  	B4     ALL	y	22000 	3000	5
+33  	B4     ALL	z	92600	0	1

@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+declare -Ar axism=(
+    ["x"]=4
+    ["y"]=5
+    ["z"]=6
+)
+
+if [ $# -ne 1 ]; then
+   echo " usage: $0 {x|y|z} "
+   exit 1
+fi
+axis=$1
+axisn=${axism[${axis}]}
+      
+/emmi/system/moving/mcm301_cmd.py --cmd "stageparams ${axisn}"

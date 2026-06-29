@@ -1,0 +1,18 @@
+[Unit]
+Description=EMMI Peltier InfluxDB Service
+PartOf=emmi.target
+
+BindsTo=emmi-peltier-control.service
+After=emmi-peltier-control.service
+
+Requires=influxdb3-core.service
+After=influxdb3-core.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+EnvironmentFile=/etc/emmi/influxdb.env
+ExecStart=/emmi/system/peltier/influxdb
+Restart=on-failure

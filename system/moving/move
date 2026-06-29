@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+declare -Ar axism=(
+    ["x"]=4
+    ["y"]=5
+    ["z"]=6
+)
+
+if [ $# -ne 2 ]; then
+   echo " usage: $0 {x|y|z} [position (enc)] "
+   exit 1
+fi
+axis=$1
+pos=$2
+axisn=${axism[${axis}]}
+      
+/emmi/system/moving/mcm301_cmd.py --cmd "move ${axisn} ${pos}"

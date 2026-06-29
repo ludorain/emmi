@@ -1,0 +1,5 @@
+[Unit]
+Description=EMMI Facility
+
+[Install]
+WantedBy=multi-user.target

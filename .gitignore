@@ -1,0 +1,16 @@
+*.root
+*.tif
+*.tiff
+*.png
+*.csv
+*.pyc
+.DS_Store
+
+DATA_irradiated/
+**/1originals/
+**/2processed/
+**/4th2f/
+**/luminosity/
+
+__pycache__/
+

@@ -1,0 +1,89 @@
+#! /usr/bin/env python
+
+import subprocess
+import signal
+import time
+
+def get_temperature():
+    with open('/run/emmi/lm73/temp', 'r') as file:
+        content = file.read()
+    content = content.split()
+    if len(content) != 3:
+        return None
+    temperature = content[1]
+    try:
+        return float(temperature)
+    except (ValueError, IndexError):
+        return None
+
+def get_current():
+    with open('/run/emmi/aimtti/out', 'r') as file:
+        content = file.read()
+    voltage, current = content.split()
+    try:
+        return float(current[:-1])
+    except (ValueError, IndexError):
+        return None
+
+def aimtti_cmd(cmd):
+    subprocess.run(['/emmi/system/aimtti/cmd', cmd])
+    
+def update_current(current):
+    aimtti_cmd(f'I1 {current}')
+    print(current)
+
+### register signals
+
+def signal_handler(signum, frame):
+    print(f"Received signal {signum}, shutting down...")
+    aimtti_cmd('OP1 0;I1 0.01')
+    exit(0)
+
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
+    
+aimtti_cmd('OP1 0;I1 0.000; V1 12;OP1 1')
+                   
+from simple_pid import PID
+pid = PID(-0.05, -0.005, -0.05, setpoint = 20.)
+pid.output_limits = (0.01, 1.)
+pid.sample_time = 3.
+pid.auto_mode = False
+
+pid.set_auto_mode(True, last_output = get_current())
+
+while True:
+
+    ### update PID parameters from file
+    ### setpoint, min, max, p, i, d
+    with open('/emmi/system/peltier/control.conf') as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("#") or not line:
+                continue
+            setpoint, Imin, Imax, P, I, D = map(float, line.split())
+#            print(setpoint, Imin, Imax, P, I, D)
+            pid.setpoint = setpoint
+            pid.tunings = (P, I, D)
+            pid.output_limits = (Imin, Imax)
+            
+    with open('/run/emmi/peltier/tset', 'w') as f:
+        f.write(f'{pid.setpoint}\n')
+
+    temp = get_temperature()
+    if temp is None:
+        time.sleep(1)
+        continue
+    with open('/run/emmi/peltier/temp', 'w') as f:
+        f.write(f'{temp}\n')
+
+    curr = pid(temp)
+    if curr is None:
+        time.sleep(1)
+        continue
+    curr = round(curr, 3)
+    with open('/run/emmi/peltier/curr', 'w') as f:
+        f.write(f'{curr}\n')
+
+    update_current(curr);
+    time.sleep(pid.sample_time)

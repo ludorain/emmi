@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [volts] "
+    exit 1
+fi
+volt=$1
+
+/emmi/system/keithley/cmd "SOURCE:VOLT:LEVEL ${volt}"

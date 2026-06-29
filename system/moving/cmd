@@ -1,0 +1,167 @@
+#! /usr/bin/env python
+
+import serial
+import argparse
+import struct
+
+parser = argparse.ArgumentParser(description="MCM301")
+parser.add_argument("--cmd", type=str, required=True, help="Command")
+args = parser.parse_args()
+
+status_bits = {
+     0 : 'on positive direction hardware limit switch' ,
+     1 : 'on negative direction hardware limit switch' ,
+     2 : 'on positive direction software limit switch' ,
+     3 : 'on negative direction software limit switch' ,
+     4 : 'moving in positive direction' ,
+     5 : 'moving in negative direction' ,
+     6 : 'jogging in positive direction' ,
+     7 : 'jogging in negative direction' ,
+     8 : 'motor connected' ,
+     9 : 'homing' ,
+    10 : 'homed' ,
+    11 : 'reserved' ,
+    12 : 'encoder warning' ,
+    13 : 'encoder error' ,
+    14 : 'encoder high' ,
+    15 : 'encoder low' ,
+    16 : 'encoder ready' ,
+    31 : 'channel enabled'
+}
+
+# Configure serial connection
+serial_port = '/dev/THORLABS_MCM301'
+ser = serial.Serial(
+    port=serial_port,
+    baudrate=512000,  # Set baud rate
+    bytesize=serial.EIGHTBITS,  # 8 data bits
+    parity=serial.PARITY_NONE,  # No parity
+    stopbits=serial.STOPBITS_ONE,  # 1 stop bit
+    timeout=1  # Timeout in seconds
+)
+
+# Check if the serial port is open
+if ser.is_open:
+#    print(f'Serial port {serial_port} is open at {ser.baudrate} baud')
+    pass
+else:
+    print(' --- serial port error')
+    exit(1)
+
+def restart():
+    # MGMSG_RESTART_PROCESSOR
+    data = struct.pack('<HBBBB', 0x400B, 0x00, 0x00, 0x11, 0x01)    
+    ser.write(data)
+    
+def get_stageparams(slot):
+    # MGMSG_MCM_REQ_STAGEPARAMS
+    data = struct.pack('<HBBBB', 0x4042, slot, 0x00, 0x21 + slot, 0x01)
+    ser.write(data)
+    header = ser.read(6)
+    header = struct.unpack('<HHBB', header)
+    print(header)
+    size = header[1] #- 6
+    print(size)
+    data = ser.read(size)
+    data = struct.unpack('<H24BIII30Bf18B6B', data)
+    print(data[25])
+    print(data[58])
+    print(data)
+    
+def get_statusupdate(slot):
+    # MGMSG_MOT_REQ_STATUSUPDATE
+    data = struct.pack('<HBBBB', 0x0480, 0x00, 0x00, 0x21 + slot, 0x01)
+    ser.write(data)
+    data = ser.read(20)
+    unpacked = struct.unpack('<HHBBHiiI', data)
+    print(unpacked)
+    status = unpacked[7]
+    print('encoder', unpacked[6])
+    for bit, message in status_bits.items():
+        if status & (1 << bit):
+            print(message)
+
+def set_encoder(slot, encoder):
+    # MGMSG_MOT_SET_ENCCOUNTER
+    data = struct.pack('<HHBBHi', 0x0409, 0x0006, 0xa1 + slot, 0x01, slot, encoder)
+    ser.write(data)
+            
+def move_home(slot): 
+    # MGMSG_MOT_MOVE_HOME
+    data = struct.pack('<HBBBB', 0x0443, 0x00, 0x00, 0x21 + slot, 0x01)
+    ser.write(data)
+
+def move_stop(slot): 
+    # MGMSG_MOT_MOVE_STOP
+    data = struct.pack('<HBBBB', 0x0465, 0x00, 0x00, 0x21 + slot, 0x01)
+    print(data.hex())
+
+def move_absolute(slot, encoder):
+    # MGMSG_MOT_MOVE_ABSOLUTE
+    data = struct.pack('<HHBBHi', 0x0453, 0x0006, 0xa1 + slot, 0x01, slot, encoder)
+    ser.write(data)
+
+def move_jog(slot, direction):
+    # MGMSG_MOT_MOVE_JOG
+    data = struct.pack('<HBBBB', 0x046a, slot, direction, 0x21 + slot, 0x01)
+    ser.write(data)
+    
+parts = args.cmd.split()
+
+if parts[0] == 'home':
+    if len(parts) != 2 or not parts[1].isdigit():
+        print(' --- error')
+    else:
+        slot = int(parts[1])
+        move_home(slot)
+
+if parts[0] == 'move':
+    if len(parts) != 3 or not parts[1].isdigit() or not parts[2].isdigit():
+        print(' --- error')
+    else:
+        slot = int(parts[1])
+        encoder = int(parts[2])
+        move_absolute(slot, encoder)
+
+if parts[0] == 'setencoder':
+    if len(parts) != 3:
+        print(' --- error:', parts[1], parts[2])
+        exit(0)
+    try:
+        v1 = int(parts[1])
+        v2 = int(parts[2])
+    except ValueError:
+        print(' --- error:', parts[1], parts[2])
+    slot = v1
+    encoder = v2
+    set_encoder(slot, encoder)
+
+if parts[0] == 'jog':
+    if len(parts) != 3 or not parts[1].isdigit() or not parts[2].isdigit():
+        print(' --- error')
+    else:
+        slot = int(parts[1])
+        direction = int(parts[2])
+        move_jog(slot, direction)
+
+if parts[0] == 'get':
+    if len(parts) != 2 or not parts[1].isdigit():
+        print(' --- error')
+    else:
+        slot = int(parts[1])
+        get_statusupdate(slot)
+
+if parts[0] == 'stageparams':
+    if len(parts) != 2 or not parts[1].isdigit():
+        print(' --- error')
+    else:
+        slot = int(parts[1])
+        get_stageparams(slot)
+
+if parts[0] == 'restart':
+    restart()
+
+
+# Close serial port
+ser.close()
+

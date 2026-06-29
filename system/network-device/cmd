@@ -1,0 +1,41 @@
+#! /usr/bin/env python
+
+import socket
+import argparse
+
+### arguments
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--address', type=str, required=True, help="IP address")
+parser.add_argument('--cmd', type=str, help="Single command")
+parser.add_argument('--list', type=str, help="List of commands")
+args = parser.parse_args()
+
+if not args.cmd and not args.list:
+    parser.error("At least one of --cmd or --list must be provided.")
+
+SOCK='/tmp/network-device-server.' + args.address + '.socket'
+
+def process_command(sock, cmd):
+    sock.send((cmd + '\n').encode())
+    if '?' in cmd:
+        data = sock.recv(1024).decode()
+        print(data)
+
+try:
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+        s.connect(SOCK)
+ 
+        if args.list:
+            with open(args.list, "r") as f:
+                for line in f:
+                    command = line.strip()
+                    if command and not command.startswith("#"):
+                        process_command(s, command)
+
+        if args.cmd:
+            command = args.cmd
+            process_command(s, command)
+            
+except Exception as e:
+    print(e)

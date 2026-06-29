@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+    echo " usage: $0 [on|off] "
+    exit 1
+fi
+cmd=$1
+
+case "$cmd" in
+    on)  stat=ON ;;
+    off) stat=OFF ;;
+    *) echo " invalid command: ${cmd}"; exit 1 ;;
+esac
+
+echo " --- switching Keithley output ${stat} "
+/emmi/system/keithley/cmd "OUTPUT ${stat}"

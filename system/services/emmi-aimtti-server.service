@@ -1,0 +1,15 @@
+[Unit]
+Description=EMMI AimTTi Server Service
+PartOf=emmi.target
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+UMask=0007
+ExecStart=/emmi/system/aimtti/server
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

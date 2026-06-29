@@ -1,0 +1,22 @@
+[Unit]
+Description=EMMI Keithley Read Service
+PartOf=emmi.target
+
+BindsTo=emmi-keithley-server.service
+After=emmi-keithley-server.service
+
+Wants=emmi-keithley-influxdb.service
+Before=emmi-keithley-influxdb.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+RuntimeDirectory=emmi/keithley
+RuntimeDirectoryMode=0775
+ExecStart=/emmi/system/keithley/read
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target

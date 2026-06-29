@@ -1,0 +1,85 @@
+#! /usr/bin/env python3
+
+import socket
+import serial
+import argparse
+import os
+
+### arguments
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--address', type=str, required=True, help="IP address")
+parser.add_argument('--port', type=int, required=True, help="IP port")
+parser.add_argument('--timeout', type=int, default=1, help="Timeout (seconds)")
+args = vars(parser.parse_args())
+
+### functions
+
+def connect(sock, server_address):
+    sock.connect(server_address)
+
+def close(sock):
+    sock.close()
+
+def send(sock, cmd):
+    cmd += '\n'
+    sock.send(cmd.encode())
+
+def recv(sock):
+    data = sock.recv(4096)
+    data = data.decode()
+    while data[-1] != '\n':
+        data += sock.recv(4096)
+    return data.strip()
+
+def ask(sock, cmd):
+    send(sock, cmd)
+    return recv(sock)
+
+### connect to TCP device
+server_address = (args['address'], args['port'])
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(args['timeout'])
+try:
+  connect(sock, server_address)
+except Exception as e:
+  print(e)
+  exit(1)
+print(' --- TCP device opened:', server_address)
+idn=ask(sock, '*IDN?')
+print(idn)
+
+### open socket server and listen
+SOCK='/tmp/network-device-server.' + args['address'] + '.socket'
+if os.path.exists(SOCK):
+  os.remove(SOCK) 
+  
+with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+    s.bind(SOCK)
+    s.listen()        
+    print(' --- server listening on UNIX socket:', SOCK)
+    while True:
+      try:
+        conn, addr = s.accept()
+        with conn:
+          print('Connected by', addr)
+          while True:
+            data = conn.recv(1024)
+            if not data:
+              break
+            command = data.decode()
+            if '?' in command:
+                print('--- ask instrument:', command)
+                data = ask(sock, command)
+                print('--- received data:', data)
+                conn.sendall(data.encode())
+                print('--- sending data:', data)
+            else:
+              print(' --- send instrument:', command)
+              data = command
+              send(sock, command)
+      except Exception as e:
+        print(e)
+        pass
+      
+close()

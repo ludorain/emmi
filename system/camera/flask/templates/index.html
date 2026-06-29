@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket CERNIA Camera Controller</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+    
+    <style>
+    </style>
+    
+</head>
+<body>
+    <h1>Thorlabs CC215MU Quantalux Camera Control</h1>
+
+    <div id="main-container" class="column-container"></div>
+
+    <br><br>
+    <img id="imageDisplay" style="max-width: 100%; border: 2px solid black;" />
+    
+     <script>
+       const socket = io.connect("http://" + document.domain + ":" + location.port); // Connect to the Flask backend
+
+       const mainContainer = document.getElementById('main-container');
+
+       const buttons = [
+	   { label: "Arm", text: "Description for button 1", onClick: () => simple_emit("arm") },
+	   { label: "Disarm", text: "Description for button 1", onClick: () => simple_emit("disarm") },
+	   { label: "Trigger", text: "Description for button 1", onClick: () => simple_emit("trigger") },
+	   { label: "Acquire", text: "Description for button 1", onClick: () => simple_emit("acquire") },
+       ];
+	   
+       const buttonContainer = document.createElement("div");
+       buttonContainer.classList.add("row-container");
+       mainContainer.appendChild(buttonContainer);
+
+       buttons.forEach(item => {
+	   const button = document.createElement("button");
+	   button.classList.add("button")
+	   button.textContent = item.label;
+	   button.title = item.text;
+	   button.onclick = item.onClick;
+	   buttonContainer.appendChild(button);
+       });	   
+
+       function simple_emit(command) {
+           socket.emit(command);
+       }
+
+       socket.on("image_data", function(data) {
+            console.log("Received image");
+            document.getElementById("imageDisplay").src = "data:image/png;base64," + data.image;
+        });
+       
+    </script>
+</body>
+</html>

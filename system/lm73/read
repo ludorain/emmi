@@ -1,0 +1,27 @@
+#! /usr/bin/env python
+
+import serial
+import time
+
+# Configuration
+port = '/dev/ARDUINO_LM73'  # Change this if your Arduino is on a different port
+baud_rate = 9600       # Set the baud rate
+output_file = '/run/emmi/lm73/temp'  # Output file for the last reading
+
+try:
+    # Set up serial connection
+    with serial.Serial(port, baud_rate, timeout=1) as ser:
+        while True:
+            if ser.in_waiting > 0:  # Check if data is available to read
+                line = ser.readline().decode('utf-8', errors='replace').strip()  # Read a line from the serial port
+                with open(output_file, 'w') as f:
+                    f.write(f"{line}\n")  # Write the received line to the file
+
+except KeyboardInterrupt:
+    print("\nStopped by user.")
+
+except serial.SerialException as e:
+    print(f"Error: {e}")
+
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")

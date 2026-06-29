@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+declare -Ar axism=(
+    ["x"]=4
+    ["y"]=5
+    ["z"]=6
+)
+
+if [ $# -ne 1 ]; then
+   echo " usage: $0 {x|y|z} "
+   exit 1
+fi
+axis=$1
+      
+/emmi/system/moving/get ${axis} | grep encoder | awk {'print $2'}

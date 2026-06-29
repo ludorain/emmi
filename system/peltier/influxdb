@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+while true; do
+
+    tset=$(cat /run/emmi/peltier/tset)
+    temp=$(cat /run/emmi/peltier/temp)
+    curr=$(cat /run/emmi/peltier/curr)
+    
+    data=""
+    data+="emmi,system=peltier,name=setpoint value=${tset}"$'\n'
+    data+="emmi,system=peltier,name=temperature value=${temp}"$'\n'
+    data+="emmi,system=peltier,name=current value=${curr}"$'\n'
+
+    /emmi/influxdb/write "${data}"
+
+    sleep 1s
+done

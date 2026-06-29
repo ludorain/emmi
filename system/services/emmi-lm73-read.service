@@ -1,0 +1,19 @@
+[Unit]
+Description=EMMI LM73 Read Service
+PartOf=emmi.target
+
+Wants=emmi-lm73-influxdb.service
+Before=emmi-lm73-influxdb.service
+
+[Service]
+Type=simple
+User=emmisvc
+Group=emmi
+SupplementaryGroups=emmisvc
+RuntimeDirectory=emmi/lm73
+RuntimeDirectoryMode=0775
+ExecStart=/emmi/system/lm73/read
+Restart=on-failure
+
+[Install]
+WantedBy=emmi.target
