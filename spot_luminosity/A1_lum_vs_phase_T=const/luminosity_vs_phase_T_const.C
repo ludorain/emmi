@@ -1,4 +1,4 @@
-//root -l 'luminosity_vs_phase_T_const.C("merged_max_vfin_global_ID.csv")'
+//root -l 'luminosity_vs_phase_T_const.C("A1_T=20_merged_max_vfin_global_ID.csv")'
 
 #include <iostream>
 #include <fstream>
