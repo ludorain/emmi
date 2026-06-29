@@ -1,8 +1,6 @@
 // ============================================================
 // 
-// root -l 'lum_vs_T_irradiated.C("A1_v=5_annealed_75_5_run=20260521-080451_total_global_ID.csv")'
-
-// 
+// root -l 'lum_vs_T_irradiated.C("A1_v=5_run=20260531-095134_total_global_ID.csv")'
 //lum_vs_T_irradiated.C
 //
 // CSV atteso:
@@ -226,7 +224,6 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     vector<double> B_errs;
 
     vector<double> chi2_vals;
-    vector<int> ndf_vals;
 
     // ============================================================
     // FIT ESPONENZIALE PER TUTTI GLI SPOT
@@ -281,7 +278,6 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         double B = 0.0;
         double eB = 0.0;
         double chi2 = 0.0;
-        int ndf = 0;
 
         if (n >= 3) {
             gr_tmp->Fit(fit_exp, "RQ0");
@@ -289,7 +285,6 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
             B = fit_exp->GetParameter(1);
             eB = fit_exp->GetParError(1);
             chi2 = fit_exp->GetChisquare();
-            ndf  = fit_exp->GetNDF();
         }
 
         x_spot_fit.push_back(spot);
@@ -299,7 +294,6 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         B_errs.push_back(eB);
 
         chi2_vals.push_back(chi2);
-        ndf_vals.push_back(ndf);
     }
 
     // ============================================================
@@ -355,7 +349,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     );
 
     gr_c1->SetTitle(
-        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f - Annealing 75#circC 5h;Spot;Luminosity",
+        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f After annealing 75 #circC 25h;Spot;Luminosity",
              Tmax, v_const)
     );
 
@@ -365,7 +359,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     gr_c1->Draw("AP");
 
-    c1->SaveAs("A1_ann_75_5_lum_vs_T_maxT.png");
+    c1->SaveAs("A1_ann_75_25_lum_vs_T_maxT.png");
 
     // ============================================================
     // CANVAS 2:
@@ -388,7 +382,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     );
 
     gr_c2->SetTitle(
-        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f Annealing 75#circC 5h - focus;Spot;Luminosity",
+        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f After annealing 75 #circC 25h - focus;Spot;Luminosity",
              Tmax, v_const)
     );
 
@@ -401,7 +395,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     gr_c2->Draw("AP");
 
-    c2->SaveAs("A1_ann_75_5_lum_vs_T_maxT_focus.png");
+    c2->SaveAs("A1_ann_75_25_lum_vs_T_maxT_focus.png");
 
     // ============================================================
     // CANVAS 3:
@@ -508,7 +502,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         displayed++;
     }
 
-    c3->SaveAs("A1_ann_75_5_lum_vs_T_first8_expfit.png");
+    c3->SaveAs("A1_ann_75_25_lum_vs_T_first8.png");
 
     // ============================================================
     // CANVAS 4:
@@ -570,7 +564,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         );
 
         gr->SetTitle(
-            Form("Spot %d: x = %.2f, y = %.2f, v = %.1f;T (#circC) Annealing 75#circC 5h;Luminosity",
+            Form("Spot %d: x = %.2f, y = %.2f, v = %.1f;T (#circC) After annealing 75 #circC 25h;Luminosity",
                  selected_spot, rows[0].x, rows[0].y, v_const)
         );
 
@@ -633,7 +627,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
         leg4->Draw();
 
-        c4->SaveAs(Form("A1_ann_75_5_lum_vs_T_spot%d.png", selected_spot));
+        c4->SaveAs(Form("A1_ann_75_25_lum_vs_T_spot%d.png", selected_spot));
 
     } else {
 
@@ -643,39 +637,19 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     // ============================================================
     // CANVAS 5:
     // B vs spot ID, con fit costante B = const
-    // Usa solo gli spot con chi2/ndf < 2 nel fit esponenziale
     // ============================================================
-
-    vector<double> x_spot_fit_good;
-    vector<double> ex_spot_fit_good;
-    vector<double> B_vals_good;
-    vector<double> B_errs_good;
-
-    for (size_t i = 0; i < B_vals.size(); i++) {
-
-        if (ndf_vals[i] <= 0) continue;
-
-        double chi2_ndf = chi2_vals[i] / ndf_vals[i];
-
-        if (chi2_ndf < 2.0) {
-            x_spot_fit_good.push_back(x_spot_fit[i]);
-            ex_spot_fit_good.push_back(ex_spot_fit[i]);
-            B_vals_good.push_back(B_vals[i]);
-            B_errs_good.push_back(B_errs[i]);
-        }
-    }
 
     TCanvas* c5 = new TCanvas("c5_B_vs_spot_constfit", "B vs spot ID",1800,600);
 
     TGraphErrors* gr_B = new TGraphErrors(
-        x_spot_fit_good.size(),
-        x_spot_fit_good.data(),
-        B_vals_good.data(),
-        ex_spot_fit_good.data(),
-        B_errs_good.data()
+        x_spot_fit.size(),
+        x_spot_fit.data(),
+        B_vals.data(),
+        ex_spot_fit.data(),
+        B_errs.data()
     );
 
-    gr_B->SetTitle("Exponential fit parameter B vs spot ID annealing 75#circC 5h (#chi^{2}/ndf < 2);Spot;B");
+    gr_B->SetTitle("Exponential fit parameter B vs spot ID after annealing 75 #circC 25h;Spot;B");
     gr_B->SetMarkerStyle(21);
     gr_B->SetMarkerSize(1.0);
     gr_B->SetLineWidth(2);
@@ -683,16 +657,13 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     gr_B->Draw("AP");
     gr_B->GetXaxis()->SetLimits(spot_min - 1, spot_max + 1);
 
-    double B_min = *min_element(B_vals_good.begin(), B_vals_good.end());
-    double B_max = *max_element(B_vals_good.begin(), B_vals_good.end());
-
-    double margin_low  = 0.25 * (B_max - B_min);
-    double margin_high = 0.90 * (B_max - B_min);  // più spazio sopra per la legenda
-
-    gr_B->GetYaxis()->SetRangeUser(B_min - margin_low, B_max + margin_high);
-
     // Fit costante: B = const
-    TF1* fit_B_const = new TF1( "fit_B_const","[0]", spot_min - 1,spot_max + 1);
+    TF1* fit_B_const = new TF1(
+        "fit_B_const",
+        "[0]",
+        spot_min - 1,
+        spot_max + 1
+    );
 
     fit_B_const->SetParNames("B_{const}");
     fit_B_const->SetLineColor(kRed + 1);
@@ -702,36 +673,33 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         gr_B->Fit(fit_B_const, "RQ");
     }
 
-    TLegend* leg5 = new TLegend(0.1, 0.72, 0.52, 0.88);
+    TLegend* leg5 = new TLegend(0.14, 0.70, 0.60, 0.88);
     leg5->SetBorderSize(0);
     leg5->SetFillStyle(0);
 
     leg5->AddEntry(gr_B, "B from Lum = A e^{BT}", "lep");
 
     if (gr_B->GetN() >= 2) {
-
-        double lambda = fit_B_const->GetParameter(0);
-        double e_lambda = fit_B_const->GetParError(0);
-
-        // Radioactive-decay convention: N(t) = N0 exp(-lambda*t)
-        // Half-time: T_1/2 = ln(2)/lambda
-        double half_time = log(2.0) / lambda;
-        double e_half_time = log(2.0) * e_lambda / (lambda * lambda);
-
         leg5->AddEntry(fit_B_const, "Constant fit: B = const", "l");
- 
         leg5->AddEntry(
             (TObject*)0,
-            Form("T_{1/2} = %.3g #pm %.2g",
-                half_time,
-                e_half_time),
+            Form("B_{const} = %.3g #pm %.2g",
+                fit_B_const->GetParameter(0),
+                fit_B_const->GetParError(0)),
+            ""
+        );
+        leg5->AddEntry(
+            (TObject*)0,
+            Form("#chi^{2}/ndf = %.2f/%d",
+                fit_B_const->GetChisquare(),
+                fit_B_const->GetNDF()),
             ""
         );
     }
 
     leg5->Draw();
 
-    c5->SaveAs("A1_ann_75_5_lum_vs_T_B.png");
+    c5->SaveAs("A1_ann_75_25_lum_vs_T_B.png");
     // ============================================================
     // CANVAS 6:
     // chi square del fit esponenziale vs spot ID
@@ -739,7 +707,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     TCanvas* c6 = new TCanvas(
         "c6_chi2_expfit_vs_spot",
-        "Chi square exponential fit vs spot ID Annealing 75#circC 5h",
+        "Chi square exponential fit vs spot ID after annealing 75 #circC 25h",
         1000,
         800
     );
@@ -750,7 +718,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         chi2_vals.data()
     );
 
-    gr_chi2->SetTitle("#chi^{2} of exponential fit vs spot ID Annealing 75#circC 5h;Spot;#chi^{2}");
+    gr_chi2->SetTitle("#chi^{2} of exponential fit vs spot ID after annealing 75 #circC 25h;Spot;#chi^{2}");
     gr_chi2->SetMarkerStyle(22);
     gr_chi2->SetMarkerSize(1.2);
     gr_chi2->SetLineWidth(2);
@@ -758,5 +726,5 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
     gr_chi2->Draw("AP");
     gr_chi2->GetXaxis()->SetLimits(spot_min - 1, spot_max + 1);
 
-    c6->SaveAs("A1_ann_75_5_lum_vs_T_chi2.png");
+    c6->SaveAs("A1_ann_75_25_lum_vs_T_chi2.png");
 }

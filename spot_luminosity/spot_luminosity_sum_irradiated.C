@@ -145,7 +145,7 @@ pair<double, double> calculate_luminosity(
     double x0,
     double y0,
     double radius,
-    double rho = 0.1   // correlation coefficient: 0 = quadrature, 1 = linear sum
+    double rho = 0.0   // correlation coefficient: 0 = quadrature, 1 = linear sum
 ) {
     double sum_counts = 0.0;
 

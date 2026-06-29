@@ -107,7 +107,7 @@ full_df['v'] = pd.to_numeric(full_df['v'], errors='coerce')
 full_df['T'] = pd.to_numeric(full_df['T'], errors='coerce')
 full_df['v_fin'] = full_df['v'] - 51.3
 
-# 4. Ordinamento per spot e per v (essendo ora il parametro principale)
+# 4. Ordinamento per spot e per v
 full_df = full_df.sort_values(by=['spot', 'v'])
 
 # 5. Salvataggio finale

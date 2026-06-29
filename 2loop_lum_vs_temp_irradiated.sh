@@ -1,11 +1,11 @@
 #!/bin/bash
 
 BASE_DIR=$(pwd)
-ORIGINALS_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_v=5_run=20260612-001017/1originals"
-PROCESSED_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_v=5_run=20260612-001017/2processed"
-COORD_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_v=5_run=20260612-001017/3coordinates"
-ROOT_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_v=5_run=20260612-001017/4th2f"
-LUM_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_v=5_run=20260612-001017/luminosity"
+ORIGINALS_DIR="$BASE_DIR/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/1originals"
+PROCESSED_DIR="$BASE_DIR/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/2processed"
+COORD_DIR="$BASE_DIR/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/3coordinates"
+ROOT_DIR="$BASE_DIR/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/4th2f"
+LUM_DIR="$BASE_DIR/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/luminosity"
 
 mkdir -p "$PROCESSED_DIR" "$COORD_DIR" "$ROOT_DIR" "$LUM_DIR"
 
@@ -41,7 +41,7 @@ if [ ! -f "$ref_processed" ]; then
 fi
 
 cd "$BASE_DIR/find_centers/"
-python find_centers.py --input "$ref_processed" --convolution --coordinates_root "$reference_coords"
+python find_centers_irradiated.py --input "$ref_processed" --convolution --coordinates_root "$reference_coords"
 
 # --- FASE 3: LOOP DI PROCESSAMENTO SU TUTTI I FILE ---
 cd "$BASE_DIR"
@@ -65,7 +65,7 @@ for input_path in "$ORIGINALS_DIR"/*_data=diff.tif; do
     python tif2th2.py --input "$PROCESSED_DIR/${basename}_processed.tif" --error "$error_file" --output "$ROOT_DIR/${basename}_processed_th2f.root"
 
     cd "$BASE_DIR/spot_luminosity/"
-    root -l -q "spot_luminosity_sum.C(\"$ROOT_DIR/${basename}_processed_th2f.root\",\"$reference_coords\")"
+    root -l -q "spot_luminosity_sum_irradiated.C(\"$ROOT_DIR/${basename}_processed_th2f.root\",\"$reference_coords\")"
 
     if [ -f "luminosity_results.csv" ]; then
         [[ -z "$val_T" || -z "$val_v" ]] && { val_T="0"; val_v="0"; }
@@ -114,7 +114,7 @@ print(f"Final file created: {output_name}")
 EOF
 
 
-echo "Done."
+echo "Process completed successfully."
 
 
 # root -l 'lum_vs_T.C("run=20250826-035846_v=7.csv")'
