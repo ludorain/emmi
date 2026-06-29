@@ -1,8 +1,6 @@
 *.root
 *.tif
 *.tiff
-*.png
-*.csv
 *.pyc
 .DS_Store
 

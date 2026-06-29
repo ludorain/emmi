@@ -1,9 +1,6 @@
 
-//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_quadratic.csv")'
-//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_rho=0.0.csv")'
-//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_rho=0.1.csv")'
-//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_rho=0.2.csv")'
-//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_linear_error.csv")'
+//root -l 'lum_vs_V_fit_irradiated.C("A1_T=20_run=20260513-032137_total_global_ID.csv")'
+
 
 #include <iostream>
 #include <fstream>
