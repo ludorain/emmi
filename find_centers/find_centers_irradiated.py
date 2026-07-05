@@ -1,6 +1,7 @@
 # Code to find luminous centers of TIF image
 # To compile/run, first: conda activate astropy
 # python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/1originals/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff.tif" --circles
+# python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=53.30_data=diff_processed.tif" --convolution 
 #! /usr/bin/env python
 
 import matplotlib.pyplot as plt
@@ -254,7 +255,7 @@ if __name__ == "__main__":
               f"equivalent radius={radius:.2f} pix")
 
         # Half-size of the crop: 50 pixels -> total region about 100x100
-        half_size = 50
+        half_size = 20
 
         # Image shape
         ny, nx = processed.shape
@@ -288,7 +289,8 @@ if __name__ == "__main__":
 
         ax_focus.add_patch(circle)
 
-        ax_focus.set_title(f'Focus on defect {args.focus}')
+        #ax_focus.set_title(f'Focus on defect {args.focus}')
+        ax_focus.set_title('Focus on defect 2 - v_over = 4 V')
         ax_focus.set_xlim(0, focus_image.shape[1])
         ax_focus.set_ylim(focus_image.shape[0], 0)
 

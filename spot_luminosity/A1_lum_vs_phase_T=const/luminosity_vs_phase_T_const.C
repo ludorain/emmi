@@ -273,7 +273,7 @@ void luminosity_vs_phase_T_const(const char* csvfile,
     const double RATIO_FOCUS_YMAX = 2.0;
 
     // Soglia per la significance richiesta.
-    const double SIGMA_THRESHOLD = 5.0;
+    const double SIGMA_THRESHOLD = 3.0;
 
     vector<Row> data = read_csv(csvfile);
 

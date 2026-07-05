@@ -458,20 +458,40 @@ void lum_vs_V_fit_irradiated(const char* filename = "data.csv") {
 
         TCanvas* c7_spot = new TCanvas(Form("c7_spot_%d", spot_id),
                                        Form("Spot %d - Luminosity vs overvoltage", spot_id),
-                                       800,
-                                       600);
+                                       1000,
+                                       800);
+
+        c7_spot->SetLeftMargin(0.16);
+        c7_spot->SetRightMargin(0.05);
+        c7_spot->SetBottomMargin(0.13);
+        c7_spot->SetTopMargin(0.08);
 
         info.graph->SetMarkerStyle(20);
         info.graph->SetMarkerSize(2.0);
         info.graph->SetLineWidth(2);
         info.graph->GetXaxis()->SetTitleSize(0.045);
         info.graph->GetYaxis()->SetTitleSize(0.045);
+        info.graph->GetYaxis()->SetTitleOffset(1.4);
 
         info.graph->Draw("AP");
         info.func->Draw("SAME");
 
-        TPaveText* fit_info_box = make_fit_box(info, 0.12, 0.58, 0.45, 0.88);
-        fit_info_box->Draw("SAME");
+        c7_spot->Update();
+
+        TPaveStats* stats = (TPaveStats*)info.graph->FindObject("stats");
+        if (stats) {
+            stats->SetX1NDC(0.18);
+            stats->SetX2NDC(0.48);
+            stats->SetY1NDC(0.55);
+            stats->SetY2NDC(0.85);
+            stats->Draw();
+        }
+
+        c7_spot->Modified();
+        c7_spot->Update();
+
+        //TPaveText* fit_info_box = make_fit_box(info, 0.12, 0.58, 0.45, 0.88);
+        //fit_info_box->Draw("SAME");
 
         c7_spot->SaveAs(Form("A1_bef_ann_lum_vs_v_all_spots/A1_bef_ann_lum_vs_v_spot%d.png",
                              spot_id));
