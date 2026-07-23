@@ -159,8 +159,8 @@ if __name__ == "__main__":
         circle = Circle((xc_local, yc_local), radius=20,
                             edgecolor='red', facecolor='none', linewidth=1.5)
         plt.gca().add_patch(circle)
-        #plt.title(f'Focus on defect {args.focus}')
-        plt.title('Focus on defect 3')
+        plt.title(f'Focus on defect {args.focus}')
+        #plt.title('Focus on defect 3')
         plt.xlim(0, focus_image.shape[1])
         plt.ylim(focus_image.shape[0], 0)
         plt.tight_layout()

@@ -12,40 +12,70 @@ LUM_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/
 
 mkdir -p "$PROCESSED_DIR" "$COORD_DIR" "$ROOT_DIR" "$LUM_DIR"
 
-# --- FASE 1: TROVARE IL FILE CON V MASSIMO ---
-echo "Searching for the file with maximum v..."
-max_v=-1
+# --- FASE 1: TROVARE IL FILE CON IL SECONDO VALORE MASSIMO DI V ---
+echo "Searching for the file with the second-highest v..."
+
 reference_file=""
 reference_coords="$COORD_DIR/reference_coordinates.txt"
 
 # Estrazione prefisso comune
-first_file=$(ls "$ORIGINALS_DIR"/*_data=diff.tif | head -n 1)
+first_file=$(find "$ORIGINALS_DIR" -maxdepth 1 -name '*_data=diff.tif' | head -n 1)
+
+if [ -z "$first_file" ]; then
+    echo "Error: no *_data=diff.tif files found in:"
+    echo "$ORIGINALS_DIR"
+    exit 1
+fi
+
 common_prefix=$(basename "$first_file" | cut -d'_' -f1)
 
-for f in "$ORIGINALS_DIR"/*_data=diff.tif; do
-    filename=$(basename "$f")
-    # Estraiamo il valore di v
-    val_v=$(echo "$filename" | sed -n 's/.*v=\([0-9.]*\).*/\1/p')
-    
-    if (( $(echo "$val_v > $max_v" | bc -l) )); then
-        max_v=$val_v
-        reference_file=$f
-    fi
-done
+# Crea una lista "v <TAB> percorso", la ordina per v decrescente,
+# elimina eventuali valori di v duplicati e seleziona il secondo.
+second_entry=$(
+    for f in "$ORIGINALS_DIR"/*_data=diff.tif; do
+        filename=$(basename "$f")
+        val_v=$(echo "$filename" | sed -n 's/.*v=\([0-9.]*\).*/\1/p')
 
-echo "Max v found: $max_v | Prefix: $common_prefix"
+        if [ -n "$val_v" ]; then
+            printf '%s\t%s\n' "$val_v" "$f"
+        fi
+    done |
+    sort -t $'\t' -k1,1gr |
+    awk -F '\t' '!seen[$1]++' |
+    sed -n '2p'
+)
+
+if [ -z "$second_entry" ]; then
+    echo "Error: fewer than two distinct v values were found."
+    exit 1
+fi
+
+IFS=$'\t' read -r second_max_v reference_file <<< "$second_entry"
+
+echo "Second-highest v found: $second_max_v"
+echo "Reference file: $(basename "$reference_file")"
+echo "Prefix: $common_prefix"
+
 
 # --- FASE 2: GENERAZIONE COORDINATE DI RIFERIMENTO ---
 ref_basename=$(basename "$reference_file" .tif)
 ref_processed="$PROCESSED_DIR/${ref_basename}_processed.tif"
 
 if [ ! -f "$ref_processed" ]; then
-    cd "$BASE_DIR/manipulate_images/"
-    python process_image.py --input "$reference_file" --process remove_column_bias remove_hot_pixels remove_cold_pixels --output "$ref_processed"
+    cd "$BASE_DIR/manipulate_images/" || exit 1
+
+    python process_image.py \
+        --input "$reference_file" \
+        --process remove_column_bias remove_hot_pixels remove_cold_pixels \
+        --output "$ref_processed"
 fi
 
-cd "$BASE_DIR/find_centers/"
-python find_centers_irradiated.py --input "$ref_processed" --convolution --coordinates_root "$reference_coords"
+cd "$BASE_DIR/find_centers/" || exit 1
+
+python find_centers_irradiated.py \
+    --input "$ref_processed" \
+    --convolution \
+    --coordinates_root "$reference_coords"
 
 # --- FASE 3: LOOP DI PROCESSAMENTO SU TUTTI I FILE ---
 cd "$BASE_DIR"
