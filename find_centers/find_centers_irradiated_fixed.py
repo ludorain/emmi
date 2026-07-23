@@ -1,7 +1,33 @@
 # Code to find luminous centers of TIF image
 # To compile/run, first: conda activate astropy
-# python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/1originals/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff.tif" --circles
-# python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=54.30_data=diff_processed.tif" --convolution  --focus 14
+# python find_centers_irradiated_fixed.py --input "" --convolution  --coordinates_python ""
+
+#before annealing 
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python ""
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
+
+#annealed 75 5
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_5_T=20.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
+
+#annealed 75 25
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_25_T=20.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 16
+
+#annealed 100° 5h
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_100_5.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 13
+
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus_area 675 173 4
+
+
+#annealed 100° 25h
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --coordinates_python "A1_annealed_100_25.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --focus 11
+
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --focus_area 675 173 4
+
+
 #! /usr/bin/env python
 
 import matplotlib.pyplot as plt
@@ -38,6 +64,9 @@ def parse_arguments():
 
     parser.add_argument('--focus', type=int, required=False,
                         help='Show a region around the selected defect_id written in --coordinates_python')
+
+    parser.add_argument("--focus_area", nargs=3, type=float, metavar=("X", "Y", "RADIUS"),
+                        help="Focus on a manually selected area: x y radius")                
 
     parser.add_argument('--circles', action='store_true',
                         help='Display background-subtracted image with circles on detected sources')
@@ -266,7 +295,7 @@ if __name__ == "__main__":
               f"area={tbl['segment_area_pix2'][focus_index]:.2f} pix^2, "
               f"equivalent radius={radius:.2f} pix")
 
-        # Half-size of the crop: 50 pixels -> total region about 100x100
+        # Half-size of the crop:
         half_size = 20
 
         # Image shape
@@ -286,7 +315,13 @@ if __name__ == "__main__":
         yc_local = yc - y_min
 
         # Display focused image
-        norm = ImageNormalize(focus_image, stretch=SqrtStretch())
+        #norm = ImageNormalize(focus_image, stretch=SqrtStretch())
+
+        # Fixed color scale for all images
+        vmin_global = 0
+        vmax_global = 20   # choose this from your data
+
+        norm = ImageNormalize(vmin=vmin_global,vmax=vmax_global,stretch=SqrtStretch())
 
         fig_focus, ax_focus = plt.subplots(figsize=(6, 6))
         ax_focus.imshow(focus_image, origin='upper', norm=norm)
@@ -302,7 +337,11 @@ if __name__ == "__main__":
         ax_focus.add_patch(circle)
 
         #ax_focus.set_title(f'Focus on defect {args.focus}')
-        ax_focus.set_title('Focus on defect 39 - v_over = 1.0 V')
+        #ax_focus.set_title('Focus on defect 14 - T = 20 °C - v_over = 7 V - Before annealing')
+        #ax_focus.set_title('Focus on defect 14 - T = 20 °C - v_over = 7 V - Annealing 75 °C 5h')
+        #ax_focus.set_title('Focus on defect 14 - T = 20 °C - v_over = 7 V - Annealing 75 °C 25h')
+        #ax_focus.set_title('Focus on defect 14 - T = 20 °C - v_over = 7 V - Annealing 100 °C 5h')
+        ax_focus.set_title('Focus on defect 14 - T = 20 °C - v_over = 7 V - Annealing 100 °C 25h')
         ax_focus.set_xlim(0, focus_image.shape[1])
         ax_focus.set_ylim(focus_image.shape[0], 0)
 
@@ -310,6 +349,77 @@ if __name__ == "__main__":
         plt.show()
         plt.close(fig_focus)
 
+
+    # ------------------------------------------------------------
+    # Focus on a manually selected image area if requested
+    # ------------------------------------------------------------
+    if args.focus_area is not None:
+        # Input: x coordinate, y coordinate, radius
+        xc = args.focus_area[0]
+        yc = args.focus_area[1]
+        radius = args.focus_area[2]
+
+        display_radius = max(
+            args.circle_min_radius,
+            args.circle_scale * radius
+        )
+
+        print(f" --- focus on manual area: "
+            f"x={xc:.2f}, y={yc:.2f}, "
+            f"radius={radius:.2f} pix")
+
+        # Half-size of the crop
+        half_size = 20
+
+        # Image shape
+        ny, nx = processed.shape
+
+        # Crop boundaries, clipped to image edges
+        x_min = max(0, int(round(xc)) - half_size)
+        x_max = min(nx, int(round(xc)) + half_size)
+        y_min = max(0, int(round(yc)) - half_size)
+        y_max = min(ny, int(round(yc)) + half_size)
+
+        # Crop image
+        focus_image = processed[y_min:y_max, x_min:x_max]
+
+        # Coordinates of the selected point inside the cropped image
+        xc_local = xc - x_min
+        yc_local = yc - y_min
+
+        # Fixed color scale for all images
+        vmin_global = 0
+        vmax_global = 5   # choose this from your data
+
+        norm = ImageNormalize(
+            vmin=vmin_global,
+            vmax=vmax_global,
+            stretch=SqrtStretch()
+        )
+
+        fig_focus, ax_focus = plt.subplots(figsize=(6, 6))
+        ax_focus.imshow(focus_image, origin='upper', norm=norm)
+
+        circle = Circle(
+            (xc_local, yc_local),
+            radius=display_radius,
+            edgecolor='red',
+            facecolor='none',
+            linewidth=1.5
+        )
+
+        ax_focus.add_patch(circle)
+
+        #ax_focus.set_title(f'Focus on manual area: x={xc:.1f}, y={yc:.1f}, r={radius:.1f} pix')
+        #ax_focus.set_title('Focus on defect 49 - T = 20 °C - v_over = 7 V - Annealing 100 °C 5h')
+        ax_focus.set_title('Focus on defect 16 - T = 20 °C - v_over = 7 V - Annealing 100 °C 25h')
+
+        ax_focus.set_xlim(0, focus_image.shape[1])
+        ax_focus.set_ylim(focus_image.shape[0], 0)
+
+        plt.tight_layout()
+        plt.show()
+        plt.close(fig_focus)
     # ------------------------------------------------------------
     # Save .txt file with coordinates + area + equivalent radius
     # ------------------------------------------------------------

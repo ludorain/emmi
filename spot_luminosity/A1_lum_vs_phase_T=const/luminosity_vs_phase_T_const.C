@@ -1,4 +1,4 @@
-//root -l 'luminosity_vs_phase_T_const.C("A1_T=20_merged_max_vfin_global_ID.csv")'
+//root -l 'luminosity_vs_phase_T_const.C("merged_max_vfin_global_ID_add_100_25.csv")'
 
 #include <iostream>
 #include <fstream>
@@ -222,7 +222,7 @@ void draw_ratio_canvas(const vector<double>& xratio,
     );
 
     gr_ratio->SetTitle(
-        "L(annealing_T=100_h=5) / L(before_annealing);spot;ratio"
+        "L(annealing_T=100_h=25) / L(before_annealing);spot;ratio"
     );
 
     gr_ratio->SetMarkerStyle(20);
@@ -273,7 +273,9 @@ void luminosity_vs_phase_T_const(const char* csvfile,
     const double RATIO_FOCUS_YMAX = 2.0;
 
     // Soglia per la significance richiesta.
-    const double SIGMA_THRESHOLD = 3.0;
+    const double SIGMA_THRESHOLD = 5.0;
+
+    const int SELECTED_SPOT_PHASE = 14;
 
     vector<Row> data = read_csv(csvfile);
 
@@ -287,7 +289,8 @@ void luminosity_vs_phase_T_const(const char* csvfile,
         "before_annealing",
         "annealing_T=75_h=5",
         "annealing_T=75_h=25",
-        "annealing_T=100_h=5"
+        "annealing_T=100_h=5",
+        "annealing_T=100_h=25"
     };
 
     map<string, int> phase_index;
@@ -363,7 +366,7 @@ void luminosity_vs_phase_T_const(const char* csvfile,
     // --------------------------------------------------------
     // Canvas luminosity vs phase
     // --------------------------------------------------------
-
+ /*
     int canvas_counter = 0;
 
     for (auto& group_entry : groups_by_order) {
@@ -531,15 +534,158 @@ void luminosity_vs_phase_T_const(const char* csvfile,
 
     cout << "Create " << canvas_counter
          << " canvas per luminosity vs phase." << endl;
+*/
+    // --------------------------------------------------------
+    // Canvas luminosity vs phase for a single selected spot
+    // --------------------------------------------------------
+
+    if (by_spot.find(SELECTED_SPOT_PHASE) == by_spot.end()) {
+        cerr << "Warning: selected spot " << SELECTED_SPOT_PHASE
+             << " non presente nei dati. Canvas singola non creata."
+             << endl;
+    } else {
+
+        const auto& phase_map_single = by_spot[SELECTED_SPOT_PHASE];
+
+        vector<double> xval_single;
+        vector<double> yval_single;
+        vector<double> exval_single;
+        vector<double> eyval_single;
+
+        double ymin_single = 1e99;
+        double ymax_single = -1e99;
+
+        double x_spot = 0.0;
+        double y_spot = 0.0;
+        bool have_coordinates = false;
+
+        for (int iph = 0; iph < (int)phases.size(); iph++) {
+            const string& ph = phases[iph];
+
+            if (phase_map_single.find(ph) == phase_map_single.end()) continue;
+
+            const Row& r = phase_map_single.at(ph);
+
+            xval_single.push_back((double)iph);
+            yval_single.push_back(r.luminosity);
+            exval_single.push_back(0.0);
+            eyval_single.push_back(r.error);
+
+            ymin_single = min(ymin_single, r.luminosity - r.error);
+            ymax_single = max(ymax_single, r.luminosity + r.error);
+
+            if (!have_coordinates) {
+                x_spot = r.x;
+                y_spot = r.y;
+                have_coordinates = true;
+            }
+        }
+
+        if (xval_single.empty()) {
+            cerr << "Warning: selected spot " << SELECTED_SPOT_PHASE
+                 << " non ha punti validi nelle fasi richieste. "
+                 << "Canvas singola non creata."
+                 << endl;
+        } else {
+
+            if (ymin_single > 0) ymin_single *= 0.95;
+            else                 ymin_single *= 1.0;
+
+            ymax_single *= 1.05;
+
+            if (ymax_single <= ymin_single) ymax_single = ymin_single + 1.0;
+
+            TCanvas* c_single = new TCanvas(
+                "c_phase_single_spot",
+                Form("Spot %d - Luminosity vs phase", SELECTED_SPOT_PHASE),
+                1200,
+                800
+            );
+
+            c_single->SetGrid();
+
+            TH1D* frame_single = new TH1D(
+                "frame_single_spot",
+                Form("Spot %d: luminosity vs phase", SELECTED_SPOT_PHASE),
+                (int)phases.size(),
+                -0.5,
+                (double)phases.size() - 0.5
+            );
+
+            frame_single->SetMinimum(ymin_single);
+            frame_single->SetMaximum(ymax_single);
+
+            frame_single->GetXaxis()->SetTitle("phase");
+            frame_single->GetYaxis()->SetTitle("luminosity");
+
+            for (int i = 0; i < (int)phases.size(); i++) {
+            frame_single->GetXaxis()->SetBinLabel(i + 1, phases[i].c_str());
+            }
 
 
+            frame_single->GetXaxis()->LabelsOption("h");
+            frame_single->GetXaxis()->SetLabelSize(0.035);
+            frame_single->GetYaxis()->SetTitleOffset(1.25);
+
+            frame_single->Draw();
+
+            TGraphErrors* gr_single = new TGraphErrors(
+                (int)xval_single.size(),
+                xval_single.data(),
+                yval_single.data(),
+                exval_single.data(),
+                eyval_single.data()
+            );
+
+            gr_single->SetLineColor(kBlue+1);
+            gr_single->SetMarkerColor(kBlue+1);
+            gr_single->SetMarkerStyle(20);
+            gr_single->SetMarkerSize(1.2);
+            gr_single->SetLineWidth(2);
+
+            gr_single->Draw("PL SAME");
+
+            TLegend* leg_single = new TLegend(0.62, 0.72, 0.90, 0.88);
+            leg_single->SetBorderSize(0);
+            leg_single->SetFillStyle(0);
+
+            if (have_coordinates) {
+                leg_single->AddEntry(
+                    gr_single,
+                    Form("spot %d  (x=%.2f, y=%.2f)",
+                         SELECTED_SPOT_PHASE,
+                         x_spot,
+                         y_spot),
+                    "pl"
+                );
+            } else {
+                leg_single->AddEntry(
+                    gr_single,
+                    Form("spot %d", SELECTED_SPOT_PHASE),
+                    "pl"
+                );
+            }
+
+            leg_single->Draw();
+
+            c_single->Update();
+
+            if (save_png) {
+                c_single->SaveAs(
+                    Form("luminosity_vs_phase_single_spot_%d.png",
+                         SELECTED_SPOT_PHASE)
+                );
+            }
+        }
+    }
+    
     // --------------------------------------------------------
     // Canvas finali rapporto:
-    // L(annealing_T=100_h=5) / L(before_annealing)
+    // L(annealing_T=100_h=25) / L(before_annealing)
     // --------------------------------------------------------
 
     string phase_before = "before_annealing";
-    string phase_num    = "annealing_T=100_h=5";
+    string phase_num    = "annealing_T=100_h=25";
 
     vector<double> xratio;
     vector<double> yratio;
@@ -580,7 +726,7 @@ void luminosity_vs_phase_T_const(const char* csvfile,
         }
 
         // Rapporto richiesto:
-        // R = L(annealing_T=100_h=5) / L(before_annealing)
+        // R = L(annealing_T=100_h=25) / L(before_annealing)
         double ratio = L_num / L_before;
 
         // Propagazione robusta dell'errore, valida anche se L_num = 0:
@@ -606,8 +752,8 @@ void luminosity_vs_phase_T_const(const char* csvfile,
             exratio,
             eyratio,
             "c_ratio_100_over_before",
-            "Ratio annealing_T=100_h=5 / before_annealing",
-            "ratio_annealing_T100_h5_over_before.png",
+            "Ratio annealing_T=100_h=25 / before_annealing",
+            "ratio_annealing_T100_h25_over_before.png",
             save_png,
             false
         );
@@ -619,8 +765,8 @@ void luminosity_vs_phase_T_const(const char* csvfile,
             exratio,
             eyratio,
             "c_ratio_100_over_before_focus",
-            "Ratio annealing_T=100_h=5 / before_annealing - focus",
-            "ratio_annealing_T100_h5_over_before_focus.png",
+            "Ratio annealing_T=100_h=25 / before_annealing - focus",
+            "ratio_annealing_T100_h25_over_before_focus.png",
             save_png,
             true,
             RATIO_FOCUS_YMIN,

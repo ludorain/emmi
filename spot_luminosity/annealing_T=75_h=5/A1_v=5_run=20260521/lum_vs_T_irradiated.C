@@ -150,7 +150,7 @@ void estimate_exp_parameters(
 // Macro principale
 // ============================================================
 
-void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 3) {
+void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 25) {
 
     gStyle->SetOptStat(0);
     gStyle->SetOptFit(111);
@@ -520,8 +520,8 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         TCanvas* c4 = new TCanvas(
             "c4_single_spot_expfit",
             Form("Spot %d - Luminosity vs T", selected_spot),
-            900,
-            700
+            1200,
+            1000
         );
 
         vector<Row> rows = spots[selected_spot];
@@ -626,9 +626,9 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
         if (n >= 3) {
             leg4->AddEntry(fit_exp, "Fit: Lum = A e^{BT}", "l");
-            leg4->AddEntry((TObject*)0, Form("A = %.3g #pm %.2g", A, eA), "");
-            leg4->AddEntry((TObject*)0, Form("B = %.3g #pm %.2g", B, eB), "");
-            leg4->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %.2f/%d", chi2, ndf), "");
+            //leg4->AddEntry((TObject*)0, Form("A = %.3g #pm %.2g", A, eA), "");
+            //leg4->AddEntry((TObject*)0, Form("B = %.3g #pm %.2g", B, eB), "");
+            //leg4->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %.2f/%d", chi2, ndf), "");
         }
 
         leg4->Draw();

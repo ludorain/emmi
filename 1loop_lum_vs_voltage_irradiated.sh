@@ -4,11 +4,11 @@
 # --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR=$(pwd)
 # Modificato per leggere dalla cartella T=20
-ORIGINALS_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/1originals"
-PROCESSED_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed"
-COORD_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/3coordinates"
-ROOT_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/4th2f"
-LUM_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/luminosity"
+ORIGINALS_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/1originals"
+PROCESSED_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed"
+COORD_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/3coordinates"
+ROOT_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/4th2f"
+LUM_DIR="$BASE_DIR/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/luminosity"
 
 mkdir -p "$PROCESSED_DIR" "$COORD_DIR" "$ROOT_DIR" "$LUM_DIR"
 

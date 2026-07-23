@@ -27,6 +27,7 @@
 #include <cmath>
 #include <algorithm>
 
+#include "TSystem.h"
 #include "TCanvas.h"
 #include "TGraphErrors.h"
 #include "TGraph.h"
@@ -512,19 +513,17 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     // ============================================================
     // CANVAS 4:
-    // luminosity vs T for a single spot with fit
+    // luminosity vs T for all spots with fit
+    // One canvas per spot, saved in a sub-folder
     // ============================================================
 
-    if (spots.find(selected_spot) != spots.end()) {
+    const char* outdir_c4 = "A1_beff_ann_lum_vs_T_all_spots_expfit";
+    gSystem->mkdir(outdir_c4, kTRUE);
 
-        TCanvas* c4 = new TCanvas(
-            "c4_single_spot_expfit",
-            Form("Spot %d - Luminosity vs T", selected_spot),
-            900,
-            700
-        );
+    for (auto& entry : spots) {
 
-        vector<Row> rows = spots[selected_spot];
+        int spot = entry.first;
+        vector<Row> rows = entry.second;
 
         sort(
             rows.begin(),
@@ -536,12 +535,22 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
         int n = rows.size();
 
+        if (n == 0) continue;
+
+        TCanvas* c4_spot = new TCanvas(
+            Form("c4_spot_%d_expfit", spot),
+            Form("Spot %d - Luminosity vs T", spot),
+            1200,
+            800
+        );
+
         vector<double> xT(n), yL(n), exT(n), eyL(n);
 
         double ymin_local = 1e9;
         double ymax_local = -1e9;
 
         for (int i = 0; i < n; i++) {
+
             xT[i]  = rows[i].T;
             yL[i]  = rows[i].luminosity;
             exT[i] = 0.0;
@@ -561,7 +570,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
         ymax_local *= 1.25;
 
-        TGraphErrors* gr = new TGraphErrors(
+        TGraphErrors* gr_c4_spot = new TGraphErrors(
             n,
             xT.data(),
             yL.data(),
@@ -569,75 +578,84 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
             eyL.data()
         );
 
-        gr->SetTitle(
+        gr_c4_spot->SetTitle(
             Form("Spot %d: x = %.2f, y = %.2f, v = %.1f;T (#circC) Before annealing;Luminosity",
-                 selected_spot, rows[0].x, rows[0].y, v_const)
+                spot, rows[0].x, rows[0].y, v_const)
         );
 
-        gr->SetMarkerStyle(20);
-        gr->SetMarkerSize(1.4);
-        gr->SetLineWidth(2);
+        gr_c4_spot->SetMarkerStyle(20);
+        gr_c4_spot->SetMarkerSize(1.4);
+        gr_c4_spot->SetLineWidth(2);
 
-        gr->SetMinimum(ymin_local);
-        gr->SetMaximum(ymax_local);
+        gr_c4_spot->SetMinimum(ymin_local);
+        gr_c4_spot->SetMaximum(ymax_local);
 
-        gr->Draw("AP");
+        gr_c4_spot->Draw("AP");
 
         double A0, B0;
         estimate_exp_parameters(rows, A0, B0);
 
-        TF1* fit_exp = new TF1(
-            Form("fit_exp_canvas4_spot_%d", selected_spot),
+        TF1* fit_exp_c4_spot = new TF1(
+            Form("fit_exp_canvas4_spot_%d", spot),
             "[0]*exp([1]*x)",
             T_fit_min,
             T_fit_max
         );
 
-        fit_exp->SetParNames("A", "B");
-        fit_exp->SetParameters(A0, B0);
-        fit_exp->SetLineColor(kRed + 1);
-        fit_exp->SetLineWidth(2);
+        fit_exp_c4_spot->SetParNames("A", "#lambda");
+        fit_exp_c4_spot->SetParameters(A0, B0);
+        fit_exp_c4_spot->SetLineColor(kRed + 1);
+        fit_exp_c4_spot->SetLineWidth(2);
 
         double A = 0.0;
         double eA = 0.0;
-        double B = 0.0;
-        double eB = 0.0;
+        double lambda = 0.0;
+        double elambda = 0.0;
         double chi2 = 0.0;
         int ndf = 0;
 
         if (n >= 3) {
-            gr->Fit(fit_exp, "RQ");
 
-            A = fit_exp->GetParameter(0);
-            eA = fit_exp->GetParError(0);
+            gr_c4_spot->Fit(fit_exp_c4_spot, "RQ");
 
-            B = fit_exp->GetParameter(1);
-            eB = fit_exp->GetParError(1);
+            A = fit_exp_c4_spot->GetParameter(0);
+            eA = fit_exp_c4_spot->GetParError(0);
 
-            chi2 = fit_exp->GetChisquare();
-            ndf  = fit_exp->GetNDF();
+            lambda = fit_exp_c4_spot->GetParameter(1);
+            elambda = fit_exp_c4_spot->GetParError(1);
+
+            chi2 = fit_exp_c4_spot->GetChisquare();
+            ndf  = fit_exp_c4_spot->GetNDF();
+
+        } else {
+
+            cout << "Skipping fit for spot " << spot
+                << " because it has fewer than 3 points." << endl;
         }
 
-        TLegend* leg4 = new TLegend(0.14, 0.68, 0.60, 0.88);
-        leg4->SetBorderSize(0);
-        leg4->SetFillStyle(0);
+        TLegend* leg4_spot = new TLegend(0.14, 0.68, 0.60, 0.88);
+        leg4_spot->SetBorderSize(0);
+        leg4_spot->SetFillStyle(0);
 
-        leg4->AddEntry(gr, "Data", "lep");
+        leg4_spot->AddEntry(gr_c4_spot, "Data", "lep");
 
         if (n >= 3) {
-            leg4->AddEntry(fit_exp, "Fit: Lum = A e^{BT}", "l");
-            leg4->AddEntry((TObject*)0, Form("A = %.3g #pm %.2g", A, eA), "");
-            leg4->AddEntry((TObject*)0, Form("B = %.3g #pm %.2g", B, eB), "");
-            leg4->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %.2f/%d", chi2, ndf), "");
+
+            leg4_spot->AddEntry(fit_exp_c4_spot, "Fit: Lum = A e^{#lambda T}", "l");
+            //leg4_spot->AddEntry((TObject*)0, Form("A = %.3g #pm %.2g", A, eA), "");
+            //leg4_spot->AddEntry((TObject*)0, Form("B = %.3g #pm %.2g", B, eB), "");
+            //leg4_spot->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %.2f/%d", chi2, ndf), "");
+
+        } else {
+
+            leg4_spot->AddEntry((TObject*)0, "Fit not performed: n < 3", "");
         }
 
-        leg4->Draw();
+        leg4_spot->Draw();
 
-        c4->SaveAs(Form("A1_beff_ann_lum_vs_T_spot%d.png", selected_spot));
-
-    } else {
-
-        cout << "Spot " << selected_spot << " non presente nel file." << endl;
+        c4_spot->SaveAs(
+            Form("%s/A1_beff_ann_lum_vs_T_spot%d.png", outdir_c4, spot)
+        );
     }
 
     // ============================================================
