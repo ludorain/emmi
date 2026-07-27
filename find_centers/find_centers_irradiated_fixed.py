@@ -3,29 +3,28 @@
 # python find_centers_irradiated_fixed.py --input "" --convolution  --coordinates_python ""
 
 #before annealing 
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python ""
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python ""
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
 
 #annealed 75 5
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_5_T=20.txt"
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_5_T=20.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 17
 
 #annealed 75 25
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_25_T=20.txt"
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 16
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_25_T=20.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=75_h=25/A1_T=20_run=20260530-001924/2processed/run=20260530-001924_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 16
 
 #annealed 100° 5h
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_100_5.txt"
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 13
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=2026061<PASSWORD>-<PASSWORD>" --convolution  --coordinates_python "A1_annealed_1<PASSWORD>.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus 13
 
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus_area 675 173 4
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=100_h=5/A1_T=20_run=20260610-203538/2processed/run=20260610-203538_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --focus_area 675 173 4
 
 
 #annealed 100° 25h
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --coordinates_python "A1_annealed_100_25.txt"
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --focus 11
-
-# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --focus_area 675 173 4
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --coordinates_python "A1_annealed_100_25.txt"
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=1<PASSWORD>_h=25/A1_T=2<PASSWORD>-<PASSWORD>/2processed/run=2<PASSWORD>-<PASSWORD>" --convolution --focus 11
+# python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/annealing_T=100_h=25/A1_T=20_20260625-095817/2processed/run=20260625-095817_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution --focus_area 675 173 4
 
 
 #! /usr/bin/env python
@@ -319,7 +318,7 @@ if __name__ == "__main__":
 
         # Fixed color scale for all images
         vmin_global = 0
-        vmax_global = 20   # choose this from your data
+        vmax_global = 20  
 
         norm = ImageNormalize(vmin=vmin_global,vmax=vmax_global,stretch=SqrtStretch())
 

@@ -10,5 +10,11 @@ DATA_irradiated/
 **/4th2f/
 **/luminosity/
 
+DATA_irradiated_fixed_r/
+**/1originals/
+**/2processed/
+**/4th2f/
+**/luminosity/
+
 __pycache__/
 
