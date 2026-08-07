@@ -1,5 +1,8 @@
 # Code to find luminous centers of TIF image
-# To compile/run, first: conda activate astropy
+# This version main characteristics are:
+# 1) The radius changes according to the dimension of the spot
+
+
 # python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/1originals/run=20260513-032137_x=0_y=0_z=0_T=20_v=58.30_data=diff.tif" --circles
 # python find_centers_irradiated.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/before_annealing/A1_T=20_run=20260513-032137/2processed/run=20260513-032137_x=0_y=0_z=0_T=20_v=53.30_data=diff_processed.tif" --convolution 
 #! /usr/bin/env python
