@@ -2,6 +2,14 @@
 
 import argparse
 import matplotlib.pyplot as plt
+
+import sys
+import os
+
+current_dir = os.path.dirname(__file__)
+libs_path = os.path.abspath(os.path.join(current_dir, '..', 'libs'))
+sys.path.insert(0, libs_path)
+
 import emmi
 
 def parse_arguments():

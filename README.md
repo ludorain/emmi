@@ -1,4 +1,8 @@
 ![](logo.png)
-# emmi
-Emission Microscopy for Microelectronic Inspection  
-A camera-based system for localising defects in semiconductor components  
+
+
+
+# Step per ottenere l'immagine finale per l'analisi
+
+
+
