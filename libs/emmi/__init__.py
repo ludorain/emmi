@@ -4,6 +4,7 @@ from . import io
 from . import database
 from . import process
 from . import stitching
+from . import rotation
 
 def get_rotation_angle(image):
     # detect edges
