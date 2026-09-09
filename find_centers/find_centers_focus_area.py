@@ -2,8 +2,10 @@
 # To compile/run, first: conda activate astropy
 # python find_centers_irradiated_fixed.py --input "" --convolution  --coordinates_python ""
 
-#before annealing 
-# python find_centers_irradiated_fixed.py --input "" --convolution  --coordinates_python ""
+
+
+
+
 
 #annealed 75 5
 # python find_centers_irradiated_fixed.py --input "/Users/ludovicarainero/emmi/DATA_irradiated/annealing_T=75_h=5/A1_T=20_run=20260520-085312/2processed/run=20260520-085312_x=0_y=0_z=0_T=20_v=58.30_data=diff_processed.tif" --convolution  --coordinates_python "A1_annealed_75_5_T=20.txt"

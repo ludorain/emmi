@@ -10,7 +10,7 @@ set -euo pipefail
 BASE_DIR="$(pwd)"
 
 # Output CSV
-OUTPUT_FILE="$BASE_DIR/DATA/bef_ann_A1_T=20_radius_study.csv"
+OUTPUT_FILE="$BASE_DIR/bef_ann_A1_T=20_radius_study_60.csv"
 
 # Maximum Euclidean distance for considering two positions
 # as the same spot.
@@ -18,16 +18,19 @@ COORDINATE_TOLERANCE=5.0
 
 # Add or remove CSV files freely.
 CSV_FILES=(
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=8/luminosity/A1_T=20_total_r=8.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=10/luminosity/A1_T=20_total_r=10.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=12/luminosity/A1_T=20_total_r=12.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=14/luminosity/A1_T=20_total_r=14.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=16/luminosity/A1_T=20_total_r=16.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=18/luminosity/A1_T=20_total_r=18.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=20/luminosity/A1_T=20_total_r=20.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=22/luminosity/A1_T=20_total_r=22.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=24/luminosity/A1_T=20_total_r=24.csv"
-    "$BASE_DIR/DATA/bef_ann_A1_T=20_r=26/luminosity/A1_T=20_total_r=26.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=2/luminosity/A1_T=20_total_r=2.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=4/luminosity/A1_T=20_total_r=4.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=6/luminosity/A1_T=20_total_r=6.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=8/luminosity/A1_T=20_total_r=8.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=10/luminosity/A1_T=20_total_r=10.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=12/luminosity/A1_T=20_total_r=12.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=14/luminosity/A1_T=20_total_r=14.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=16/luminosity/A1_T=20_total_r=16.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=18/luminosity/A1_T=20_total_r=18.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=20/luminosity/A1_T=20_total_r=20.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=22/luminosity/A1_T=20_total_r=22.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=24/luminosity/A1_T=20_total_r=24.csv"
+    "$BASE_DIR/DATA_R_isol_60/bef_ann_A1_T=20_r=26/luminosity/A1_T=20_total_r=26.csv"
 )
 
 

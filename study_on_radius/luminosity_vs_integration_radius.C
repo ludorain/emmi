@@ -34,7 +34,7 @@ void luminosity_vs_integration_radius()
     // ============================================================
     // USER CONFIGURATION
     // ============================================================
-    const string csv_file = "bef_ann_A1_T=20_radius_study.csv";
+    const string csv_file = "bef_ann_A1_T=20_radius_study_60.csv";
 
     const double selected_v_fin = 5.0;
 
@@ -140,7 +140,7 @@ if (data_by_spot.empty()) {
 gSystem->mkdir(output_directory.c_str(), true);
 
 
-/*
+
 // ============================================================
 // CREATE ONE CANVAS FOR EACH SPOT
 // ============================================================
@@ -282,7 +282,7 @@ for (auto& entry : data_by_spot) {
      << selected_v_fin
      << endl;
 
-*/
+
 
 // ============================================================
 // GROUPED CANVASES: MAXIMUM 10 SPOTS PER CANVAS
@@ -310,9 +310,17 @@ vector<LuminosityGroup> luminosity_groups = {
     },
 
     {
-        "50 #leq L_{max} < 200",
-        "50_200",
+        "50 #leq L_{max} < 100",
+        "50_100",
         50.0,
+        100.0,
+        {}
+    },
+
+    {
+        "100 #leq L_{max} < 200",
+        "100_200",
+        100.0,
         200.0,
         {}
     },
@@ -401,33 +409,25 @@ for (const auto& entry : data_by_spot) {
 // ============================================================
 // COLORS AND MARKER STYLES
 // ============================================================
-const int graph_colors[10] = {
-    kBlack,
+const int graph_colors[6] = {
     kRed + 1,
     kBlue + 1,
     kGreen + 2,
     kMagenta + 1,
     kOrange + 7,
-    kCyan + 2,
-    kViolet + 1,
-    kAzure + 2,
-    kPink + 7
+    kAzure + 2
 };
 
-const int marker_styles[10] = {
+const int marker_styles[6] = {
     20,
     21,
     22,
     23,
     24,
-    25,
-    26,
-    27,
-    28,
-    30
+    25
 };
 
-const size_t spots_per_canvas = 10;
+const size_t spots_per_canvas = 6;
 
 // ============================================================
 // CREATE THE GROUPED CANVASES
@@ -477,7 +477,7 @@ for (LuminosityGroup& group : luminosity_groups) {
                 "Luminosity group %s",
                 group.title.c_str()
             ),
-            1200,
+            1600,
             1200
         );
 
@@ -501,8 +501,8 @@ for (LuminosityGroup& group : luminosity_groups) {
         );
 
         TLegend* legend = new TLegend(
-            0.61,
-            0.55,
+            0.21,
+            0.65,
             0.90,
             0.88
         );
@@ -510,6 +510,7 @@ for (LuminosityGroup& group : luminosity_groups) {
         legend->SetBorderSize(1);
         legend->SetFillStyle(1001);
         legend->SetTextSize(0.025);
+        legend->SetNColumns(2);
 
         // ====================================================
         // ADD UP TO 10 SPOTS TO THIS CANVAS

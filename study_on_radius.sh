@@ -4,11 +4,11 @@
 # --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR=$(pwd)
 # Modificato per leggere dalla cartella T=20
-ORIGINALS_DIR="$BASE_DIR/study_on_radius/DATA/bef_ann_A1_T=20_r=8/1originals"
-PROCESSED_DIR="$BASE_DIR/study_on_radius/DATA/bef_ann_A1_T=20_r=8/2processed"
-COORD_DIR="$BASE_DIR/study_on_radius/DATA/bef_ann_A1_T=20_r=8/3coordinates"
-ROOT_DIR="$BASE_DIR/study_on_radius/DATA/bef_ann_A1_T=20_r=8/4th2f"
-LUM_DIR="$BASE_DIR/study_on_radius/DATA/bef_ann_A1_T=20_r=8/luminosity"
+ORIGINALS_DIR="$BASE_DIR/study_on_radius/DATA_R_isol_60/bef_ann_A1_T=20_r=26/1originals"
+PROCESSED_DIR="$BASE_DIR/study_on_radius/DATA_R_isol_60/bef_ann_A1_T=20_r=26/2processed"
+COORD_DIR="$BASE_DIR/study_on_radius/DATA_R_isol_60/bef_ann_A1_T=20_r=26/3coordinates"
+ROOT_DIR="$BASE_DIR/study_on_radius/DATA_R_isol_60/bef_ann_A1_T=20_r=26/4th2f"
+LUM_DIR="$BASE_DIR/study_on_radius/DATA_R_isol_60/bef_ann_A1_T=20_r=26/luminosity"
 
 mkdir -p "$PROCESSED_DIR" "$COORD_DIR" "$ROOT_DIR" "$LUM_DIR"
 
@@ -72,7 +72,7 @@ fi
 
 cd "$BASE_DIR/find_centers/" || exit 1
 
-python find_defects_isolated.py \
+python find_defects_isolated_fixedR.py \
     --input "$ref_processed" \
     --coordinates_root "$reference_coords"
 
