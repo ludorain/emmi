@@ -4,17 +4,46 @@
 *.pyc
 .DS_Store
 
-DATA_irradiated/
+DATA_irradiated_isolated_changeR/
 **/1originals/
 **/2processed/
-**/4th2f/
-**/luminosity/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
 
-DATA_irradiated_fixed_r/
+DATA_irradiated_isolated_R=15/
 **/1originals/
 **/2processed/
-**/4th2f/
-**/luminosity/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
+DATA_irradiated_isolated_R=20/
+**/1originals/
+**/2processed/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
+DATA_irradiated_isolated_R=25/
+**/1originals/
+**/2processed/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
+DATA_irradiated_NOisolated_changeR/
+**/1originals/
+**/2processed/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
 
 __pycache__/
 
