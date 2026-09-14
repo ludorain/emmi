@@ -33,7 +33,7 @@ shopt -s nullglob
 # ------------------------------------------------------------
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="$BASE_DIR/DATA_irradiated_NOisolated_changeR"
+DATA_DIR="$BASE_DIR/DATA_irradiated_isolated_changeR"
 
 PROCESS_IMAGE="$BASE_DIR/manipulate_images/process_image.py"
 TIF2TH2="$BASE_DIR/manipulate_images/tif2th2.py"
@@ -43,7 +43,7 @@ ROTATE_IMAGE="$BASE_DIR/tools_light_on/rotate-image.py"
 MEASURE_SHIFT="$BASE_DIR/tools_light_on/measure-shift.py"
 SHIFT_IMAGE="$BASE_DIR/tools_light_on/shift-image.py"
 
-FIND_DEFECTS="$BASE_DIR/find_centers/find_defects_NOisolated_changeR.py"
+FIND_DEFECTS="$BASE_DIR/find_centers/find_defects_isolated_changeR.py"
 
 SPOT_LUM_DIR="$BASE_DIR/spot_luminosity"
 SPOT_LUM_MACRO="spot_luminosity_sum_irradiated.C"
