@@ -44,7 +44,7 @@ from photutils.segmentation import SourceCatalog, SourceFinder, make_2dgaussian_
 isolation_radius = 60.0  # pixels
 
 # Background-estimation parameters.
-background_box_size = (50, 50)
+background_box_size = (150, 150)
 background_filter_size = (3, 3)
 
 # Detection threshold = threshold_sigma * local background RMS.

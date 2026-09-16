@@ -8,10 +8,11 @@
 #
 # Examples:
 #   ./display_rotation_shift_pipeline.sh A1 T 31 annealing_T=75_h=5
-#   ./display_rotation_shift_pipeline.sh B1 v 12 before_annealing
+#   ./display_rotation_shift_pipeline.sh B1 v 12 annealing_T=125_h=25
 #
 # The script must be located inside the main emmi directory.
-# display-rotation-shift.py must also be inside emmi/.
+# display-rotation-shift.py must be located in:
+#   emmi/tools_light_on/display-rotation-shift.py
 #
 # Input data are read only from DATA_irradiated_isolated_changeR.
 # No image-processing step is repeated.
@@ -22,7 +23,7 @@ shopt -s nullglob
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$BASE_DIR/DATA_irradiated_isolated_changeR}"
-DISPLAY_PY="${DISPLAY_PY:-$BASE_DIR/display-rotation-shift.py}"
+DISPLAY_PY="${DISPLAY_PY:-$BASE_DIR/tools_light_on/display-rotation-shift.py}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$BASE_DIR/display_rotation_shift_results}"
 PYTHON="${PYTHON:-python3}"
 
@@ -51,7 +52,7 @@ Usage:
 
 Examples:
   $0 A1 T 31 annealing_T=75_h=5
-  $0 B1 v 12 before_annealing
+  $0 B1 v 12 annealing_T=125_h=25
 EOF
     exit 1
 fi
@@ -119,7 +120,6 @@ REFERENCE_RUN_NUMBER="${BASH_REMATCH[3]}"
 if [[ ! "$TARGET_RUN_NAME" =~ ^(${SENSOR}_${CONSTANT}=([^_]+))_run=(.+)$ ]]; then
     die "Cannot parse target run name: $TARGET_RUN_NAME"
 fi
-TARGET_PREFIX="${BASH_REMATCH[1]}"
 TARGET_FIXED_VALUE="${BASH_REMATCH[2]}"
 TARGET_RUN_NUMBER="${BASH_REMATCH[3]}"
 
@@ -130,11 +130,11 @@ MERGED_DIR="$DATA_DIR/merged_files/$RUN_PREFIX"
 GEOMETRY_PLAN="$MERGED_DIR/${SENSOR}_${CONSTANT}_geometry_plan.csv"
 [[ -f "$GEOMETRY_PLAN" ]] || die "Geometry plan not found: $GEOMETRY_PLAN"
 
-# Read the REFERENCE coordinates for this global hotspot from the
-# before_annealing row of the geometry plan. These exact coordinates are used
-# as the crosshair in all four panels.
-IFS=$'\t' read -r X_REF Y_REF REF_DETECTION TARGET_DETECTION < <(
-    "$PYTHON" - "$GEOMETRY_PLAN" "$GLOBAL_SPOT" "$PHASE" <<'PY'
+# ------------------------------------------------------------
+# GLOBAL HOTSPOT REFERENCE COORDINATES
+# ------------------------------------------------------------
+
+GEOMETRY_INFO="$($PYTHON - "$GEOMETRY_PLAN" "$GLOBAL_SPOT" "$PHASE" <<'PY'
 import csv
 import sys
 
@@ -142,12 +142,12 @@ path, spot_text, target_phase = sys.argv[1:]
 spot = int(spot_text)
 
 rows = []
-with open(path, newline='', encoding='utf-8') as f:
-    reader = csv.DictReader(f)
+with open(path, newline="", encoding="utf-8") as handle:
+    reader = csv.DictReader(handle)
     for row in reader:
         try:
-            row_spot = int(float(row['spot']))
-        except (KeyError, ValueError):
+            row_spot = int(float(row["spot"]))
+        except (KeyError, ValueError, TypeError):
             continue
         if row_spot == spot:
             rows.append(row)
@@ -155,34 +155,43 @@ with open(path, newline='', encoding='utf-8') as f:
 if not rows:
     raise SystemExit(f"Global hotspot {spot} is not present in {path}")
 
-ref = next((r for r in rows if r.get('phase') == 'before_annealing'), None)
-target = next((r for r in rows if r.get('phase') == target_phase), None)
+ref = next((r for r in rows if r.get("phase") == "before_annealing"), None)
+target = next((r for r in rows if r.get("phase") == target_phase), None)
 
 if ref is None:
     raise SystemExit(f"No before_annealing geometry row for global hotspot {spot}")
 if target is None:
-    raise SystemExit(f"No geometry row for phase {target_phase!r}, global hotspot {spot}")
+    raise SystemExit(
+        f"No geometry row for phase {target_phase!r}, global hotspot {spot}"
+    )
 
 print(
-    ref['x'],
-    ref['y'],
-    ref.get('detection', 'unknown'),
-    target.get('detection', 'unknown'),
-    sep='\t'
+    ref["x"],
+    ref["y"],
+    ref.get("detection", "unknown"),
+    target.get("detection", "unknown"),
+    sep="\t",
 )
 PY
-)
+)"
 
-# Discover the data=diff image corresponding to the same scan point in all
-# three directories. The reference scan point follows the same rule as the
-# source-finding pipeline: second-highest v when T is fixed, second-highest T
-# when v is fixed.
-IFS=$'\t' read -r REFERENCE_IMAGE TARGET_BEFORE_IMAGE TARGET_AFTER_IMAGE SCAN_LABEL < <(
-    "$PYTHON" - \
-        "$REFERENCE_RUN/3rotated" \
-        "$TARGET_RUN/2processed" \
-        "$TARGET_RUN/3rotated" \
-        "$CONSTANT" <<'PY'
+IFS=$'\t' read -r X_REF Y_REF REF_DETECTION TARGET_DETECTION <<< "$GEOMETRY_INFO"
+
+[[ -n "$X_REF" && -n "$Y_REF" ]] \
+    || die "Could not read reference coordinates for global hotspot $GLOBAL_SPOT."
+
+# ------------------------------------------------------------
+# FIND MATCHING data=diff IMAGES
+# ------------------------------------------------------------
+# Same operating-point rule as source finding:
+#   T fixed -> second-highest v
+#   v fixed -> second-highest T
+
+IMAGE_INFO="$($PYTHON - \
+    "$REFERENCE_RUN/3rotated" \
+    "$TARGET_RUN/2processed" \
+    "$TARGET_RUN/3rotated" \
+    "$CONSTANT" <<'PY'
 from pathlib import Path
 import re
 import sys
@@ -191,81 +200,125 @@ ref_dir = Path(sys.argv[1])
 before_dir = Path(sys.argv[2])
 after_dir = Path(sys.argv[3])
 constant = sys.argv[4]
-varying = 'v' if constant == 'T' else 'T'
 
+varying = "v" if constant == "T" else "T"
 number = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 pattern = re.compile(rf"(?:^|_){re.escape(varying)}=({number})")
 
 
-def diff_files(directory, suffix_hint):
-    out = []
-    for p in sorted(directory.glob('*.tif')):
-        if 'data=diff' not in p.name or 'data=diffe' in p.name:
-            continue
-        if suffix_hint and suffix_hint not in p.name:
-            continue
-        m = pattern.search(p.name)
-        if m:
-            out.append((float(m.group(1)), p))
-    return out
+def diff_files(directory: Path, suffix_hint: str):
+    if not directory.is_dir():
+        raise SystemExit(f"Missing image directory: {directory}")
 
-ref_entries = diff_files(ref_dir, '_processed_rotated.tif')
+    entries = []
+    for path in sorted(directory.iterdir()):
+        if not path.is_file():
+            continue
+        if path.suffix.lower() not in {".tif", ".tiff"}:
+            continue
+        if "data=diff" not in path.name or "data=diffe" in path.name:
+            continue
+        if suffix_hint and suffix_hint not in path.name:
+            continue
+
+        match = pattern.search(path.name)
+        if match is not None:
+            entries.append((float(match.group(1)), path))
+
+    return entries
+
+
+ref_entries = diff_files(ref_dir, "_processed_rotated.tif")
 if not ref_entries:
     raise SystemExit(f"No reference data=diff images found in {ref_dir}")
 
-values = sorted({value for value, _ in ref_entries}, reverse=True)
+values = sorted({value for value, _path in ref_entries}, reverse=True)
 if len(values) < 2:
     raise SystemExit(
-        f"Cannot select second-highest {varying}: only {len(values)} distinct value(s) in {ref_dir}"
+        f"Cannot select second-highest {varying}: only {len(values)} "
+        f"distinct value(s) in {ref_dir}"
     )
+
 selected = values[1]
 
 
-def one_at_value(entries, directory):
-    matches = [p for value, p in entries if abs(value - selected) < 1e-9]
+def one_at_value(entries, directory: Path):
+    matches = [
+        path
+        for value, path in entries
+        if abs(value - selected) < 1e-9
+    ]
+
     if len(matches) != 1:
         raise SystemExit(
-            f"Expected one data=diff image at {varying}={selected:g} in {directory}; found {len(matches)}"
+            f"Expected exactly one data=diff image at {varying}={selected:g} "
+            f"in {directory}; found {len(matches)}"
         )
+
     return matches[0]
 
-ref = one_at_value(ref_entries, ref_dir)
-before = one_at_value(diff_files(before_dir, '_processed.tif'), before_dir)
-after = one_at_value(diff_files(after_dir, '_processed_rotated.tif'), after_dir)
 
-print(ref, before, after, f"{varying}={selected:g}", sep='\t')
-PY
+reference_image = one_at_value(ref_entries, ref_dir)
+target_before_image = one_at_value(
+    diff_files(before_dir, "_processed.tif"),
+    before_dir,
 )
+target_after_image = one_at_value(
+    diff_files(after_dir, "_processed_rotated.tif"),
+    after_dir,
+)
+
+print(
+    reference_image,
+    target_before_image,
+    target_after_image,
+    f"{varying}={selected:g}",
+    sep="\t",
+)
+PY
+)"
+
+IFS=$'\t' read -r REFERENCE_IMAGE TARGET_BEFORE_IMAGE TARGET_AFTER_IMAGE SCAN_LABEL <<< "$IMAGE_INFO"
+
+[[ -f "$REFERENCE_IMAGE" ]] || die "Reference image not found: $REFERENCE_IMAGE"
+[[ -f "$TARGET_BEFORE_IMAGE" ]] || die "Target pre-alignment image not found: $TARGET_BEFORE_IMAGE"
+[[ -f "$TARGET_AFTER_IMAGE" ]] || die "Target aligned image not found: $TARGET_AFTER_IMAGE"
+
+# ------------------------------------------------------------
+# OUTPUT
+# ------------------------------------------------------------
 
 OUTPUT_DIR="$OUTPUT_ROOT/$PHASE/$TARGET_RUN_NAME/spot${GLOBAL_SPOT}"
 mkdir -p "$OUTPUT_DIR"
-
-# Only replace figures for this exact hotspot/phase/run.
 find "$OUTPUT_DIR" -maxdepth 1 -type f -name '*.png' -delete
 
 printf '\n============================================================\n'
 printf 'ROTATION / SHIFT DISPLAY\n'
-printf 'Sensor:            %s\n' "$SENSOR"
-printf 'Constant:          %s=%s\n' "$CONSTANT" "$FIXED_VALUE"
-printf 'Global hotspot:    %s\n' "$GLOBAL_SPOT"
-printf 'Phase:             %s\n' "$PHASE"
-printf 'Reference run:     %s\n' "$REFERENCE_RUN_NUMBER"
-printf 'Target run:        %s\n' "$TARGET_RUN_NUMBER"
-printf 'Reference center:  x=%s, y=%s\n' "$X_REF" "$Y_REF"
-printf 'Reference detected:%s\n' "$REF_DETECTION"
-printf 'Target detected:   %s\n' "$TARGET_DETECTION"
-printf 'Displayed scan:    %s\n' "$SCAN_LABEL"
-printf 'Output:            %s\n' "$OUTPUT_DIR"
+printf 'Sensor:             %s\n' "$SENSOR"
+printf 'Constant:           %s=%s\n' "$CONSTANT" "$FIXED_VALUE"
+printf 'Global hotspot:     %s\n' "$GLOBAL_SPOT"
+printf 'Phase:              %s\n' "$PHASE"
+printf 'Reference run:      %s\n' "$REFERENCE_RUN_NUMBER"
+printf 'Target run:         %s\n' "$TARGET_RUN_NUMBER"
+printf 'Reference center:   x=%s, y=%s\n' "$X_REF" "$Y_REF"
+printf 'Reference detected: %s\n' "$REF_DETECTION"
+printf 'Target detected:    %s\n' "$TARGET_DETECTION"
+printf 'Displayed scan:     %s\n' "$SCAN_LABEL"
+printf 'Display program:    %s\n' "$DISPLAY_PY"
+printf 'Output:             %s\n' "$OUTPUT_DIR"
 printf '============================================================\n'
 
 if [[ "$REF_DETECTION" != "present" ]]; then
-    printf 'WARNING: hotspot %s is not detected in before_annealing; the reference crosshair uses propagated geometry.\n' "$GLOBAL_SPOT" >&2
-fi
-if [[ "$TARGET_DETECTION" != "present" ]]; then
-    printf 'WARNING: hotspot %s is not detected in phase %s; a visible target hotspot may be absent.\n' "$GLOBAL_SPOT" "$PHASE" >&2
+    printf 'WARNING: hotspot %s is not detected in before_annealing; the reference crosshair uses propagated geometry.\n' \
+        "$GLOBAL_SPOT" >&2
 fi
 
-log "Creating 60x60 px comparison crops"
+if [[ "$TARGET_DETECTION" != "present" ]]; then
+    printf 'WARNING: hotspot %s is not detected in phase %s; a visible target hotspot may be absent.\n' \
+        "$GLOBAL_SPOT" "$PHASE" >&2
+fi
+
+log "Creating 4-panel 50x50 px comparison display"
 
 "$PYTHON" "$DISPLAY_PY" \
     --reference "$REFERENCE_IMAGE" \
@@ -281,4 +334,4 @@ log "Creating 60x60 px comparison crops"
     --output-dir "$OUTPUT_DIR" \
     --crop-size 60
 
-printf '\nCreated comparison figures in:\n  %s\n' "$OUTPUT_DIR"
+printf '\nCreated comparison figure in:\n  %s\n' "$OUTPUT_DIR"

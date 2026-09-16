@@ -9,7 +9,7 @@
 // spot,x,y,luminosity,error,T,v
 //
 // Fit:
-// Lum(T) = A * exp(B*T)
+// Lum(T) = A * exp(lambda*T)
 //
 // Uso:
 // root -l
@@ -98,13 +98,13 @@ vector<Row> read_csv(const char* filename) {
 
 // ============================================================
 // Stima iniziale parametri esponenziale
-// Lum = A * exp(B*T)
+// Lum = A * exp(lambda*T)
 // ============================================================
 
 void estimate_exp_parameters(
     const vector<Row>& rows,
     double& A0,
-    double& B0
+    double& lambda0 
 ) {
     vector<Row> positive_rows;
 
@@ -128,22 +128,22 @@ void estimate_exp_parameters(
         const Row& r2 = positive_rows.back();
 
         if (fabs(r2.T - r1.T) > 1e-9) {
-            B0 = (log(r2.luminosity) - log(r1.luminosity)) / (r2.T - r1.T);
-            A0 = exp(log(r1.luminosity) - B0 * r1.T);
+            lambda0 = (log(r2.luminosity) - log(r1.luminosity)) / (r2.T - r1.T);
+            A0 = exp(log(r1.luminosity) - lambda0 * r1.T);
         } else {
             A0 = r1.luminosity;
-            B0 = 0.0;
+            lambda0 = 0.0;
         }
 
     } else if (positive_rows.size() == 1) {
 
         A0 = positive_rows[0].luminosity;
-        B0 = 0.0;
+        lambda0 = 0.0;
 
     } else {
 
         A0 = 1.0;
-        B0 = 0.0;
+        lambda0 = 0.0;
     }
 }
 
@@ -266,8 +266,8 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
             eyL.data()
         );
 
-        double A0, B0;
-        estimate_exp_parameters(rows, A0, B0);
+        double A0, lambda0;
+        estimate_exp_parameters(rows, A0, lambda0);
 
         TF1* fit_exp = new TF1(
             Form("fit_exp_global_spot_%d", spot),
@@ -276,19 +276,19 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
             T_fit_max
         );
 
-        fit_exp->SetParNames("A", "B");
-        fit_exp->SetParameters(A0, B0);
+        fit_exp->SetParNames("A", "lambda");
+        fit_exp->SetParameters(A0, lambda0);
 
-        double B = 0.0;
-        double eB = 0.0;
+        double lambda = 0.0;
+        double elambda = 0.0;
         double chi2 = 0.0;
         int ndf = 0;
 
         if (n >= 3) {
             gr_tmp->Fit(fit_exp, "RQ0");
 
-            B = fit_exp->GetParameter(1);
-            eB = fit_exp->GetParError(1);
+            lambda = fit_exp->GetParameter(1);
+            elambda = fit_exp->GetParError(1);
             chi2 = fit_exp->GetChisquare();
             ndf  = fit_exp->GetNDF();
         }
@@ -296,220 +296,14 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         x_spot_fit.push_back(spot);
         ex_spot_fit.push_back(0.0);
 
-        B_vals.push_back(B);
-        B_errs.push_back(eB);
+        B_vals.push_back(lambda);
+        B_errs.push_back(elambda);
 
         chi2_vals.push_back(chi2);
         ndf_vals.push_back(ndf);
     }
 
-    // ============================================================
-    // CANVAS 1:
-    // luminosity vs spot at max T
-    // ============================================================
-
-    vector<double> x_spot_c1;
-    vector<double> y_lum_c1;
-    vector<double> ex_spot_c1;
-    vector<double> ey_lum_c1;
-
-    for (auto& entry : spots) {
-
-        int spot = entry.first;
-        const vector<Row>& rows = entry.second;
-
-        bool found = false;
-
-        for (const auto& r : rows) {
-
-            if (fabs(r.T - Tmax) < 1e-6) {
-
-                x_spot_c1.push_back(spot);
-                y_lum_c1.push_back(r.luminosity);
-                ex_spot_c1.push_back(0.0);
-                ey_lum_c1.push_back(r.error);
-
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            cout << "Spot " << spot
-                 << " non contiene T = " << Tmax << endl;
-        }
-    }
-
-    TCanvas* c1 = new TCanvas(
-        "c1_lum_vs_spot_maxT",
-        "Luminosity vs spot at max T",
-        1800,
-        600
-    );
-
-    TGraphErrors* gr_c1 = new TGraphErrors(
-        x_spot_c1.size(),
-        x_spot_c1.data(),
-        y_lum_c1.data(),
-        ex_spot_c1.data(),
-        ey_lum_c1.data()
-    );
-
-    gr_c1->SetTitle(
-        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f Before annealing;Spot;Luminosity",
-             Tmax, v_const)
-    );
-
-    gr_c1->SetMarkerStyle(20);
-    gr_c1->SetMarkerSize(1.2);
-    gr_c1->SetLineWidth(2);
-
-    gr_c1->Draw("AP");
-
-    c1->SaveAs("A1_beff_ann_lum_vs_T_maxT.png");
-
-    // ============================================================
-    // CANVAS 2:
-    // luminosity vs spot at max T - focus y range (-5, 1000)
-    // ============================================================
-
-    TCanvas* c2 = new TCanvas(
-        "c2_lum_vs_spot_maxT_focus",
-        "Luminosity vs spot at max T - focus",
-        1800,
-        600
-    );
-
-    TGraphErrors* gr_c2 = new TGraphErrors(
-        x_spot_c1.size(),
-        x_spot_c1.data(),
-        y_lum_c1.data(),
-        ex_spot_c1.data(),
-        ey_lum_c1.data()
-    );
-
-    gr_c2->SetTitle(
-        Form("Luminosity at maximum temperature T = %.1f #circC, v = %.1f Before annealing - focus;Spot;Luminosity",
-             Tmax, v_const)
-    );
-
-    gr_c2->SetMarkerStyle(20);
-    gr_c2->SetMarkerSize(1.2);
-    gr_c2->SetLineWidth(2);
-
-    gr_c2->SetMinimum(-5);
-    gr_c2->SetMaximum(1000);
-
-    gr_c2->Draw("AP");
-
-    c2->SaveAs("A1_beff_ann_lum_vs_T_maxT_focus.png");
-
-    // ============================================================
-    // CANVAS 3:
-    // luminosity vs T per i primi 8 spot, 8 pad
-    // con fit Lum = A exp(BT)
-    // ============================================================
-
-    TCanvas* c3 = new TCanvas(
-        "c3_lum_vs_T_first8",
-        "Luminosity vs T - first 8 spots",
-        1600,
-        900
-    );
-
-    c3->Divide(4, 2);
-
-    int displayed = 0;
-
-    for (auto& entry : spots) {
-
-        if (displayed >= 8) break;
-
-        int spot = entry.first;
-        vector<Row> rows = entry.second;
-
-        sort(
-            rows.begin(),
-            rows.end(),
-            [](const Row& a, const Row& b) {
-                return a.T < b.T;
-            }
-        );
-
-        int n = rows.size();
-
-        vector<double> xT(n), yL(n), exT(n), eyL(n);
-
-        double ymin_local = 1e9;
-        double ymax_local = -1e9;
-
-        for (int i = 0; i < n; i++) {
-            xT[i]  = rows[i].T;
-            yL[i]  = rows[i].luminosity;
-            exT[i] = 0.0;
-            eyL[i] = rows[i].error;
-
-            if (rows[i].luminosity - rows[i].error < ymin_local)
-                ymin_local = rows[i].luminosity - rows[i].error;
-
-            if (rows[i].luminosity + rows[i].error > ymax_local)
-                ymax_local = rows[i].luminosity + rows[i].error;
-        }
-
-        if (ymin_local > 0)
-            ymin_local *= 0.80;
-        else
-            ymin_local = 0.0;
-
-        ymax_local *= 1.25;
-
-        c3->cd(displayed + 1);
-
-        TGraphErrors* gr = new TGraphErrors(
-            n,
-            xT.data(),
-            yL.data(),
-            exT.data(),
-            eyL.data()
-        );
-
-        gr->SetTitle(
-            Form("Spot %d: x = %.2f, y = %.2f;T (#circC) B.A;Luminosity",
-                 spot, rows[0].x, rows[0].y)
-        );
-
-        gr->SetMarkerStyle(20);
-        gr->SetMarkerSize(1.0);
-        gr->SetLineWidth(2);
-
-        gr->SetMinimum(ymin_local);
-        gr->SetMaximum(ymax_local);
-
-        gr->Draw("AP");
-
-        double A0, B0;
-        estimate_exp_parameters(rows, A0, B0);
-
-        TF1* fit_exp = new TF1(
-            Form("fit_exp_canvas3_spot_%d", spot),
-            "[0]*exp([1]*x)",
-            T_fit_min,
-            T_fit_max
-        );
-
-        fit_exp->SetParNames("A", "B");
-        fit_exp->SetParameters(A0, B0);
-        fit_exp->SetLineColor(kRed + 1);
-        fit_exp->SetLineWidth(2);
-
-        if (n >= 3) {
-            gr->Fit(fit_exp, "RQ");
-        }
-
-        displayed++;
-    }
-
-    c3->SaveAs("A1_beff_ann_lum_vs_T_first8_expfit.png");
+    
 
     // ============================================================
     // CANVAS 4:
@@ -592,8 +386,8 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
         gr_c4_spot->Draw("AP");
 
-        double A0, B0;
-        estimate_exp_parameters(rows, A0, B0);
+        double A0, lambda0;
+        estimate_exp_parameters(rows, A0, lambda0);
 
         TF1* fit_exp_c4_spot = new TF1(
             Form("fit_exp_canvas4_spot_%d", spot),
@@ -603,7 +397,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         );
 
         fit_exp_c4_spot->SetParNames("A", "#lambda");
-        fit_exp_c4_spot->SetParameters(A0, B0);
+        fit_exp_c4_spot->SetParameters(A0, lambda0);
         fit_exp_c4_spot->SetLineColor(kRed + 1);
         fit_exp_c4_spot->SetLineWidth(2);
 
@@ -660,16 +454,16 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     // ============================================================
     // CANVAS 5:
-    // B vs spot ID, con fit costante B = const
+    // lambda vs spot ID, con fit costante lambda = const
     // Usa solo gli spot con chi2/ndf < 2 nel fit esponenziale
     // ============================================================
 
     vector<double> x_spot_fit_good;
     vector<double> ex_spot_fit_good;
-    vector<double> B_vals_good;
-    vector<double> B_errs_good;
+    vector<double> lambda_vals_good;
+    vector<double> lambda_errs_good;
 
-    for (size_t i = 0; i < B_vals.size(); i++) {
+    for (size_t i = 0; i < lambda_vals.size(); i++) {
 
         if (ndf_vals[i] <= 0) continue;
 
@@ -678,65 +472,65 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
         if (chi2_ndf < 2.0) {
             x_spot_fit_good.push_back(x_spot_fit[i]);
             ex_spot_fit_good.push_back(ex_spot_fit[i]);
-            B_vals_good.push_back(B_vals[i]);
-            B_errs_good.push_back(B_errs[i]);
+            lambda_vals_good.push_back(lambda_vals[i]);
+            lambda_errs_good.push_back(lambda_errs[i]);
         }
     }
 
-    TCanvas* c5 = new TCanvas("c5_B_vs_spot_constfit", "B vs spot ID",1800,600);
+    TCanvas* c5 = new TCanvas("c5_lambda_vs_spot_constfit", "lambda vs spot ID",1800,600);
 
-    TGraphErrors* gr_B = new TGraphErrors(
+    TGraphErrors* gr_lambda = new TGraphErrors(
         x_spot_fit_good.size(),
         x_spot_fit_good.data(),
-        B_vals_good.data(),
+        lambda_vals_good.data(),
         ex_spot_fit_good.data(),
-        B_errs_good.data()
+        lambda_errs_good.data()
     );
 
-    gr_B->SetTitle("Exponential fit parameter B vs spot ID before annealing (#chi^{2}/ndf < 2);Spot;B");
-    gr_B->SetMarkerStyle(21);
-    gr_B->SetMarkerSize(1.0);
-    gr_B->SetLineWidth(2);
+    gr_lambda->SetTitle("Exponential fit parameter lambda vs spot ID before annealing (#chi^{2}/ndf < 2);Spot;lambda");
+    gr_lambda->SetMarkerStyle(21);
+    gr_lambda->SetMarkerSize(1.0);
+    gr_lambda->SetLineWidth(2);
 
-    gr_B->Draw("AP");
-    gr_B->GetXaxis()->SetLimits(spot_min - 1, spot_max + 1);
+    gr_lambda->Draw("AP");
+    gr_lambda->GetXaxis()->SetLimits(spot_min - 1, spot_max + 1);
 
-    double B_min = *min_element(B_vals_good.begin(), B_vals_good.end());
-    double B_max = *max_element(B_vals_good.begin(), B_vals_good.end());
+    double lambda_min = *min_element(lambda_vals_good.begin(), lambda_vals_good.end());
+    double lambda_max = *max_element(lambda_vals_good.begin(), lambda_vals_good.end());
 
-    double margin_low  = 0.25 * (B_max - B_min);
-    double margin_high = 0.90 * (B_max - B_min);  // più spazio sopra per la legenda
+    double margin_low  = 0.25 * (lambda_max - lambda_min);
+    double margin_high = 0.90 * (lambda_max - lambda_min);  // più spazio sopra per la legenda
 
-    gr_B->GetYaxis()->SetRangeUser(B_min - margin_low, B_max + margin_high);
+    gr_lambda->GetYaxis()->SetRangeUser(lambda_min - margin_low, lambda_max + margin_high);
 
-    // Fit costante: B = const
-    TF1* fit_B_const = new TF1( "fit_B_const","[0]", spot_min - 1,spot_max + 1);
+    // Fit costante: lambda = const
+    TF1* fit_lambda_const = new TF1( "fit_lambda_const","[0]", spot_min - 1,spot_max + 1);
 
-    fit_B_const->SetParNames("B_{const}");
-    fit_B_const->SetLineColor(kRed + 1);
-    fit_B_const->SetLineWidth(2);
+    fit_lambda_const->SetParNames("lambda_{const}");
+    fit_lambda_const->SetLineColor(kRed + 1);
+    fit_lambda_const->SetLineWidth(2);
 
-    if (gr_B->GetN() >= 2) {
-        gr_B->Fit(fit_B_const, "RQ");
+    if (gr_lambda->GetN() >= 2) {
+        gr_lambda->Fit(fit_lambda_const, "RQ");
     }
 
     TLegend* leg5 = new TLegend(0.1, 0.72, 0.52, 0.88);
     leg5->SetBorderSize(0);
     leg5->SetFillStyle(0);
 
-    leg5->AddEntry(gr_B, "B from Lum = A e^{BT}", "lep");
+    leg5->AddEntry(gr_lambda, "lambda from Lum = A e^{#lambda T}", "lep");
 
-    if (gr_B->GetN() >= 2) {
+    if (gr_lambda->GetN() >= 2) {
 
-        double lambda = fit_B_const->GetParameter(0);
-        double e_lambda = fit_B_const->GetParError(0);
+        double lambda = fit_lambda_const->GetParameter(0);
+        double e_lambda = fit_lambda_const->GetParError(0);
 
         // Radioactive-decay convention: N(t) = N0 exp(-lambda*t)
         // Half-time: T_1/2 = ln(2)/lambda
         double half_time = log(2.0) / lambda;
         double e_half_time = log(2.0) * e_lambda / (lambda * lambda);
 
-        leg5->AddEntry(fit_B_const, "Constant fit: B = const", "l");
+        leg5->AddEntry(fit_lambda_const, "Constant fit: lambda = const", "l");
  
         leg5->AddEntry(
             (TObject*)0,
@@ -749,7 +543,7 @@ void lum_vs_T_irradiated(const char* filename = "data.csv", int selected_spot = 
 
     leg5->Draw();
 
-    c5->SaveAs("A1_beff_ann_lum_vs_T_B.png");
+    c5->SaveAs("A1_beff_ann_lum_vs_T_lambda.png");
     // ============================================================
     // CANVAS 6:
     // chi square del fit esponenziale vs spot ID

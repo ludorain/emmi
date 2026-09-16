@@ -22,7 +22,23 @@ DATA_irradiated_isolated_R=15/
 **/5th2f/
 **/6luminosity/
 
+DATA_irradiated_isolated_R=16/
+**/1originals/
+**/2processed/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
 DATA_irradiated_isolated_R=20/
+**/1originals/
+**/2processed/
+**/3rotated/
+**/4coordinates/
+**/5th2f/
+**/6luminosity/
+
+DATA_irradiated_isolated_R=24/
 **/1originals/
 **/2processed/
 **/3rotated/

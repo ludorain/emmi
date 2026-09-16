@@ -234,7 +234,7 @@ printf 'Output:          %s\n' "$OUTPUT_DIR"
 printf '============================================================\n'
 
 printf '\nInput files:\n'
-printf '  R best: %s\n' "$BEST_CSV"
+printf '  R algorithm: %s\n' "$BEST_CSV"
 printf '  R = 15: %s\n' "$R15_CSV"
 printf '  R = 20: %s\n' "$R20_CSV"
 printf '  R = 25: %s\n' "$R25_CSV"
