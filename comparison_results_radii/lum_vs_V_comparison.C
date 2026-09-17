@@ -1,6 +1,7 @@
 // ============================================================
 // lum_vs_V_comparison.C
 //
+//. ---------- VECCHIA VERSIONE ----------
 // Confronto della luminosità vs overvoltage per il medesimo 
 // global hotspot utilizzando quattro scelte di raggio di integrazione:
 //   - R best
@@ -469,10 +470,16 @@ void lum_vs_V_comparison(
         c->Modified();
         c->Update();
 
-        string outfile = string(output_dir) + "/" +
-            safe_name(Form("%s_%s_%s_lum_vs_V_spot%d_radii_comparison.png", sensor, fixed_condition, phase, spot));
-        c->SaveAs(outfile.c_str());
-        delete c;
+        string outfile_png = string(output_dir) + "/" + safe_name(Form("%s_%s_%s_lum_vs_V_spot%d_radii_comparison.png",
+                        sensor, fixed_condition, phase, spot));
+
+        string outfile_pdf = string(output_dir) + "/" + safe_name(Form("%s_%s_%s_lum_vs_V_spot%d_radii_comparison.pdf",
+                        sensor, fixed_condition, phase, spot));
+
+        c->SaveAs(outfile_png.c_str());
+        c->SaveAs(outfile_pdf.c_str());
+
+delete c;
 
         // Se sono stati estratti i C del fit per ogni raggio, crea il grafico andamento C vs R
         if (!radius_x.empty()) {
@@ -505,7 +512,10 @@ void lum_vs_V_comparison(
             cC->Update();
 
             string outfileC = string(output_dir) + "/" + safe_name(Form("%s_%s_%s_fitC_vs_radius_spot%d.png", sensor, fixed_condition, phase, spot));
-            cC->SaveAs(outfileC.c_str());
+            string outfileC_pdf = string(output_dir) + "/" + safe_name(Form("%s_%s_%s_fitC_vs_radius_spot%d.pdf", sensor, fixed_condition, phase, spot));
+            
+            cC->SaveAs(outfileC_png.c_str());
+            cC->SaveAs(outfileC_pdf.c_str());
             delete cC;
         }
     }

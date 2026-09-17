@@ -1,8 +1,10 @@
 // ============================================================
 // lum_vs_T_comparison.C
 //
-// Compare luminosity vs temperature for the SAME global hotspot
-// using four integration-radius choices:
+
+//VECCHIA VERSIONE
+// Confronto della luminosità vs overvoltage per il medesimo 
+// global hotspot utilizzando quattro scelte di raggio di integrazione:
 //   - R best
 //   - R = 15 px
 //   - R = 20 px
@@ -470,8 +472,21 @@ void lum_vs_T_comparison(
         c->Modified();
         c->Update();
 
-        string outfile = string(output_dir) + "/" + safe_name_T(Form("%s_%s_%s_lum_vs_T_spot%d_radii_comparison.png", sensor, fixed_condition, phase, spot));
-        c->SaveAs(outfile.c_str());
+        // -----------------------------------------------------------------
+        // SALVATAGGIO CANVA PRINCIPALE (PNG e PDF)
+        // -----------------------------------------------------------------
+        // 1. Generiamo prima il nome base del file (senza estensione)
+        string base_filename = Form("%s_%s_%s_lum_vs_T_spot%d_radii_comparison", sensor, fixed_condition, phase, spot);
+        
+        // 2. Pulisciamo il nome base da caratteri speciali
+        string clean_filename = safe_name_T(base_filename);
+        
+        // 3. Componiamo i percorsi finali aggiungendo l'estensione SOLO ORA
+        string outfile_png = string(output_dir) + "/" + clean_filename + ".png";
+        string outfile_pdf = string(output_dir) + "/" + clean_filename + ".pdf";
+
+        c->SaveAs(outfile_png.c_str());
+        c->SaveAs(outfile_pdf.c_str());
         delete c;
 
         // Se abbiamo salvato dati dei fit rispetto ai raggi, produciamo il grafico riassuntivo per B vs R
@@ -504,10 +519,23 @@ void lum_vs_T_comparison(
             grB->Draw("APLE"); 
             cB->Modified();
             cB->Update();
+        // -----------------------------------------------------------------
+        // SALVATAGGIO GRAFICO B vs R (PNG e PDF)
+        // -----------------------------------------------------------------
+        if (!radius_x.empty()) {
+            // ... (codice di ordinamento e creazione canvas cB) ...
 
-            string outfileB = string(output_dir) + "/" + safe_name_T(Form("%s_%s_%s_fitB_vs_radius_spot%d.png", sensor, fixed_condition, phase, spot));
-            cB->SaveAs(outfileB.c_str());
+            // Generazione sicura dei nomi anche per il secondo grafico
+            string base_filenameB = Form("%s_%s_%s_fitB_vs_radius_spot%d", sensor, fixed_condition, phase, spot);
+            string clean_filenameB = safe_name_T(base_filenameB);
+
+            string outfileB_png = string(output_dir) + "/" + clean_filenameB + ".png";
+            string outfileB_pdf = string(output_dir) + "/" + clean_filenameB + ".pdf";
+
+            cB->SaveAs(outfileB_png.c_str());
+            cB->SaveAs(outfileB_pdf.c_str());
             delete cB;
+        }
         }
     }
 }

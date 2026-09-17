@@ -5,17 +5,17 @@
 #
 # Purpose
 # -------
-# Compute the asymmetric systematic uncertainty on the luminosity measured
+# Compute the symmetric systematic uncertainty on the luminosity measured
 # with integration radius R=20, using R=16 and R=24 as variations:
 #
-#   deltaL_1 = |L(R=24) - L(R=20)|
-#   deltaL_2 = |L(R=20) - L(R=16)|
-#   deltaL_plus  = max(deltaL_1, deltaL_2)
-#   deltaL_minus = min(deltaL_1, deltaL_2)
+#   deltaL1 = |L(R=24) - L(R=20)|
+#   deltaL2 = |L(R=20) - L(R=16)|
+#   deltaL  = max(deltaL1, deltaL2)
 #
 # Only the CSV files in DATA_irradiated_isolated_R=20 are modified.
-# All pre-existing columns are preserved exactly as strings; only the two
-# columns deltaL_plus and deltaL_minus are added/updated.
+# All pre-existing columns are preserved exactly as strings, except the old
+# deltaL_plus/deltaL_minus columns, which are removed if present. The columns
+# deltaL1, deltaL2 and deltaL are then added/updated.
 #
 # Usage
 # -----
@@ -186,7 +186,8 @@ RDIRS = {
     24: BASE_DIR / "DATA_irradiated_isolated_R=24",
 }
 
-NEW_COLUMNS = ["deltaL_plus", "deltaL_minus"]
+NEW_COLUMNS = ["deltaL1", "deltaL2", "deltaL"]
+DEPRECATED_COLUMNS = {"deltaL_plus", "deltaL_minus"}
 REQUIRED_COLUMNS = {"spot", "luminosity", "T", "v", "phase"}
 
 # Backups are created only once. Re-running the script therefore does not
@@ -342,7 +343,7 @@ def process_one_run_file(path20: Path, path16: Path, path24: Path):
             pieces.append(f"{len(missing24)} R=20 keys missing in R=24")
         raise ValueError("; ".join(pieces))
 
-    uncertainty_by_all_key: dict[tuple[str, ...], tuple[str, str]] = {}
+    uncertainty_by_all_key: dict[tuple[str, ...], tuple[str, str, str]] = {}
 
     for row20 in rows20:
         key = row_key(row20)
@@ -358,24 +359,30 @@ def process_one_run_file(path20: Path, path16: Path, path24: Path):
 
         delta1 = abs(L24 - L20)
         delta2 = abs(L20 - L16)
-        dplus = max(delta1, delta2)
-        dminus = min(delta1, delta2)
+        delta = max(delta1, delta2)
 
-        row20["deltaL_plus"] = decimal_to_text(dplus)
-        row20["deltaL_minus"] = decimal_to_text(dminus)
+        row20["deltaL1"] = decimal_to_text(delta1)
+        row20["deltaL2"] = decimal_to_text(delta2)
+        row20["deltaL"] = decimal_to_text(delta)
+
+        # Remove deprecated asymmetric columns from the row if this script
+        # is re-run on CSV files produced by an older pipeline version.
+        for old_col in DEPRECATED_COLUMNS:
+            row20.pop(old_col, None)
 
         # run_number is used only as a safe extra disambiguator for the
         # all-phases file. It is never used to match R16/R20/R24 rows here.
         akey = all_phases_key(row20)
-        pair = (row20["deltaL_plus"], row20["deltaL_minus"])
+        values = (row20["deltaL1"], row20["deltaL2"], row20["deltaL"])
         old = uncertainty_by_all_key.get(akey)
-        if old is not None and old != pair:
+        if old is not None and old != values:
             raise ValueError(
                 f"conflicting systematic uncertainties for all-phases key {akey}"
             )
-        uncertainty_by_all_key[akey] = pair
+        uncertainty_by_all_key[akey] = values
 
-    out_fields = list(fields20)
+    # Remove the deprecated asymmetric columns from the output header.
+    out_fields = [col for col in fields20 if col not in DEPRECATED_COLUMNS]
     for col in NEW_COLUMNS:
         if col not in out_fields:
             out_fields.append(col)
@@ -384,7 +391,7 @@ def process_one_run_file(path20: Path, path16: Path, path24: Path):
     return len(rows20), uncertainty_by_all_key
 
 
-def update_all_phases_file(path: Path, mapping: dict[tuple[str, ...], tuple[str, str]]) -> tuple[int, int]:
+def update_all_phases_file(path: Path, mapping: dict[tuple[str, ...], tuple[str, str, str]]) -> tuple[int, int]:
     """Update an existing *_all_phases_global_ID.csv without recreating it."""
     fields, rows = read_csv(path)
 
@@ -407,17 +414,21 @@ def update_all_phases_file(path: Path, mapping: dict[tuple[str, ...], tuple[str,
     unmatched = 0
     for row in rows:
         key = all_phases_key(row)
-        pair = mapping.get(key)
-        if pair is None:
-            # Leave an existing value untouched only if the row was not part of
-            # the currently processed run files. This allows processing subsets
-            # of sensors/constants without destroying earlier results.
+        values = mapping.get(key)
+        if values is None:
+            # Leave the new systematic values untouched if the row was not part
+            # of the currently processed run files. This allows processing
+            # subsets of sensors/constants without destroying earlier results.
             unmatched += 1
-            continue
-        row["deltaL_plus"], row["deltaL_minus"] = pair
-        matched += 1
+        else:
+            row["deltaL1"], row["deltaL2"], row["deltaL"] = values
+            matched += 1
 
-    out_fields = list(fields)
+        # Always remove deprecated asymmetric columns from the all-phases file.
+        for old_col in DEPRECATED_COLUMNS:
+            row.pop(old_col, None)
+
+    out_fields = [col for col in fields if col not in DEPRECATED_COLUMNS]
     for col in NEW_COLUMNS:
         if col not in out_fields:
             out_fields.append(col)
@@ -467,7 +478,7 @@ for sensor in SENSORS:
             print()
             continue
 
-        global_mapping: dict[tuple[str, ...], tuple[str, str]] = {}
+        global_mapping: dict[tuple[str, ...], tuple[str, str, str]] = {}
         successful_files = 0
 
         for path20 in run_files:

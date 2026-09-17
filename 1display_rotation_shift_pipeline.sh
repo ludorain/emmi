@@ -24,7 +24,7 @@ shopt -s nullglob
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="${DATA_DIR:-$BASE_DIR/DATA_irradiated_isolated_changeR}"
 DISPLAY_PY="${DISPLAY_PY:-$BASE_DIR/tools_light_on/display-rotation-shift.py}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-$BASE_DIR/display_rotation_shift_results}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-$BASE_DIR/display_rotation_shift_result}"
 PYTHON="${PYTHON:-python3}"
 
 log() {
@@ -290,7 +290,6 @@ IFS=$'\t' read -r REFERENCE_IMAGE TARGET_BEFORE_IMAGE TARGET_AFTER_IMAGE SCAN_LA
 
 OUTPUT_DIR="$OUTPUT_ROOT/$PHASE/$TARGET_RUN_NAME/spot${GLOBAL_SPOT}"
 mkdir -p "$OUTPUT_DIR"
-find "$OUTPUT_DIR" -maxdepth 1 -type f -name '*.png' -delete
 
 printf '\n============================================================\n'
 printf 'ROTATION / SHIFT DISPLAY\n'
@@ -318,7 +317,7 @@ if [[ "$TARGET_DETECTION" != "present" ]]; then
         "$GLOBAL_SPOT" "$PHASE" >&2
 fi
 
-log "Creating 4-panel 50x50 px comparison display"
+log "Creating 3-panel rotation/shift comparison display"
 
 "$PYTHON" "$DISPLAY_PY" \
     --reference "$REFERENCE_IMAGE" \
