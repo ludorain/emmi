@@ -7,76 +7,72 @@
 
 struct TFitResultSys {
     int spot=-1;
-    double x=0.0,y=0.0;
-    double A=0.0,Aerr=0.0,lambda=0.0,lambdaerr=0.0;
-    double chi2=0.0,chi2ndf=0.0,prob=0.0,edm=-1.0;
+    double lambda=std::numeric_limits<double>::quiet_NaN();
+    double lambdaerr=std::numeric_limits<double>::quiet_NaN();
+    double chi2=std::numeric_limits<double>::quiet_NaN();
+    double chi2ndf=std::numeric_limits<double>::quiet_NaN();
+    double edm=std::numeric_limits<double>::quiet_NaN();
     int ndf=0,status=-999,covstatus=-999;
     bool fitted=false,converged=false;
 };
 
-static void estimate_exp_parameters_sys(const vector<AnalysisRow>& rows,double& A0,double& lambda0) {
-    vector<AnalysisRow> pos;
-    for (const auto& r: rows) if (r.luminosity>0) pos.push_back(r);
+static void estimate_exp_parameters_sys(const vector<AnalysisRow>& rows,double& A0,double& lambda0){
+    vector<AnalysisRow> pos; for(const auto&r:rows)if(r.luminosity>0)pos.push_back(r);
     std::sort(pos.begin(),pos.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
-    if (pos.size()>=2 && std::fabs(pos.back().T-pos.front().T)>1e-12) {
+    if(pos.size()>=2&&std::fabs(pos.back().T-pos.front().T)>1e-12){
         lambda0=(std::log(pos.back().luminosity)-std::log(pos.front().luminosity))/(pos.back().T-pos.front().T);
         A0=std::exp(std::log(pos.front().luminosity)-lambda0*pos.front().T);
-    } else if (pos.size()==1) { A0=pos[0].luminosity; lambda0=0.0; }
-    else { A0=1.0; lambda0=0.0; }
+    }else if(pos.size()==1){A0=pos[0].luminosity;lambda0=0.0;}else{A0=1.0;lambda0=0.0;}
 }
 
-static map<int,TFitResultSys> fit_T_file(const string& filename,const string& phase) {
-    CsvTable t=read_analysis_csv(filename,false);
-    auto rows=filter_phase(t.rows,phase);
-    map<int,vector<AnalysisRow>> by_spot;
-    for (auto&r:rows) by_spot[r.spot].push_back(r);
-
-    map<int,TFitResultSys> out;
-    for (auto&kv:by_spot) {
-        int spot=kv.first; auto rr=kv.second;
-        std::sort(rr.begin(),rr.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
-        TFitResultSys fr; fr.spot=spot;
-        if(!rr.empty()){fr.x=rr[0].x;fr.y=rr[0].y;}
-        if(rr.size()<3){out[spot]=fr;continue;}
-
-        double Tmin=rr.front().T,Tmax=rr.back().T,dT=Tmax-Tmin; if(dT<=0)dT=1.0;
-        double fitmin=Tmin-0.10*dT,fitmax=Tmax+0.10*dT;
-        vector<double>xv,yv,exv,eyv;
-        for(auto&r:rr){xv.push_back(r.T);yv.push_back(r.luminosity);exv.push_back(0.0);eyv.push_back(r.error);}
-        TGraphErrors gr((int)xv.size(),xv.data(),yv.data(),exv.data(),eyv.data());
-        double A0,lambda0; estimate_exp_parameters_sys(rr,A0,lambda0);
-        TF1 f(Form("f_sys_T_%d_%p",spot,(void*)&gr),"[0]*exp([1]*x)",fitmin,fitmax);
-        f.SetParNames("A","lambda"); f.SetParameters(A0,lambda0);
-        TFitResultPtr fit=gr.Fit(&f,"QRS0");
-        fr.fitted=true; fr.status=(int)fit; fr.covstatus=fit->CovMatrixStatus(); fr.edm=fit->Edm();
-        fr.A=f.GetParameter(0); fr.Aerr=f.GetParError(0); fr.lambda=f.GetParameter(1); fr.lambdaerr=f.GetParError(1);
-        fr.chi2=f.GetChisquare();fr.ndf=f.GetNDF();fr.chi2ndf=(fr.ndf>0)?fr.chi2/fr.ndf:0.0;fr.prob=f.GetProb();
-        fr.converged=(fr.status==0 && finite_number(fr.lambda));
-        out[spot]=fr;
-    }
-    return out;
+static const AnalysisRow* find_T_point(const vector<AnalysisRow>& rows,double x,double tol=1e-9){
+    for(const auto&r:rows)if(std::fabs(r.T-x)<=tol)return &r;
+    return nullptr;
 }
 
-// Fits R=16 and R=24 with the same exponential model used by the nominal T analysis.
-void lum_vs_T_systematics(const char* csv_R16,
+static TFitResultSys fit_T_rows(const vector<AnalysisRow>& rows,const string& tag,int spot){
+    TFitResultSys fr; fr.spot=spot; if(rows.size()<3)return fr;
+    auto rr=rows; std::sort(rr.begin(),rr.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
+    double Tmin=rr.front().T,Tmax=rr.back().T,dT=Tmax-Tmin;if(dT<=0)dT=1.0;
+    vector<double>x,y,ex,ey;for(const auto&r:rr){x.push_back(r.T);y.push_back(r.luminosity);ex.push_back(0.0);ey.push_back(r.error);}
+    double A0,l0;estimate_exp_parameters_sys(rr,A0,l0);
+    TGraphErrors gr((int)x.size(),x.data(),y.data(),ex.data(),ey.data());
+    TF1 f(Form("f_sys_T_%s_%d",tag.c_str(),spot),"[0]*exp([1]*x)",Tmin-.10*dT,Tmax+.10*dT);
+    f.SetParNames("A","lambda");f.SetParameters(A0,l0);
+    TFitResultPtr fit=gr.Fit(&f,"QRS0");
+    fr.fitted=true;fr.status=(int)fit;fr.covstatus=fit->CovMatrixStatus();fr.edm=fit->Edm();
+    fr.lambda=f.GetParameter(1);fr.lambdaerr=f.GetParError(1);fr.chi2=f.GetChisquare();fr.ndf=f.GetNDF();
+    fr.chi2ndf=(fr.ndf>0)?fr.chi2/fr.ndf:0.0;
+    fr.converged=(fr.status==0&&finite_number(fr.lambda));return fr;
+}
+
+// R16/R20/R24 are fitted on the exact same genuinely-detected temperature
+// points.  This is essential for lambda: comparing independent fits with a
+// different T coverage can create a very large artificial systematic shift.
+void lum_vs_T_systematics(const char* csv_R20,
+                          const char* csv_R16,
                           const char* csv_R24,
                           const char* phase,
-                          const char* output_csv) {
+                          const char* output_csv){
     string ph=phase;
-    auto r16=fit_T_file(csv_R16,ph), r24=fit_T_file(csv_R24,ph);
-    std::set<int> ids; for(auto&kv:r16)ids.insert(kv.first);for(auto&kv:r24)ids.insert(kv.first);
-    std::ofstream fout(output_csv);
-    if(!fout.is_open()){std::cerr<<"Error: cannot create "<<output_csv<<std::endl;return;}
-    fout<<"spot,phase,lambda_R16,lambdaerr_R16,chi2_R16,ndf_R16,chi2ndf_R16,fit_status_R16,covmatrix_status_R16,edm_R16,converged_R16,"
-          "lambda_R24,lambdaerr_R24,chi2_R24,ndf_R24,chi2ndf_R24,fit_status_R24,covmatrix_status_R24,edm_R24,converged_R24\n";
-    const double NaN=std::numeric_limits<double>::quiet_NaN();
-    for(int id:ids){
-        TFitResultSys a,b; bool ha=r16.count(id),hb=r24.count(id);
-        if(ha)a=r16[id];else{a.spot=id;a.lambda=a.lambdaerr=a.chi2=a.chi2ndf=a.edm=NaN;}
-        if(hb)b=r24[id];else{b.spot=id;b.lambda=b.lambdaerr=b.chi2=b.chi2ndf=b.edm=NaN;}
-        fout<<id<<','<<ph<<','
-            <<a.lambda<<','<<a.lambdaerr<<','<<a.chi2<<','<<a.ndf<<','<<a.chi2ndf<<','<<a.status<<','<<a.covstatus<<','<<a.edm<<','<<(a.converged?1:0)<<','
-            <<b.lambda<<','<<b.lambdaerr<<','<<b.chi2<<','<<b.ndf<<','<<b.chi2ndf<<','<<b.status<<','<<b.covstatus<<','<<b.edm<<','<<(b.converged?1:0)<<'\n';
+    CsvTable t20=read_analysis_csv(csv_R20,false),t16=read_analysis_csv(csv_R16,false),t24=read_analysis_csv(csv_R24,false);
+    auto a20=filter_phase_detected(t20.rows,ph),a16=filter_phase_detected(t16.rows,ph),a24=filter_phase_detected(t24.rows,ph);
+    map<int,vector<AnalysisRow>>m20,m16,m24;for(const auto&r:a20)m20[r.spot].push_back(r);for(const auto&r:a16)m16[r.spot].push_back(r);for(const auto&r:a24)m24[r.spot].push_back(r);
+    std::ofstream fout(output_csv);if(!fout.is_open()){std::cerr<<"Error: cannot create "<<output_csv<<std::endl;return;}
+    fout<<"spot,phase,n_common_points,lambda_R20,lambdaerr_R20,fit_status_R20,lambda_R16,lambdaerr_R16,fit_status_R16,lambda_R24,lambdaerr_R24,fit_status_R24,deltaLambda,converged_all\n";
+    for(auto&kv:m20){
+        int id=kv.first;if(!m16.count(id)||!m24.count(id))continue;
+        vector<AnalysisRow>r20,r16,r24;auto base=kv.second;std::sort(base.begin(),base.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
+        for(const auto&r:base){const AnalysisRow*p16=find_T_point(m16[id],r.T);const AnalysisRow*p24=find_T_point(m24[id],r.T);if(!p16||!p24)continue;r20.push_back(r);r16.push_back(*p16);r24.push_back(*p24);}
+        if(r20.size()<3)continue;
+        auto f20=fit_T_rows(r20,"R20",id),f16=fit_T_rows(r16,"R16",id),f24=fit_T_rows(r24,"R24",id);
+        bool ok=f20.converged&&f16.converged&&f24.converged;
+        double dl=ok?std::max(std::fabs(f24.lambda-f20.lambda),std::fabs(f20.lambda-f16.lambda)):std::numeric_limits<double>::quiet_NaN();
+        fout<<id<<','<<ph<<','<<r20.size()<<','
+            <<f20.lambda<<','<<f20.lambdaerr<<','<<f20.status<<','
+            <<f16.lambda<<','<<f16.lambdaerr<<','<<f16.status<<','
+            <<f24.lambda<<','<<f24.lambdaerr<<','<<f24.status<<','
+            <<dl<<','<<(ok?1:0)<<'\n';
     }
-    std::cout<<"Saved exponential systematic-fit values to "<<output_csv<<std::endl;
+    std::cout<<"Saved common-point exponential systematic fits to "<<output_csv<<std::endl;
 }

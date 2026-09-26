@@ -16,8 +16,6 @@ struct BSystematicPair {
     bool has16=false, has24=false;
     double B16=0.0, B24=0.0;
     bool conv16=false, conv24=false;
-    bool has_delta=false;
-    double deltaB=0.0;
 };
 
 struct VNominalFit {
@@ -89,10 +87,6 @@ static map<int,BSystematicPair> read_B_systematics(const string& filename) {
             else if (col.count("converged_R24"))
                 s.conv24=parse_bool_safe(f[col["converged_R24"]]);
 
-            if (col.count("deltaB") && !f[col["deltaB"]].empty()) {
-                s.deltaB=std::fabs(std::stod(f[col["deltaB"]]));
-                s.has_delta=finite_number(s.deltaB);
-            }
             out[id]=s;
         } catch (...) {
             // Skip malformed systematic rows without aborting the full analysis.
@@ -232,7 +226,7 @@ static map<int,VRadiusOverlayFit> build_v_radius_overlays(
     if (filename.empty()) return out;
 
     CsvTable table=read_analysis_csv(filename,true);
-    auto selected=filter_phase_detected(table.rows,phase);
+    auto selected=filter_phase(table.rows,phase);
     if (selected.empty()) {
         std::cerr << "Warning: no comparison rows for phase " << phase
                   << " in " << filename << std::endl;
@@ -294,6 +288,10 @@ static map<int,VRadiusOverlayFit> build_v_radius_overlays(
     return out;
 }
 
+// -----------------------------------------------------------------------------
+// Nominal R=20 power-law fit: Lum = A * V_over^B.
+// Luminosity systematic uncertainties are displayed but are NOT fit weights.
+// -----------------------------------------------------------------------------
 void lum_vs_v_fit(const char* all_phases_csv,
                   const char* phase,
                   const char* systematic_values_csv,
@@ -301,7 +299,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
                   const char* prefix,
                   const char* r16_all_phases_csv = "",
                   const char* r24_all_phases_csv = "") {
-    gStyle->SetOptFit(1111);
+    gStyle->SetOptFit(000);
 
     const double FIT_XMIN=0.0;
     const double FIT_XMAX=8.0;
@@ -315,7 +313,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
     ensure_dir(outdir);
 
     CsvTable table=read_analysis_csv(all_phases_csv,true);
-    auto selected=filter_phase_detected(table.rows,ph);
+    auto selected=filter_phase(table.rows,ph);
     if (selected.empty()) {
         std::cerr << "No rows for phase " << ph << std::endl;
         return;
@@ -356,8 +354,8 @@ void lum_vs_v_fit(const char* all_phases_csv,
 
         info.graph=new TGraphErrors(n,xv.data(),yv.data(),exv.data(),eyv.data());
         info.graph->SetName(Form("gr_spot_%d",spot));
-        info.graph->SetTitle(Form("%s - Spot %d: x = %.2f, y = %.2f, T = %.1f #circC, %s;Overvoltage (V);Luminosity",
-                                  pref.c_str(),spot,rows[0].x,rows[0].y,rows[0].T,ph.c_str()));
+        info.graph->SetTitle(Form("Spot %d: x = %.2f, y = %.2f, T = %.1f #circC %s;Overvoltage (V);Luminosity",
+                                  spot,rows[0].x,rows[0].y,rows[0].T,ph.c_str()));
         info.graph->SetMarkerStyle(20);
         info.graph->SetMarkerSize(1.8);
         info.graph->SetLineWidth(2);
@@ -388,10 +386,11 @@ void lum_vs_v_fit(const char* all_phases_csv,
 
         // Symmetric systematic on B:
         // deltaB = max(|B24-B20|, |B20-B16|).
-        if (sys.count(spot) && sys[spot].has_delta) {
-            // deltaB is computed upstream from R16/R20/R24 fits performed on
-            // the exact same common set of detected overvoltage points.
-            info.deltaB=sys[spot].deltaB;
+        if (sys.count(spot) && sys[spot].has16 && sys[spot].has24 &&
+            sys[spot].conv16 && sys[spot].conv24) {
+            const double deltaB1=std::fabs(sys[spot].B24-info.B);
+            const double deltaB2=std::fabs(info.B-sys[spot].B16);
+            info.deltaB=std::max(deltaB1,deltaB2);
             info.has_param_syst=true;
         }
 
@@ -507,7 +506,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
         TLegend* leg=nullptr;
         if (!comparison_mode) {
             // Original 5analysis legend.
-            leg=new TLegend(0.12,0.73,0.48,0.91);
+            leg=new TLegend(0.14,0.63,0.43,0.80);
             leg->SetBorderSize(0);
             leg->SetFillStyle(0);
             leg->AddEntry(info.graph,"Data (statistical uncertainty)","lep");
@@ -515,7 +514,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
             leg->AddEntry(info.func,"Fit: Lum = A#upointV_{over}^{B}","l");
         } else {
             // Radius-comparison legend: R=20 remains the nominal dataset.
-            leg=new TLegend(0.12,0.67,0.66,0.91);
+            leg=new TLegend(0.14,0.48,0.64,0.80);
             leg->SetBorderSize(0);
             leg->SetFillStyle(0);
             leg->SetTextSize(0.030);
@@ -556,27 +555,21 @@ void lum_vs_v_fit(const char* all_phases_csv,
         c->Update();
         
         TPaveStats* stats=(TPaveStats*)info.graph->FindObject("stats");
-        if (!stats) {
-            // Fallback: explicitly create a TPaveStats so fit information is
-            // always visible even when ROOT does not attach an automatic box
-            // after a quiet/zero-draw fit.
-            stats=new TPaveStats(0.12,comparison_mode ? 0.43 : 0.51,
-                                 comparison_mode ? 0.66 : 0.48,
-                                 comparison_mode ? 0.65 : 0.71,"brNDC");
-            stats->SetName(Form("fit_stats_spot_%d",id));
-            stats->AddText(Form("A = %.4g #pm %.3g",info.A,info.Aerr));
-            stats->AddText(Form("B = %.4g #pm %.3g",info.B,info.Berr));
-            stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",info.chi2,info.ndf));
-        } else {
-            stats->SetX1NDC(0.12);
-            stats->SetX2NDC(comparison_mode ? 0.66 : 0.48);
-            stats->SetY1NDC(comparison_mode ? 0.43 : 0.51);
-            stats->SetY2NDC(comparison_mode ? 0.65 : 0.71);
+        if (stats) {
+            // Compact nominal R=20 fit-statistics box, aligned at the top with
+            // the legend. Comparison-fit values are reported in the legend.
+            if (comparison_mode) {
+                stats->SetX1NDC(0.50);
+                stats->SetX2NDC(0.80);
+            } else {
+                stats->SetX1NDC(0.36);
+                stats->SetX2NDC(0.60);
+            }
+            stats->SetY1NDC(0.79);
+            stats->SetY2NDC(0.99);
+            stats->SetTextSize(0.020);
+            stats->Draw();
         }
-        stats->SetTextSize(0.020);
-        stats->SetBorderSize(1);
-        stats->SetFillStyle(0);
-        stats->Draw();
 
         c->Modified();
         c->Update();
@@ -609,44 +602,63 @@ void lum_vs_v_fit(const char* all_phases_csv,
     }
 
     if (!B.empty()) {
-        const string sensor=sensor_from_prefix(pref);
+        TCanvas* c9=new TCanvas("c9","B vs spot",1800,1000);
+        TGraphErrors* grB=new TGraphErrors((int)B.size(),x.data(),B.data(),ex.data(),Bstat.data());
+        grB->SetTitle(Form("Power law exponent: B - %s;Spot;B",ph.c_str()));
+        grB->SetMarkerStyle(21);
+        grB->SetMarkerSize(1.2);
+        grB->SetLineWidth(2);
+
         double xmin=*std::min_element(x.begin(),x.end())-1.0;
         double xmax=*std::max_element(x.begin(),x.end())+1.0;
-        double ymin=1e99,ymax=-1e99;
-        for(size_t i=0;i<B.size();++i){const double emax=std::max(std::fabs(Bstat[i]),std::fabs(Bsyst[i]));ymin=std::min(ymin,B[i]-emax);ymax=std::max(ymax,B[i]+emax);}
-        double yspan=ymax-ymin;if(!(yspan>0.0))yspan=std::max(0.2,std::fabs(ymax)*0.2);
 
-        auto draw_B_canvas=[&](const string& tag,bool focus){
-            TCanvas* c9=new TCanvas(Form("c9_%s",tag.c_str()),"B vs spot",1800,1000);
-            TGraphErrors* grB=new TGraphErrors((int)B.size(),x.data(),B.data(),ex.data(),Bstat.data());
-            grB->SetTitle(Form("Sensor %s - Power-law exponent B - %s;Global spot ID;B",sensor.c_str(),ph.c_str()));
-            grB->SetMarkerStyle(21);grB->SetMarkerSize(1.2);grB->SetMarkerColor(kBlack);grB->SetLineColor(kBlack);grB->SetLineWidth(2);
-            grB->SetMinimum(focus?1.0:ymin-0.15*yspan);grB->SetMaximum(focus?3.0:ymax+0.35*yspan);grB->Draw("AP");grB->GetXaxis()->SetLimits(xmin,xmax);
+        double ymin=1e99, ymax=-1e99;
+        for (size_t i=0;i<B.size();++i) {
+            const double emax=std::max(std::fabs(Bstat[i]),std::fabs(Bsyst[i]));
+            ymin=std::min(ymin,B[i]-emax);
+            ymax=std::max(ymax,B[i]+emax);
+        }
+        double yspan=ymax-ymin;
+        if (!(yspan>0.0)) yspan=std::max(0.2,std::fabs(ymax)*0.2);
 
-            // Systematic uncertainty uses an accessible palette colour; the
-            // statistical error bars and markers remain explicitly black.
-            draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kP6Grape,4);grB->Draw("P SAME");
-            TF1* line_B=new TF1(Form("line_B_%s",tag.c_str()),"2",xmin,xmax);line_B->SetLineColor(kP6Red);line_B->SetLineStyle(2);line_B->SetLineWidth(2);line_B->Draw("SAME");
-            TF1* fit_B=new TF1(Form("fit_B_%s",tag.c_str()),"[0]",xmin,xmax);fit_B->SetLineColor(kP10Gray);fit_B->SetLineWidth(2);
-            if(B.size()>=2){grB->Fit(fit_B,"RQ");fit_B->Draw("SAME");}
-            c9->Update();
-            TPaveStats* stats=(TPaveStats*)grB->FindObject("stats");
-            if(!stats){
-                stats=new TPaveStats(.12,.50,.40,.68,"brNDC");
-                stats->SetName(Form("B_const_stats_%s",tag.c_str()));
-                if(B.size()>=2){
-                    stats->AddText(Form("B_{const} = %.4g #pm %.3g",fit_B->GetParameter(0),fit_B->GetParError(0)));
-                    stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",fit_B->GetChisquare(),fit_B->GetNDF()));
-                }
-            } else {stats->SetX1NDC(.12);stats->SetX2NDC(.40);stats->SetY1NDC(.50);stats->SetY2NDC(.68);}
-            stats->SetTextSize(.022);stats->SetFillStyle(0);stats->Draw();
-            TLine* syst_proxy=new TLine(0,0,1,0);syst_proxy->SetLineColor(kP6Grape);syst_proxy->SetLineWidth(4);
-            TLegend* leg=new TLegend(.12,.70,.43,.91);leg->SetBorderSize(0);leg->SetFillStyle(0);leg->AddEntry(grB,"B statistical uncertainty","lep");leg->AddEntry(syst_proxy,"B systematic uncertainty","l");if(B.size()>=2)leg->AddEntry(fit_B,"Constant fit: B = const","l");leg->AddEntry(line_B,"Line: B = 2","l");leg->Draw();
-            c9->Modified();c9->Update();
-            string base=outdir+"/"+pref+"_B_vs_spot"+(focus?"_focus_1_3":"");c9->SaveAs((base+".png").c_str());c9->SaveAs((base+".pdf").c_str());delete c9;
-        };
-        draw_B_canvas("full",false);
-        draw_B_canvas("focus",true);
+        grB->SetMinimum(ymin-0.15*yspan);
+        grB->SetMaximum(ymax+0.35*yspan);
+        grB->Draw("AP");
+        grB->GetXaxis()->SetLimits(xmin,xmax);
+        c9->Update();
+
+        draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kGreen+2,4);
+        grB->Draw("P SAME");
+
+        TF1* line_B=new TF1("line_B","2",xmin,xmax);
+        line_B->SetLineColor(kRed+1);
+        line_B->SetLineStyle(2);
+        line_B->SetLineWidth(2);
+        line_B->Draw("SAME");
+
+        TF1* fit_B=new TF1("fit_B","[0]",xmin,xmax);
+        fit_B->SetLineColor(kP6Red);
+        fit_B->SetLineWidth(2);
+        if (B.size()>=2) {
+            grB->Fit(fit_B,"RQ");
+            fit_B->Draw("SAME");
+        }
+
+        TLine* syst_proxy=new TLine(0,0,1,0);
+        syst_proxy->SetLineColor(kGreen+2);
+        syst_proxy->SetLineWidth(4);
+
+        TLegend* leg=new TLegend(0.11,0.68,0.43,0.89);
+        leg->SetBorderSize(0);
+        leg->SetFillStyle(0);
+        leg->AddEntry(grB,"B statistical uncertainty","lep");
+        leg->AddEntry(syst_proxy,"B systematic uncertainty","l");
+        if (B.size()>=2) leg->AddEntry(fit_B,"Constant fit: B = const","l");
+        leg->AddEntry(line_B,"Line: B = 2","l");
+        leg->Draw();
+
+        c9->SaveAs(Form("%s/%s_B_vs_spot.png",outdir.c_str(),pref.c_str()));
+        delete c9;
     } else {
         std::cerr << "Warning: no ROOT-converged B fit is available for Canvas 9 in phase "
                   << ph << std::endl;

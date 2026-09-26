@@ -15,8 +15,6 @@ struct LambdaSystematicPair {
     bool has16=false,has24=false;
     double l16=0.0,l24=0.0;
     bool conv16=false,conv24=false;
-    bool has_delta=false;
-    double deltaLambda=0.0;
 };
 
 struct TNominalFit {
@@ -120,7 +118,7 @@ static map<int,TRadiusOverlayFit> build_T_radius_overlays(
     if (filename.empty()) return out;
 
     CsvTable table=read_analysis_csv(filename,false);
-    auto selected=filter_phase_detected(table.rows,phase);
+    auto selected=filter_phase(table.rows,phase);
     if (selected.empty()) {
         std::cerr << "Warning: no comparison rows for phase " << phase
                   << " in " << filename << std::endl;
@@ -226,10 +224,6 @@ static map<int,LambdaSystematicPair> read_lambda_systematics(const string& filen
             else if (c.count("converged_R24"))
                 s.conv24=parse_bool_safe(f[c["converged_R24"]]);
 
-            if (c.count("deltaLambda") && !f[c["deltaLambda"]].empty()) {
-                s.deltaLambda=std::fabs(std::stod(f[c["deltaLambda"]]));
-                s.has_delta=finite_number(s.deltaLambda);
-            }
             out[id]=s;
         } catch (...) {
             // Skip malformed rows and continue with the remaining hotspots.
@@ -315,7 +309,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
     ensure_dir(outdir);
 
     CsvTable table=read_analysis_csv(all_phases_csv,false);
-    auto selected=filter_phase_detected(table.rows,ph);
+    auto selected=filter_phase(table.rows,ph);
     if (selected.empty()) {
         std::cerr << "No rows for phase " << ph << std::endl;
         return;
@@ -353,8 +347,8 @@ void lum_vs_T_fit(const char* all_phases_csv,
         }
 
         info.graph=new TGraphErrors(n,xv.data(),yv.data(),exv.data(),eyv.data());
-        info.graph->SetTitle(Form("%s - Spot %d: x = %.2f, y = %.2f, v = %.1f V, %s;T (#circC);Luminosity",
-                                  pref.c_str(),spot,rows[0].x,rows[0].y,rows[0].v,ph.c_str()));
+        info.graph->SetTitle(Form("Spot %d: x = %.2f, y = %.2f, v = %.1f, %s;T (#circC);Luminosity",
+                                  spot,rows[0].x,rows[0].y,rows[0].v,ph.c_str()));
         info.graph->SetMarkerStyle(20);
         info.graph->SetMarkerSize(1.4);
         info.graph->SetLineWidth(2);
@@ -389,10 +383,11 @@ void lum_vs_T_fit(const char* all_phases_csv,
 
         // Symmetric systematic on lambda:
         // deltaLambda=max(|lambda24-lambda20|, |lambda20-lambda16|).
-        if (sys.count(spot) && sys[spot].has_delta) {
-            // Computed upstream from R16/R20/R24 fits using exactly the same
-            // common set of genuinely-detected temperature points.
-            info.deltaLambda=sys[spot].deltaLambda;
+        if (sys.count(spot) && sys[spot].has16 && sys[spot].has24 &&
+            sys[spot].conv16 && sys[spot].conv24) {
+            double d1=std::fabs(sys[spot].l24-info.lambda);
+            double d2=std::fabs(info.lambda-sys[spot].l16);
+            info.deltaLambda=std::max(d1,d2);
             info.has_param_syst=true;
         }
 
@@ -564,7 +559,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
     if (!L.empty()) {
         TCanvas* c5=new TCanvas("c5_lambda_vs_spot_constfit","lambda vs spot ID",1800,1000);
         TGraphErrors* gr=new TGraphErrors((int)L.size(),x.data(),L.data(),ex.data(),Lstat.data());
-        gr->SetTitle(Form("%s - Exponential fit parameter #lambda - %s;Global spot ID;#lambda",pref.c_str(),ph.c_str()));
+        gr->SetTitle(Form("Exponential fit parameter lambda vs spot ID - %s;Spot;lambda",ph.c_str()));
         gr->SetMarkerStyle(21);
         gr->SetMarkerSize(1.0);
         gr->SetLineWidth(2);

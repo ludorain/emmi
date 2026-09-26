@@ -12,7 +12,6 @@
 #include <string>
 #include <cctype>
 #include <limits>
-#include <regex>
 
 #include "TSystem.h"
 #include "TString.h"
@@ -58,8 +57,7 @@ inline vector<string> split_csv_simple(const string& line) {
 inline bool parse_bool_safe(string s) {
     s = trim_copy(s);
     for (char& c : s) c = std::tolower(static_cast<unsigned char>(c));
-    return (s=="true" || s=="1" || s=="yes" || s=="y" ||
-            s=="present" || s=="detected");
+    return (s=="true" || s=="1" || s=="yes" || s=="y");
 }
 
 inline bool finite_number(double x) { return std::isfinite(x); }
@@ -140,46 +138,6 @@ inline vector<AnalysisRow> filter_phase(const vector<AnalysisRow>& in, const str
     vector<AnalysisRow> out;
     for (const auto& r : in) if (r.phase == phase) out.push_back(r);
     return out;
-}
-
-// Keep only rows corresponding to a hotspot that was genuinely detected by
-// the source-finding stage. Forced luminosity measurements are intentionally
-// excluded from luminosity-vs-T / luminosity-vs-overvoltage fits.
-inline vector<AnalysisRow> filter_detected(const vector<AnalysisRow>& in) {
-    vector<AnalysisRow> out;
-    for (const auto& r : in) if (r.detected) out.push_back(r);
-    return out;
-}
-
-inline vector<AnalysisRow> filter_phase_detected(const vector<AnalysisRow>& in,
-                                                 const string& phase) {
-    vector<AnalysisRow> out;
-    for (const auto& r : in)
-        if (r.phase == phase && r.detected) out.push_back(r);
-    return out;
-}
-
-
-inline string sensor_from_prefix(const string& prefix) {
-    size_t pos=prefix.find('_');
-    return pos==string::npos ? prefix : prefix.substr(0,pos);
-}
-
-inline string phase_short_label(const string& phase) {
-    if (phase=="before_annealing") return "bef_ann";
-    std::smatch m;
-    std::regex re(R"(annealing_T=([-+]?(?:\d+(?:\.\d*)?|\.\d+))_h=([-+]?(?:\d+(?:\.\d*)?|\.\d+)))");
-    if (std::regex_match(phase,m,re)) return "ann_"+m[1].str()+"C_"+m[2].str()+"h";
-    return phase;
-}
-
-inline string analysis_condition_label(const string& prefix, bool T_const) {
-    string sensor=sensor_from_prefix(prefix);
-    size_t eq=prefix.find('=');
-    string value=(eq==string::npos ? "?" : prefix.substr(eq+1));
-    return T_const
-        ? ("Sensor "+sensor+", T = "+value+" C")
-        : ("Sensor "+sensor+", v = "+value+" V");
 }
 
 inline string safe_token(string s) {
