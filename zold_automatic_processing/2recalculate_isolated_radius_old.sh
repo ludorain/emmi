@@ -357,33 +357,6 @@ def nearest_one_to_one(result: pd.DataFrame, plan: pd.DataFrame, tolerance: floa
     return mapping
 
 
-def reorder_complete_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Match the column layout of the main pipeline's global_complete files."""
-    preferred = ["spot", "x", "y", "luminosity", "error", "T", "v"]
-    if "v_fin" in df.columns:
-        preferred.append("v_fin")
-    preferred += [
-        "phase", "detection", "status",
-        "integration_radius", "integration_area",
-        "geometry_source_phase", "geometry_source_constant",
-        "geometry_source_run", "geometry_mode",
-        "integration_radius_source_phase",
-        "integration_radius_source_constant",
-        "integration_radius_source_run",
-        "run_number", "match_distance",
-    ]
-    if "cross_constant_only" in df.columns:
-        preferred.append("cross_constant_only")
-
-    missing = [c for c in preferred if c not in df.columns]
-    if missing:
-        raise RuntimeError(
-            "Internal error: recalculated luminosity table is missing columns "
-            f"required by the main-pipeline format: {missing}"
-        )
-    return df[preferred]
-
-
 # ============================================================
 # DISCOVER SOURCE PHASE/RUN STRUCTURE
 # ============================================================
@@ -499,17 +472,13 @@ if not source_merged_dir.is_dir():
         "Run the complete source pipeline first."
     )
 
-# These files define the authoritative solution produced by the main pipeline.
-# The global catalog/mapping are SENSOR-LEVEL and are shared between T and v.
-# The geometry plan, presence and phase-change reports remain condition-specific.
+# These files define the authoritative global-ID solution.  The new-radius
+# pipeline must inherit them rather than solve the matching problem again.
 source_geometry_plan_path = source_merged_dir / f"{sensor}_{constant}_geometry_plan.csv"
 source_mapping_path = source_merged_dir / f"{sensor}_{constant}_global_mapping.csv"
 source_catalog_path = source_merged_dir / f"{sensor}_{constant}_global_catalog.csv"
 source_presence_path = source_merged_dir / f"{sensor}_{constant}_hotspot_presence.csv"
 source_changes_path = source_merged_dir / f"{sensor}_{constant}_phase_changes.csv"
-
-source_shared_catalog_path = source_data / "merged_files" / f"{sensor}_global_catalog.csv"
-source_shared_mapping_path = source_data / "merged_files" / f"{sensor}_global_mapping.csv"
 
 for required in (
     source_geometry_plan_path,
@@ -517,8 +486,6 @@ for required in (
     source_catalog_path,
     source_presence_path,
     source_changes_path,
-    source_shared_catalog_path,
-    source_shared_mapping_path,
 ):
     if not required.is_file():
         raise RuntimeError(
@@ -528,14 +495,7 @@ for required in (
 geometry_plan = pd.read_csv(source_geometry_plan_path)
 
 required_plan_columns = {
-    "spot", "phase", "run_number", "constant",
-    "detection", "status", "x", "y",
-    "geometry_source_phase", "geometry_source_constant",
-    "geometry_source_run", "geometry_mode",
-    "integration_radius_source_phase",
-    "integration_radius_source_constant",
-    "integration_radius_source_run",
-    "match_distance", "cross_constant_only",
+    "spot", "phase", "run_number", "detection", "status", "x", "y"
 }
 missing = required_plan_columns.difference(geometry_plan.columns)
 if missing:
@@ -559,22 +519,11 @@ geometry_plan["spot"] = pd.to_numeric(geometry_plan["spot"], errors="raise").ast
 geometry_plan["x"] = pd.to_numeric(geometry_plan["x"], errors="raise")
 geometry_plan["y"] = pd.to_numeric(geometry_plan["y"], errors="raise")
 
-plan_constants = set(geometry_plan["constant"].astype(str))
-if plan_constants != {constant}:
-    raise RuntimeError(
-        f"Source geometry plan {source_geometry_plan_path} does not belong only "
-        f"to constant={constant}. Found constants: {sorted(plan_constants)}"
-    )
-
-# Override ONLY the integration aperture.  Global IDs, coordinates, detection
-# state/status and coordinate provenance remain exactly those of the main
-# pipeline.  The aperture provenance is deliberately replaced, because this
-# second pipeline imposes the radius by hand rather than deriving it from a
-# detected hotspot.
+# Override the aperture globally while preserving EVERY global ID, coordinate,
+# detection state, temporal status and matching diagnostic from the source.
 geometry_plan["integration_radius"] = radius
 geometry_plan["integration_area"] = integration_area
 geometry_plan["integration_radius_source_phase"] = "user_fixed_radius"
-geometry_plan["integration_radius_source_constant"] = "user_fixed_radius"
 geometry_plan["integration_radius_source_run"] = np.nan
 
 # Fresh outputs only for this sensor/condition/radius. Other sensors already
@@ -623,10 +572,8 @@ for d in datasets:
     target_coord_dir.mkdir(parents=True, exist_ok=True)
     target_lum_dir.mkdir(parents=True, exist_ok=True)
 
-    # Preserve the source-finding coordinate files exactly as they were produced
-    # by the main pipeline.  Their radii describe the original detected geometry
-    # and must NOT be rewritten.  Only the global-complete coordinate file used
-    # for the forced luminosity calculation receives the user-selected radius.
+    # Copy every coordinate TXT so the target structure remains familiar.
+    # All apertures are replaced by the requested fixed value.
     source_txt_files = sorted(d["source_coord_dir"].glob("*.txt"))
     if not source_txt_files:
         raise RuntimeError(f"No coordinate TXT files found in {d['source_coord_dir']}")
@@ -634,11 +581,9 @@ for d in datasets:
     copied_global = None
     for source_txt in source_txt_files:
         target_txt = target_coord_dir / source_txt.name
+        rewrite_coordinate_file(source_txt, target_txt)
         if source_txt.name == d["source_global_coords"].name:
-            rewrite_coordinate_file(source_txt, target_txt)
             copied_global = target_txt
-        else:
-            shutil.copy2(source_txt, target_txt)
 
     if copied_global is None or not copied_global.is_file():
         raise RuntimeError(
@@ -782,18 +727,11 @@ for d in datasets:
             if "match_distance" in p.index:
                 record["match_distance"] = p["match_distance"]
 
-            # Preserve the complete coordinate-propagation provenance from the
-            # main pipeline.  The integration-radius provenance in phase_plan has
-            # already been replaced by user_fixed_radius above.
+            # Preserve coordinate-propagation provenance when available.
             for col in (
                 "geometry_source_phase",
-                "geometry_source_constant",
                 "geometry_source_run",
                 "geometry_mode",
-                "integration_radius_source_phase",
-                "integration_radius_source_constant",
-                "integration_radius_source_run",
-                "cross_constant_only",
             ):
                 if col in p.index:
                     record[col] = p[col]
@@ -806,11 +744,9 @@ for d in datasets:
             records.append(record)
 
         measured = pd.DataFrame(records)
-        measured = reorder_complete_columns(measured)
         phase_measurements.append(measured)
 
-        # Keep a per-operating-point CSV in the run's 6luminosity directory,
-        # using the same column layout as the main pipeline's complete outputs.
+        # Keep a per-operating-point CSV in the run's 6luminosity directory.
         stem = root_file.name.removesuffix("_th2f.root")
         point_output = d["target_lum_dir"] / f"luminosity_{stem}.csv"
         measured.sort_values("spot", kind="stable").to_csv(point_output, index=False)
@@ -820,7 +756,6 @@ for d in datasets:
     phase_complete = phase_complete.sort_values(
         ["spot", varying_column], kind="stable"
     ).reset_index(drop=True)
-    phase_complete = reorder_complete_columns(phase_complete)
 
     # Final per-run CSV in 6luminosity, matching the familiar source naming.
     run_output = d["target_lum_dir"] / (
@@ -861,16 +796,16 @@ geometry_to_save = geometry_plan.drop(columns=["phase_order"]).copy()
 geometry_to_save.to_csv(geometry_output, index=False)
 print(f"Created: {geometry_output}")
 
-# Copy the authoritative matching/detection diagnostics UNCHANGED.
-# global_mapping describes how the source-finder detections were associated to
-# sensor-level IDs; its original integration_radius/integration_area therefore
-# belong to the detection geometry and must not be replaced by the arbitrary
-# luminosity-integration radius.  The latter is recorded in geometry_plan and in
-# every recalculated luminosity row.
-shutil.copy2(
-    source_mapping_path,
-    target_merged_dir / f"{sensor}_{constant}_global_mapping.csv",
-)
+# Copy the authoritative ID/detection diagnostics.  The global mapping's
+# aperture metadata, if present, is overwritten with this requested radius so
+# that every file inside the radius-specific folder is self-consistent.
+mapping = pd.read_csv(source_mapping_path)
+if "integration_radius" in mapping.columns:
+    mapping["integration_radius"] = radius
+if "integration_area" in mapping.columns:
+    mapping["integration_area"] = integration_area
+mapping_output = target_merged_dir / f"{sensor}_{constant}_global_mapping.csv"
+mapping.to_csv(mapping_output, index=False)
 
 for source_file, target_name in (
     (source_catalog_path, f"{sensor}_{constant}_global_catalog.csv"),
@@ -879,35 +814,12 @@ for source_file, target_name in (
 ):
     shutil.copy2(source_file, target_merged_dir / target_name)
 
-# Also keep the SENSOR-LEVEL shared catalog and mapping in the radius-specific
-# merged root.  These are the authoritative proof that T and v use the same
-# global-ID namespace in the main pipeline.
-shutil.copy2(
-    source_shared_catalog_path,
-    target_merged_root / f"{sensor}_global_catalog.csv",
-)
-shutil.copy2(
-    source_shared_mapping_path,
-    target_merged_root / f"{sensor}_global_mapping.csv",
-)
-
 
 # ============================================================
 # CROSS-CHECK: GLOBAL IDS MUST BE IDENTICAL TO SOURCE
 # ============================================================
 
-# The SENSOR-LEVEL catalog is authoritative.  The per-condition catalog is kept
-# only for backward compatibility by the main pipeline and must contain the same
-# ID universe.
-source_spots = set(pd.read_csv(source_shared_catalog_path)["spot"].astype(int))
-condition_catalog_spots = set(pd.read_csv(source_catalog_path)["spot"].astype(int))
-if condition_catalog_spots != source_spots:
-    raise RuntimeError(
-        "Source catalog inconsistency: the per-condition catalog does not match "
-        "the sensor-level shared catalog. Rerun the main pipeline before this "
-        "radius recalculation."
-    )
-
+source_spots = set(pd.read_csv(source_catalog_path)["spot"].astype(int))
 target_spots = set(master["spot"].astype(int))
 
 if source_spots != target_spots:

@@ -4,12 +4,9 @@
 # AUTOMATED EMMI ANALYSIS
 #
 # Usage:
-#   ./automatic_irradiated_analysis.sh A1
-#   ./automatic_irradiated_analysis.sh B2
-#
-# A single SENSOR is processed for BOTH scan families:
-#   - T constant (v scan)
-#   - v constant (T scan)
+#   ./automatic_irradiated_analysis.sh A1 T
+#   ./automatic_irradiated_analysis.sh A1 v
+#   ./automatic_irradiated_analysis.sh B2 T
 #
 # The script must be located inside the main "emmi" directory.
 #
@@ -17,13 +14,6 @@
 #   PHASE 1 - before_annealing
 #   PHASE 2 - all directories matching DATA_irradiated/annealing_*
 #   PHASE 3 - global hotspot-ID assignment and merge across all phases
-#
-# Global-ID policy:
-#   - global hotspot IDs are unique per SENSOR and shared by the T-constant
-#     and v-constant analyses;
-#   - the primary indexing/geometrical reference is always before_annealing
-#     with T constant;
-#   - only before_annealing and annealing_* directories are processed.
 #
 # Folder structure created inside every selected run:
 #   1originals
@@ -117,31 +107,36 @@ trap 'on_error $LINENO' ERR
 # INPUT
 # ------------------------------------------------------------
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -ne 2 ]]; then
     cat >&2 <<EOF
 Usage:
-  $0 SENSOR
+  $0 SENSOR CONSTANT
 
 SENSOR:
   A1 | A2 | B1 | B2
 
+CONSTANT:
+  T | v
+
 Examples:
-  $0 A1
-  $0 B2
+  $0 A1 T
+  $0 B1 v
 EOF
     exit 1
 fi
 
 SENSOR="$1"
+CONSTANT="$2"
 
 case "$SENSOR" in
     A1|A2|B1|B2) ;;
     *) die "Invalid sensor '$SENSOR'. Allowed values: A1 A2 B1 B2." ;;
 esac
 
-# CONSTANT is intentionally mutable. The main workflow sets it to T or v
-# before invoking the existing per-run processing helpers.
-CONSTANT=""
+case "$CONSTANT" in
+    T|v) ;;
+    *) die "Invalid constant '$CONSTANT'. Allowed values: T or v." ;;
+esac
 
 [[ -d "$DATA_DIR" ]] || die "DATA directory not found: $DATA_DIR"
 
@@ -885,31 +880,8 @@ PY
 # ------------------------------------------------------------
 # PHASE 1 - BEFORE ANNEALING
 # ------------------------------------------------------------
-# The T-constant before_annealing run is the unique geometrical and
-# global-ID reference for the whole sensor.  The v-constant run is then
-# aligned to it and processed with the same chain.
 
-append_alignment_row() {
-    local phase="$1"
-    local constant="$2"
-    local run_prefix="$3"
-    local run_number="$4"
-    local angle="$5"
-    local clipy="$6"
-    local clipx="$7"
-    local shifty="$8"
-    local shiftx="$9"
-    local is_reference="${10}"
-
-    printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
-        "$phase" "$constant" "$run_prefix" "$run_number" \
-        "$angle" "$clipy" "$clipx" "$shifty" "$shiftx" "$is_reference" \
-        >> "$ALIGNMENT_TABLE"
-}
-
-process_before_annealing_reference() {
-    CONSTANT="T"
-
+process_before_annealing() {
     local phase="before_annealing"
     local phase_dir="$DATA_DIR/$phase"
 
@@ -918,7 +890,7 @@ process_before_annealing_reference() {
 
     local run_dir
     run_dir="$(find_selected_run_dir "$phase_dir")" \
-        || die "The required global reference ${SENSOR}_T=*_run=* is missing in $phase_dir"
+        || die "No run found for ${SENSOR}_${CONSTANT}=* in $phase_dir"
 
     local run_number run_prefix
     run_number="$(extract_run_number "$run_dir")"
@@ -929,17 +901,21 @@ process_before_annealing_reference() {
 
     printf '\n'
     printf '============================================================\n'
-    printf 'PHASE 1 - BEFORE ANNEALING / PRIMARY REFERENCE\n'
+    printf 'PHASE 1 - BEFORE ANNEALING\n'
     printf 'Sensor:   %s\n' "$SENSOR"
-    printf 'Constant: T\n'
+    printf 'Constant: %s\n' "$CONSTANT"
     printf 'Run:      %s\n' "$run_number"
     printf 'Folder:   %s\n' "$run_dir"
     printf '============================================================\n'
 
+    # Prepare the run from a clean state and recreate all output directories
     prepare_run_output_dirs "$run_dir"
+
+    # 1. cleanup
     cleanup_images "$run_dir"
 
-    log "2/5 - Image rotation: before_annealing / T-reference"
+    # 2. rotation
+    log "2/5 - Image rotation: before_annealing"
 
     local light_processed
     light_processed="$(get_unique_light_image "$processed_dir")"
@@ -959,7 +935,7 @@ process_before_annealing_reference() {
     BASE_LIGHT_REFERENCE="$rotated_dir/${light_stem}_rotated.tif"
 
     [[ -f "$BASE_LIGHT_REFERENCE" ]] \
-        || die "Rotated before_annealing T-reference light image not found: $BASE_LIGHT_REFERENCE"
+        || die "Rotated before_annealing light reference not found: $BASE_LIGHT_REFERENCE"
 
     local clipy clipx
     read -r clipy clipx < <(
@@ -968,18 +944,13 @@ process_before_annealing_reference() {
             "$BASE_LIGHT_REFERENCE"
     )
 
-    printf 'Primary geometrical reference:\n'
-    printf '  phase  = %s\n' "$phase"
-    printf '  constant = T\n'
-    printf '  angle  = %s deg\n' "$angle"
-    printf '  clipy  = %s px/side\n' "$clipy"
-    printf '  clipx  = %s px/side\n' "$clipx"
-    printf '  light  = %s\n' "$BASE_LIGHT_REFERENCE"
+    printf 'Before-annealing geometrical reference:\n'
+    printf '  angle = %s deg\n' "$angle"
+    printf '  clipy = %s px/side\n' "$clipy"
+    printf '  clipx = %s px/side\n' "$clipx"
+    printf '  light = %s\n' "$BASE_LIGHT_REFERENCE"
 
-    append_alignment_row \
-        "$phase" "T" "$run_prefix" "$run_number" \
-        "$angle" "$clipy" "$clipx" "0" "0" "yes"
-
+    # 3. coordinates
     local reference_coords
     reference_coords="$(
         generate_reference_coordinates \
@@ -989,8 +960,10 @@ process_before_annealing_reference() {
             "$run_prefix"
     )"
 
+    # 4. TH2F
     convert_to_th2f "$run_dir"
 
+    # 5. luminosity
     calculate_luminosity \
         "$run_dir" \
         "$phase" \
@@ -999,22 +972,18 @@ process_before_annealing_reference() {
         "$reference_coords"
 }
 
-# Generic processing for every dataset that is NOT the primary
-# before_annealing/T reference.  All such runs are independently rotated and
-# then translated onto BASE_LIGHT_REFERENCE before hotspot finding.
-process_aligned_dataset() {
+# ------------------------------------------------------------
+# PHASE 2 - ANNEALING PHASES
+# ------------------------------------------------------------
+
+process_one_annealing_phase() {
     local phase_dir="$1"
-    local constant="$2"
-    local context_label="$3"
-
-    CONSTANT="$constant"
-
     local phase
     phase="$(basename "$phase_dir")"
 
     local run_dir
     if ! run_dir="$(find_selected_run_dir "$phase_dir")"; then
-        warn "Skipping $phase / constant=$constant: no ${SENSOR}_${constant}=*_run=* directory found."
+        warn "Skipping $phase: no ${SENSOR}_${CONSTANT}=*_run=* directory found."
         return 0
     fi
 
@@ -1024,24 +993,31 @@ process_aligned_dataset() {
 
     local processed_dir="$run_dir/2processed"
     local rotated_dir="$run_dir/3rotated"
+
+    # Temporary directory: contains rotation-only images.
+    # Final shifted images are written directly in 3rotated.
     local prealign_dir="$run_dir/.3rotated_pre_shift"
+
+    rm -rf "$prealign_dir"
+    mkdir -p "$prealign_dir" "$rotated_dir"
 
     printf '\n'
     printf '============================================================\n'
-    printf '%s - %s\n' "$context_label" "$phase"
+    printf 'PHASE 2 - %s\n' "$phase"
     printf 'Sensor:   %s\n' "$SENSOR"
-    printf 'Constant: %s\n' "$constant"
+    printf 'Constant: %s\n' "$CONSTANT"
     printf 'Run:      %s\n' "$run_number"
     printf 'Folder:   %s\n' "$run_dir"
     printf '============================================================\n'
 
+    # Prepare the run from a clean state and recreate all output directories
     prepare_run_output_dirs "$run_dir"
-    rm -rf "$prealign_dir"
-    mkdir -p "$prealign_dir" "$rotated_dir"
 
+    # 1. cleanup
     cleanup_images "$run_dir"
 
-    log "2/5 - Rotation + alignment: $phase / constant=$constant"
+    # 2a/2b. measure rotation from light image
+    log "2/5 - Rotation + alignment: $phase"
 
     local light_processed
     light_processed="$(get_unique_light_image "$processed_dir")"
@@ -1049,6 +1025,7 @@ process_aligned_dataset() {
     local angle
     angle="$(measure_rotation_angle "$light_processed")"
 
+    # 2c. rotate ALL processed TIF images
     rotate_all_processed_images \
         "$processed_dir" \
         "$prealign_dir" \
@@ -1069,8 +1046,9 @@ process_aligned_dataset() {
             "$moving_light"
     )
 
+    # 2d. measure shift with respect to before_annealing reference
     [[ -n "$BASE_LIGHT_REFERENCE" && -f "$BASE_LIGHT_REFERENCE" ]] \
-        || die "Primary before_annealing/T light reference is not available."
+        || die "Before-annealing light reference is not available."
 
     assert_same_image_shape \
         "$BASE_LIGHT_REFERENCE" \
@@ -1084,15 +1062,15 @@ process_aligned_dataset() {
     )
 
     printf 'Alignment parameters:\n'
-    printf '  phase    = %s\n' "$phase"
-    printf '  constant = %s\n' "$constant"
-    printf '  run      = %s\n' "$run_number"
-    printf '  angle    = %s deg\n' "$angle"
-    printf '  clipy    = %s px/side\n' "$clipy"
-    printf '  clipx    = %s px/side\n' "$clipx"
-    printf '  shifty   = %s px\n' "$shifty"
-    printf '  shiftx   = %s px\n' "$shiftx"
+    printf '  phase  = %s\n' "$phase"
+    printf '  run    = %s\n' "$run_number"
+    printf '  angle  = %s deg\n' "$angle"
+    printf '  clipy  = %s px/side\n' "$clipy"
+    printf '  clipx  = %s px/side\n' "$clipx"
+    printf '  shifty = %s px\n' "$shifty"
+    printf '  shiftx = %s px\n' "$shiftx"
 
+    # Apply the same measured translation to ALL images in this run.
     shift_all_rotated_images \
         "$prealign_dir" \
         "$rotated_dir" \
@@ -1101,10 +1079,18 @@ process_aligned_dataset() {
 
     rm -rf "$prealign_dir"
 
-    append_alignment_row \
-        "$phase" "$constant" "$run_prefix" "$run_number" \
-        "$angle" "$clipy" "$clipx" "$shifty" "$shiftx" "no"
+    # Alignment metadata requested for every annealing phase.
+    printf '%s,%s,%s,%s,%s,%s,%s\n' \
+        "$phase" \
+        "$run_number" \
+        "$angle" \
+        "$clipy" \
+        "$clipx" \
+        "$shifty" \
+        "$shiftx" \
+        >> "$ALIGNMENT_TABLE"
 
+    # 3. coordinates on the FINAL aligned images
     local reference_coords
     reference_coords="$(
         generate_reference_coordinates \
@@ -1114,8 +1100,10 @@ process_aligned_dataset() {
             "$run_prefix"
     )"
 
+    # 4. TH2F from FINAL aligned images
     convert_to_th2f "$run_dir"
 
+    # 5. luminosity
     calculate_luminosity \
         "$run_dir" \
         "$phase" \
@@ -1124,24 +1112,13 @@ process_aligned_dataset() {
         "$reference_coords"
 }
 
-process_before_annealing() {
-    process_before_annealing_reference
-
-    # The v-constant before_annealing dataset shares the same geometrical
-    # frame, but it is NOT allowed to redefine the primary reference.
-    process_aligned_dataset \
-        "$DATA_DIR/before_annealing" \
-        "v" \
-        "PHASE 1 - BEFORE ANNEALING"
-}
-
-# ------------------------------------------------------------
-# PHASE 2 - ANNEALING PHASES
-# ------------------------------------------------------------
-# Every annealing phase is processed for both constants, always aligned to
-# the primary before_annealing/T geometrical reference.
-
 process_annealing_phases() {
+    ALIGNMENT_TABLE="$DATA_DIR/alignment_${SENSOR}_${CONSTANT}.csv"
+
+    printf '%s\n' \
+        "annealing_phase,run_number,angle,clipy,clipx,shifty,shiftx" \
+        > "$ALIGNMENT_TABLE"
+
     local phase_dirs=()
 
     while IFS= read -r d; do
@@ -1160,19 +1137,12 @@ process_annealing_phases() {
         return 0
     fi
 
-    local phase_dir constant
+    local phase_dir
     for phase_dir in "${phase_dirs[@]}"; do
-        # Deterministic order: T first, then v.  This same ordering is used
-        # in PHASE 3 when the common global-ID catalog is constructed.
-        for constant in T v; do
-            process_aligned_dataset \
-                "$phase_dir" \
-                "$constant" \
-                "PHASE 2"
-        done
+        process_one_annealing_phase "$phase_dir"
     done
 
-    log "Alignment table updated: $ALIGNMENT_TABLE"
+    log "Alignment table created: $ALIGNMENT_TABLE"
 }
 
 # ------------------------------------------------------------
@@ -1187,16 +1157,16 @@ merge_all_phases_global_ids() {
 
     printf '\n'
     printf '============================================================\n'
-    printf 'PHASE 3 - COMMON SENSOR-LEVEL GLOBAL HOTSPOT IDS\n'
-    printf 'Sensor:               %s\n' "$SENSOR"
-    printf 'Primary reference:    before_annealing / T constant\n'
-    printf 'Processed constants:  T and v\n'
-    printf 'Match radius:         %s px\n' "$MATCH_RADIUS"
+    printf 'PHASE 3 - GLOBAL HOTSPOT MATCHING + FORCED MEASUREMENT\n'
+    printf 'Sensor:             %s\n' "$SENSOR"
+    printf 'Constant:           %s\n' "$CONSTANT"
+    printf 'Match radius:       %s px\n' "$MATCH_RADIUS"
     printf 'Coordinate tolerance: %s px\n' "$COORD_MATCH_RADIUS"
-    printf 'Output:               %s\n' "$MERGED_DIR"
+    printf 'Output:             %s\n' "$MERGED_DIR"
     printf '============================================================\n'
 
     SENSOR_ENV="$SENSOR" \
+    CONSTANT_ENV="$CONSTANT" \
     MATCH_RADIUS_ENV="$MATCH_RADIUS" \
     COORD_MATCH_RADIUS_ENV="$COORD_MATCH_RADIUS" \
     DATA_DIR_ENV="$DATA_DIR" \
@@ -1216,6 +1186,7 @@ import numpy as np
 import pandas as pd
 
 sensor = os.environ["SENSOR_ENV"]
+constant = os.environ["CONSTANT_ENV"]
 match_radius = float(os.environ["MATCH_RADIUS_ENV"])
 coord_match_radius = float(os.environ["COORD_MATCH_RADIUS_ENV"])
 data_dir = Path(os.environ["DATA_DIR_ENV"])
@@ -1225,8 +1196,6 @@ spot_lum_macro = os.environ["SPOT_LUM_MACRO_ENV"]
 vbd_text = os.environ.get("VBD_ENV", "").strip()
 merged_root.mkdir(parents=True, exist_ok=True)
 
-CONSTANTS = ("T", "v")
-CONSTANT_ORDER = {"T": 0, "v": 1}
 required_columns = ["spot", "x", "y", "luminosity", "error", "T", "v"]
 
 
@@ -1275,6 +1244,7 @@ def mean_coordinates_per_local_spot(df: pd.DataFrame) -> pd.DataFrame:
     tmp = df.copy()
     tmp["x"] = pd.to_numeric(tmp["x"], errors="raise")
     tmp["y"] = pd.to_numeric(tmp["y"], errors="raise")
+
     return (
         tmp.groupby("spot", as_index=False, sort=True)
         .agg(x_mean=("x", "mean"), y_mean=("y", "mean"))
@@ -1321,6 +1291,102 @@ def greedy_one_to_one(source_rows, target_rows, source_id, target_id,
     return mapping, distances, candidate_counts
 
 
+# ============================================================
+# DISCOVER INPUT DATASETS
+# ============================================================
+
+def find_dataset_csvs():
+    phase_dirs = [
+        p for p in data_dir.iterdir()
+        if p.is_dir()
+        and (p.name == "before_annealing" or p.name.startswith("annealing_"))
+    ]
+    phase_dirs.sort(key=lambda p: phase_sort_key(p.name))
+
+    datasets = []
+    run_pattern = re.compile(
+        rf"^{re.escape(sensor)}_{re.escape(constant)}=(.+)_run=(.+)$"
+    )
+
+    for phase_dir in phase_dirs:
+        matching_runs = [
+            p for p in phase_dir.iterdir()
+            if p.is_dir() and run_pattern.fullmatch(p.name)
+        ]
+
+        if not matching_runs:
+            continue
+
+        if len(matching_runs) > 1:
+            raise RuntimeError(
+                f"More than one run matches {sensor}_{constant}=*_run=* "
+                f"inside {phase_dir}:\n  "
+                + "\n  ".join(str(p) for p in matching_runs)
+            )
+
+        run_dir = matching_runs[0]
+        m = run_pattern.fullmatch(run_dir.name)
+        assert m is not None
+
+        fixed_value = m.group(1)
+        run_number = m.group(2)
+        run_prefix = f"{sensor}_{constant}={fixed_value}"
+        phase = phase_dir.name
+
+        csv_path = (
+            run_dir
+            / "6luminosity"
+            / f"{run_prefix}_{phase}_run={run_number}.csv"
+        )
+
+        if not csv_path.is_file():
+            raise FileNotFoundError(
+                "Final luminosity CSV expected from phases 1/2 was not found:\n"
+                f"  {csv_path}"
+            )
+
+        coord_dir = run_dir / "4coordinates"
+        coord_files = sorted(coord_dir.glob("*_reference_coordinates.txt"))
+        if len(coord_files) != 1:
+            raise RuntimeError(
+                f"Expected exactly one reference coordinate file in {coord_dir}; "
+                f"found {len(coord_files)}."
+            )
+
+        root_dir = run_dir / "5th2f"
+        root_files = sorted(
+            p for p in root_dir.glob("*data=diff*_processed_rotated_th2f.root")
+            if "data=diffe" not in p.name
+        )
+        if not root_files:
+            raise RuntimeError(f"No TH2F data=diff files found in {root_dir}")
+
+        datasets.append({
+            "phase": phase,
+            "phase_order": len(datasets),
+            "run_dir": run_dir,
+            "run_number": run_number,
+            "run_prefix": run_prefix,
+            "fixed_value": fixed_value,
+            "path": csv_path,
+            "coord_path": coord_files[0],
+            "root_files": root_files,
+        })
+
+    if not datasets:
+        raise RuntimeError(
+            f"No merged luminosity CSV found for sensor={sensor}, "
+            f"constant={constant}."
+        )
+
+    if datasets[0]["phase"] != "before_annealing":
+        raise RuntimeError(
+            "before_annealing is required as the global-ID reference."
+        )
+
+    return datasets
+
+
 def read_reference_coordinates(path: Path) -> pd.DataFrame:
     rows = []
     with path.open("r", encoding="utf-8") as handle:
@@ -1358,7 +1424,7 @@ def read_reference_coordinates(path: Path) -> pd.DataFrame:
 
 
 def attach_local_geometry(local_spots: pd.DataFrame, coordinates: pd.DataFrame,
-                          phase: str, constant: str):
+                          phase: str):
     mapping, distances, candidate_counts = greedy_one_to_one(
         source_rows=local_spots,
         target_rows=coordinates,
@@ -1375,7 +1441,7 @@ def attach_local_geometry(local_spots: pd.DataFrame, coordinates: pd.DataFrame,
     if missing:
         raise RuntimeError(
             f"Could not associate local spots with the 4coordinates file in "
-            f"phase={phase}, constant={constant}. Missing local spot IDs: {missing}. "
+            f"phase={phase}. Missing local spot IDs: {missing}. "
             f"Increase COORD_MATCH_RADIUS only if the coordinate systems are known "
             f"to differ slightly."
         )
@@ -1396,7 +1462,7 @@ def attach_local_geometry(local_spots: pd.DataFrame, coordinates: pd.DataFrame,
         if candidate_counts.get(local_spot, 0) > 1:
             print(
                 "WARNING: multiple coordinate-file candidates within tolerance: "
-                f"phase={phase}, constant={constant}, local_spot={local_spot}",
+                f"phase={phase}, local_spot={local_spot}",
                 file=sys.stderr,
             )
 
@@ -1404,128 +1470,53 @@ def attach_local_geometry(local_spots: pd.DataFrame, coordinates: pd.DataFrame,
 
 
 # ============================================================
-# DATASET DISCOVERY
+# READ PHASE DATA + GEOMETRIES
 # ============================================================
 
-def find_one_dataset(phase_dir: Path, constant: str, phase_order: int):
-    run_pattern = re.compile(
-        rf"^{re.escape(sensor)}_{re.escape(constant)}=(.+)_run=(.+)$"
+datasets = find_dataset_csvs()
+
+# All phases belonging to the same analysis must have the same fixed value.
+# Example: A1 + T must consistently correspond to A1_T=20 in every phase.
+fixed_values = {d["fixed_value"] for d in datasets}
+if len(fixed_values) != 1:
+    details = "\n  ".join(
+        f"{d['phase']}: {sensor}_{constant}={d['fixed_value']}"
+        for d in datasets
     )
-    matching_runs = [
-        p for p in phase_dir.iterdir()
-        if p.is_dir() and run_pattern.fullmatch(p.name)
-    ]
-
-    if not matching_runs:
-        return None
-
-    if len(matching_runs) > 1:
-        raise RuntimeError(
-            f"More than one run matches {sensor}_{constant}=*_run=* "
-            f"inside {phase_dir}:\n  "
-            + "\n  ".join(str(p) for p in matching_runs)
-        )
-
-    run_dir = matching_runs[0]
-    m = run_pattern.fullmatch(run_dir.name)
-    assert m is not None
-
-    fixed_value = m.group(1)
-    run_number = m.group(2)
-    run_prefix = f"{sensor}_{constant}={fixed_value}"
-    phase = phase_dir.name
-
-    csv_path = (
-        run_dir / "6luminosity" / f"{run_prefix}_{phase}_run={run_number}.csv"
-    )
-    if not csv_path.is_file():
-        raise FileNotFoundError(
-            "Final luminosity CSV expected from PHASE 1/2 was not found:\n"
-            f"  {csv_path}"
-        )
-
-    coord_dir = run_dir / "4coordinates"
-    coord_files = sorted(coord_dir.glob("*_reference_coordinates.txt"))
-    if len(coord_files) != 1:
-        raise RuntimeError(
-            f"Expected exactly one reference coordinate file in {coord_dir}; "
-            f"found {len(coord_files)}."
-        )
-
-    root_dir = run_dir / "5th2f"
-    root_files = sorted(
-        p for p in root_dir.glob("*data=diff*_processed_rotated_th2f.root")
-        if "data=diffe" not in p.name
-    )
-    if not root_files:
-        raise RuntimeError(f"No TH2F data=diff files found in {root_dir}")
-
-    return {
-        "phase": phase,
-        "phase_order": phase_order,
-        "constant": constant,
-        "run_dir": run_dir,
-        "run_number": run_number,
-        "run_prefix": run_prefix,
-        "fixed_value": fixed_value,
-        "path": csv_path,
-        "coord_path": coord_files[0],
-        "root_files": root_files,
-    }
-
-
-def discover_canonical_datasets():
-    phase_dirs = [
-        p for p in data_dir.iterdir()
-        if p.is_dir()
-        and (p.name == "before_annealing" or p.name.startswith("annealing_"))
-    ]
-    phase_dirs.sort(key=lambda p: phase_sort_key(p.name))
-
-    if not any(p.name == "before_annealing" for p in phase_dirs):
-        raise RuntimeError("before_annealing directory is required.")
-
-    phase_order_map = {p.name: i for i, p in enumerate(phase_dirs)}
-    datasets = []
-    for phase_dir in phase_dirs:
-        for constant in CONSTANTS:
-            d = find_one_dataset(
-                phase_dir, constant, phase_order_map[phase_dir.name]
-            )
-            if d is not None:
-                datasets.append(d)
-
-    datasets.sort(
-        key=lambda d: (
-            phase_sort_key(d["phase"]),
-            CONSTANT_ORDER[d["constant"]],
-        )
+    raise RuntimeError(
+        f"Inconsistent fixed {constant} values across phases:\n  {details}"
     )
 
-    primary = [
-        d for d in datasets
-        if d["phase"] == "before_annealing" and d["constant"] == "T"
-    ]
-    if len(primary) != 1:
-        raise RuntimeError(
-            "Exactly one before_annealing/T dataset is required as the primary "
-            "global-ID reference."
-        )
+fixed_value = datasets[0]["fixed_value"]
+outdir = merged_root / f"{sensor}_{constant}={fixed_value}"
+outdir.mkdir(parents=True, exist_ok=True)
 
-    for constant in CONSTANTS:
-        if not any(
-            d["phase"] == "before_annealing" and d["constant"] == constant
-            for d in datasets
-        ):
-            raise RuntimeError(
-                f"before_annealing/{constant} is required to build the common "
-                f"sensor-level indexing."
-            )
+print(f"Found {len(datasets)} phase datasets:")
+for d in datasets:
+    print(f"  {d['phase']}: {d['path']}")
+print(f"Phase-3 output directory: {outdir}")
 
-    return datasets
+# Remove stale phase-3 products for this sensor/condition.
+for pattern in (
+    f"{sensor}_{constant}=*_global_ID.csv",
+    f"{sensor}_{constant}=*_global_complete.csv",
+):
+    for stale in outdir.glob(pattern):
+        stale.unlink()
 
+for suffix in (
+    "all_phases_global_ID.csv",
+    "hotspot_presence.csv",
+    "phase_changes.csv",
+    "global_catalog.csv",
+    "global_mapping.csv",
+    "geometry_plan.csv",
+):
+    stale = outdir / f"{sensor}_{constant}_{suffix}"
+    if stale.exists():
+        stale.unlink()
 
-def load_dataset(d):
+for d in datasets:
     df = pd.read_csv(d["path"])
     check_columns(df, d["path"])
 
@@ -1538,91 +1529,20 @@ def load_dataset(d):
     d["local_spots"] = mean_coordinates_per_local_spot(df)
     d["coordinates"] = read_reference_coordinates(d["coord_path"])
     d["local_geometry"] = attach_local_geometry(
-        d["local_spots"], d["coordinates"], d["phase"], d["constant"]
+        d["local_spots"], d["coordinates"], d["phase"]
     )
 
 
 # ============================================================
-# DISCOVER + VALIDATE CANONICAL DATA
+# GLOBAL-ID CATALOG
 # ============================================================
 
-canonical_datasets = discover_canonical_datasets()
-
-for d in canonical_datasets:
-    load_dataset(d)
-
-canonical_by_constant = {
-    constant: [d for d in canonical_datasets if d["constant"] == constant]
-    for constant in CONSTANTS
-}
-
-fixed_value_by_constant = {}
-outdir_by_constant = {}
-for constant, datasets in canonical_by_constant.items():
-    fixed_values = {d["fixed_value"] for d in datasets}
-    if len(fixed_values) != 1:
-        details = "\n  ".join(
-            f"{d['phase']}: {sensor}_{constant}={d['fixed_value']}"
-            for d in datasets
-        )
-        raise RuntimeError(
-            f"Inconsistent fixed {constant} values across canonical phases:\n  {details}"
-        )
-
-    fixed_value = next(iter(fixed_values))
-    fixed_value_by_constant[constant] = fixed_value
-    outdir = merged_root / f"{sensor}_{constant}={fixed_value}"
-    outdir.mkdir(parents=True, exist_ok=True)
-    outdir_by_constant[constant] = outdir
-
-print("Datasets used for the common global-ID catalog:")
-for d in canonical_datasets:
-    print(f"  {d['phase']} / {d['constant']}: {d['path']}")
-# Remove stale PHASE-3 products without touching PHASE-1/2 local CSVs.
-for constant, outdir in outdir_by_constant.items():
-    for pattern in (
-        f"{sensor}_{constant}=*_global_ID.csv",
-        f"{sensor}_{constant}=*_global_complete.csv",
-    ):
-        for stale in outdir.glob(pattern):
-            stale.unlink()
-
-    for suffix in (
-        "all_phases_global_ID.csv",
-        "hotspot_presence.csv",
-        "phase_changes.csv",
-        "global_catalog.csv",
-        "global_mapping.csv",
-        "geometry_plan.csv",
-    ):
-        stale = outdir / f"{sensor}_{constant}_{suffix}"
-        if stale.exists():
-            stale.unlink()
-
-for stale_name in (
-    f"{sensor}_global_catalog.csv",
-    f"{sensor}_global_mapping.csv",
-):
-    stale = merged_root / stale_name
-    if stale.exists():
-        stale.unlink()
-
-# ============================================================
-# COMMON GLOBAL-ID CATALOG
-# ============================================================
-# Primary indexing seed: before_annealing with T constant.
-# Every other canonical dataset (before_annealing/v and all annealing T/v)
-# is matched to the SAME growing catalog.  Therefore one physical hotspot
-# cannot acquire independent IDs in the two scan families.
-
-reference = next(
-    d for d in canonical_datasets
-    if d["phase"] == "before_annealing" and d["constant"] == "T"
-)
+reference = datasets[0]
 ref_local = reference["local_spots"].sort_values("spot").reset_index(drop=True)
 
 catalog_rows = []
 reference_mapping = {}
+
 for gid, row in enumerate(ref_local.itertuples(index=False)):
     local_spot = row.spot
     reference_mapping[local_spot] = gid
@@ -1631,29 +1551,27 @@ for gid, row in enumerate(ref_local.itertuples(index=False)):
         "spot": gid,
         "x_ref": geom["x"],
         "y_ref": geom["y"],
-        "first_seen_phase": "before_annealing",
-        "first_seen_constant": "T",
+        "first_seen_phase": reference["phase"],
         "first_seen_run": reference["run_number"],
-        "first_seen_phase_order": reference["phase_order"],
+        "first_seen_order": reference["phase_order"],
     })
 
 catalog = pd.DataFrame(catalog_rows)
 next_global_id = len(catalog_rows)
+
 matched_datasets = []
 mapping_rows = []
 
-for d in canonical_datasets:
+for d in datasets:
     phase = d["phase"]
-    constant = d["constant"]
     run_number = d["run_number"]
     local_spots = d["local_spots"]
 
-    is_primary_reference = d is reference
-    if is_primary_reference:
+    if phase == "before_annealing":
         mapping = dict(reference_mapping)
         distances = {local_spot: 0.0 for local_spot in mapping}
         candidate_counts = {local_spot: 1 for local_spot in mapping}
-        match_types = {local_spot: "primary_reference" for local_spot in mapping}
+        match_types = {local_spot: "reference" for local_spot in mapping}
     else:
         mapping, distances, candidate_counts = greedy_one_to_one(
             source_rows=local_spots,
@@ -1679,7 +1597,6 @@ for d in canonical_datasets:
 
             mapping[local_spot] = gid
             distances[local_spot] = np.nan
-            candidate_counts.setdefault(local_spot, 0)
             match_types[local_spot] = "new"
 
             catalog = pd.concat([
@@ -1689,16 +1606,15 @@ for d in canonical_datasets:
                     "x_ref": geom["x"],
                     "y_ref": geom["y"],
                     "first_seen_phase": phase,
-                    "first_seen_constant": constant,
                     "first_seen_run": run_number,
-                    "first_seen_phase_order": d["phase_order"],
+                    "first_seen_order": d["phase_order"],
                 }]),
             ], ignore_index=True)
 
             print(
-                "NEW CANONICAL HOTSPOT: "
-                f"phase={phase}, constant={constant}, local_spot={local_spot}, "
-                f"global_spot={gid}, x={geom['x']:.3f}, y={geom['y']:.3f}"
+                "NEW HOTSPOT: "
+                f"phase={phase}, local_spot={local_spot}, global_spot={gid}, "
+                f"x={geom['x']:.3f}, y={geom['y']:.3f}"
             )
 
     local_lookup = local_spots.set_index("spot")
@@ -1713,7 +1629,6 @@ for d in canonical_datasets:
         mapping_rows.append({
             "phase": phase,
             "phase_order": d["phase_order"],
-            "constant": constant,
             "run_number": run_number,
             "local_spot": local_spot,
             "spot": int(gid),
@@ -1733,27 +1648,19 @@ for d in canonical_datasets:
         if n_candidates > 1:
             print(
                 "WARNING: ambiguous global spatial neighbourhood: "
-                f"phase={phase}, constant={constant}, local_spot={local_spot}, "
+                f"phase={phase}, local_spot={local_spot}, "
                 f"candidate_count={n_candidates}. Closest available match used.",
                 file=sys.stderr,
             )
 
-    # Compatibility output: detected rows only, but now with the sensor-level
-    # common global IDs.
+    # Keep the old detection-only per-phase global-ID file for compatibility.
     df_global = d["df"].copy()
     df_global["spot"] = df_global["spot"].map(mapping)
     if df_global["spot"].isna().any():
-        raise RuntimeError(
-            f"Internal error: unmapped spots remain in phase={phase}, "
-            f"constant={constant}."
-        )
+        raise RuntimeError(f"Internal error: unmapped spots remain in phase {phase}.")
     df_global["spot"] = df_global["spot"].astype(int)
-    varying_column = "v" if constant == "T" else "T"
-    df_global = df_global.sort_values(
-        ["spot", varying_column], kind="stable"
-    ).reset_index(drop=True)
-
-    outdir = outdir_by_constant[constant]
+    sort_cols = ["spot", "v" if constant == "T" else "T"]
+    df_global = df_global.sort_values(sort_cols, kind="stable").reset_index(drop=True)
     detection_only_output = outdir / f"{d['path'].stem}_global_ID.csv"
     df_global.to_csv(detection_only_output, index=False)
 
@@ -1768,175 +1675,173 @@ for d in canonical_datasets:
 mapping_df = pd.DataFrame(mapping_rows)
 all_global_spots = sorted(catalog["spot"].astype(int).unique())
 
-# ============================================================
-# PRESENCE / STATUS PER CONSTANT
-# ============================================================
-
-def build_presence(condition_datasets, constant):
-    rows = []
-    for condition_index, d in enumerate(condition_datasets):
-        present = d["present_spots"]
-        previous_present = (
-            condition_datasets[condition_index - 1]["present_spots"]
-            if condition_index > 0 else set()
-        )
-        inverse_mapping = {
-            int(gid): local for local, gid in d["mapping"].items()
-        }
-
-        for gid in all_global_spots:
-            detected_indices = [
-                i for i, dd in enumerate(condition_datasets)
-                if gid in dd["present_spots"]
-            ]
-            detected = gid in present
-
-            if not detected_indices:
-                status = "never_detected_in_condition"
-            else:
-                first_idx = detected_indices[0]
-                if condition_index < first_idx:
-                    status = "not_yet_detected"
-                elif condition_index == first_idx:
-                    status = (
-                        "reference"
-                        if d["phase"] == "before_annealing"
-                        else "appeared"
-                    )
-                else:
-                    was_detected_previous = gid in previous_present
-                    if detected and was_detected_previous:
-                        status = "present"
-                    elif detected and not was_detected_previous:
-                        status = "reappeared"
-                    elif not detected and was_detected_previous:
-                        status = "disappeared"
-                    else:
-                        status = "absent"
-
-            rows.append({
-                "spot": gid,
-                "phase": d["phase"],
-                "phase_order": d["phase_order"],
-                "condition_order": condition_index,
-                "constant": constant,
-                "run_number": d["run_number"],
-                "detection": "present" if detected else "absent",
-                "detected": bool(detected),
-                "status": status,
-                "local_spot": inverse_mapping.get(gid, np.nan),
-            })
-
-    return pd.DataFrame(rows)
-
 
 # ============================================================
-# GEOMETRY PROPAGATION PER CONSTANT
+# PRESENCE / TEMPORAL STATUS BASED ONLY ON SOURCE DETECTION
 # ============================================================
-# The ID catalog is shared across T/v.  The aperture policy remains local to
-# each scan family whenever that hotspot is detected there. If a hotspot is
-# never detected in one family, geometry/radius fall back to a real detection
-# from the other family, allowing a forced measurement without inventing a
-# second ID.
 
-def build_geometry_plan(condition_datasets, constant, presence):
-    rows = []
+first_seen_order = {
+    int(row.spot): int(row.first_seen_order)
+    for row in catalog.itertuples(index=False)
+}
+
+presence_rows = []
+
+for phase_index, d in enumerate(matched_datasets):
+    present = d["present_spots"]
+    previous_present = (
+        matched_datasets[phase_index - 1]["present_spots"]
+        if phase_index > 0 else set()
+    )
+    inverse_mapping = {int(gid): local for local, gid in d["mapping"].items()}
 
     for gid in all_global_spots:
-        all_detections = mapping_df[mapping_df["spot"] == gid].sort_values(
-            ["phase_order", "constant"], kind="stable"
-        )
-        if all_detections.empty:
-            raise RuntimeError(f"Global hotspot {gid} has no detected geometry.")
+        detected = gid in present
+        first_idx = first_seen_order[gid]
 
-        detections = all_detections[
-            all_detections["constant"] == constant
-        ].sort_values("phase_order", kind="stable")
-
-        if not detections.empty:
-            radius_pool = detections
-            cross_constant_only = False
+        if phase_index < first_idx:
+            status = "not_yet_detected"
+        elif phase_index == first_idx:
+            status = "reference" if phase_index == 0 else "appeared"
         else:
-            radius_pool = all_detections
-            cross_constant_only = True
-
-        max_radius_idx = radius_pool["integration_radius"].astype(float).idxmax()
-        max_radius_detection = radius_pool.loc[max_radius_idx]
-        fixed_integration_radius = float(max_radius_detection["integration_radius"])
-        fixed_integration_area = float(max_radius_detection["integration_area"])
-        fixed_radius_source_phase = max_radius_detection["phase"]
-        fixed_radius_source_run = max_radius_detection["run_number"]
-        fixed_radius_source_constant = max_radius_detection["constant"]
-
-        for condition_index, d in enumerate(condition_datasets):
-            target_order = d["phase_order"]
-            own = detections[detections["phase_order"] == target_order]
-
-            if not own.empty:
-                coordinate_source = own.iloc[0]
-                geometry_mode = "phase_detection"
-            elif not detections.empty:
-                previous = detections[detections["phase_order"] < target_order]
-                if not previous.empty:
-                    coordinate_source = previous.iloc[-1]
-                    geometry_mode = "previous_detection"
-                else:
-                    future = detections[detections["phase_order"] > target_order]
-                    if future.empty:
-                        raise RuntimeError(
-                            f"No usable geometry found for global hotspot {gid}, "
-                            f"constant={constant}, target phase={d['phase']}."
-                        )
-                    coordinate_source = future.iloc[0]
-                    geometry_mode = "first_future_detection"
+            was_detected_previous = gid in previous_present
+            if detected and was_detected_previous:
+                status = "present"
+            elif detected and not was_detected_previous:
+                status = "reappeared"
+            elif not detected and was_detected_previous:
+                status = "disappeared"
             else:
-                # Never detected in this scan family: use a real measurement
-                # from the other family only as a forced-integration geometry.
-                coordinate_source = max_radius_detection
-                geometry_mode = "cross_constant_fallback"
+                status = "absent"
 
-            p = presence[
-                (presence["spot"] == gid)
-                & (presence["condition_order"] == condition_index)
-            ].iloc[0]
+        local_spot = inverse_mapping.get(gid, np.nan)
+        presence_rows.append({
+            "spot": gid,
+            "phase": d["phase"],
+            "phase_order": phase_index,
+            "run_number": d["run_number"],
+            "detection": "present" if detected else "absent",
+            "detected": bool(detected),
+            "status": status,
+            "local_spot": local_spot,
+        })
 
-            rows.append({
-                "spot": gid,
-                "phase": d["phase"],
-                "phase_order": target_order,
-                "condition_order": condition_index,
-                "constant": constant,
-                "run_number": d["run_number"],
-                "detection": p["detection"],
-                "status": p["status"],
-                "x": float(coordinate_source["x"]),
-                "y": float(coordinate_source["y"]),
-                "integration_area": fixed_integration_area,
-                "integration_radius": fixed_integration_radius,
-                "geometry_source_phase": coordinate_source["phase"],
-                "geometry_source_constant": coordinate_source["constant"],
-                "geometry_source_run": coordinate_source["run_number"],
-                "geometry_mode": geometry_mode,
-                "integration_radius_source_phase": fixed_radius_source_phase,
-                "integration_radius_source_constant": fixed_radius_source_constant,
-                "integration_radius_source_run": fixed_radius_source_run,
-                "match_distance": coordinate_source["match_distance"],
-                "cross_constant_only": bool(cross_constant_only),
-            })
-
-    plan = pd.DataFrame(rows)
-    return plan.sort_values(
-        ["spot", "condition_order"], kind="stable"
-    ).reset_index(drop=True)
+presence = pd.DataFrame(presence_rows)
 
 
 # ============================================================
-# ROOT FORCED-MEASUREMENT HELPERS
+# GEOMETRY PROPAGATION + FIXED INTEGRATION RADIUS
+# ============================================================
+# Policy:
+#   COORDINATES:
+#     - detected in target phase -> use that phase's own x,y;
+#     - absent after it has been seen -> use the most recent previous detection;
+#     - absent before first appearance -> use the first future detection.
+#
+#   INTEGRATION RADIUS:
+#     - inspect ONLY the phases in which the global hotspot is genuinely
+#       detected;
+#     - choose ONCE the largest measured integration radius among those
+#       detections;
+#     - keep exactly that radius (and the integration area associated with
+#       the same detection) for EVERY phase, including forced measurements
+#       before the first detection and after a disappearance.
+#
+# This prevents the luminosity evolution from being biased by a changing
+# integration aperture and, by using the largest detected aperture, avoids
+# clipping a hotspot in phases where its detected extent is larger. The
+# hotspot centre may still follow measured phase-to-phase coordinate changes.
+
+geometry_rows = []
+
+for gid in all_global_spots:
+    detections = mapping_df[mapping_df["spot"] == gid].sort_values("phase_order")
+    if detections.empty:
+        raise RuntimeError(f"Global hotspot {gid} has no detected geometry.")
+
+    # Canonical aperture: largest radius among ALL REAL DETECTIONS of this
+    # global hotspot.  The corresponding integration area is taken from the
+    # same detection so that radius and area remain internally consistent.
+    max_radius_idx = detections["integration_radius"].astype(float).idxmax()
+    max_radius_detection = detections.loc[max_radius_idx]
+
+    fixed_integration_radius = float(max_radius_detection["integration_radius"])
+    fixed_integration_area = float(max_radius_detection["integration_area"])
+    fixed_radius_source_phase = max_radius_detection["phase"]
+    fixed_radius_source_run = max_radius_detection["run_number"]
+
+    for d in matched_datasets:
+        target_order = d["phase_order"]
+        own = detections[detections["phase_order"] == target_order]
+
+        if not own.empty:
+            coordinate_source = own.iloc[0]
+            geometry_mode = "phase_detection"
+        else:
+            previous = detections[detections["phase_order"] < target_order]
+            if not previous.empty:
+                coordinate_source = previous.iloc[-1]
+                geometry_mode = "previous_detection"
+            else:
+                future = detections[detections["phase_order"] > target_order]
+                if future.empty:
+                    raise RuntimeError(
+                        f"No usable geometry found for global hotspot {gid}, "
+                        f"target phase {d['phase']}."
+                    )
+                coordinate_source = future.iloc[0]
+                geometry_mode = "first_future_detection"
+
+        p = presence[
+            (presence["spot"] == gid) &
+            (presence["phase_order"] == target_order)
+        ].iloc[0]
+
+        geometry_rows.append({
+            "spot": gid,
+            "phase": d["phase"],
+            "phase_order": target_order,
+            "run_number": d["run_number"],
+            "detection": p["detection"],
+            "status": p["status"],
+            # x,y may follow the measured centre when the hotspot is detected.
+            "x": float(coordinate_source["x"]),
+            "y": float(coordinate_source["y"]),
+            # The aperture is fixed to the maximum radius observed across
+            # the phases where this hotspot is genuinely detected.
+            "integration_area": fixed_integration_area,
+            "integration_radius": fixed_integration_radius,
+            "geometry_source_phase": coordinate_source["phase"],
+            "geometry_source_run": coordinate_source["run_number"],
+            "geometry_mode": geometry_mode,
+            "integration_radius_source_phase": fixed_radius_source_phase,
+            "integration_radius_source_run": fixed_radius_source_run,
+            # Distance used when the COORDINATE source detection was assigned
+            # to its global hotspot ID. The aperture itself is fixed from the
+            # maximum-radius real detection and is independent of this distance.
+            "match_distance": coordinate_source["match_distance"],
+        })
+
+geometry_plan = pd.DataFrame(geometry_rows)
+geometry_plan = geometry_plan.sort_values(
+    ["spot", "phase_order"], kind="stable"
+).reset_index(drop=True)
+
+geometry_plan_output = outdir / f"{sensor}_{constant}_geometry_plan.csv"
+geometry_plan.drop(columns=["phase_order"]).to_csv(
+    geometry_plan_output, index=False
+)
+print(f"Created: {geometry_plan_output}")
+
+
+# ============================================================
+# RUN ROOT ON COMPLETE GLOBAL COORDINATES FOR EVERY PHASE
 # ============================================================
 
-def write_complete_coordinate_file(d, phase_plan: pd.DataFrame, tag="global_complete") -> Path:
+def write_complete_coordinate_file(d, phase_plan: pd.DataFrame) -> Path:
     coord_output = d["run_dir"] / "4coordinates" / (
-        f"{d['run_prefix']}_{d['phase']}_run={d['run_number']}_{tag}_coordinates.txt"
+        f"{d['run_prefix']}_{d['phase']}_run={d['run_number']}_"
+        "global_complete_coordinates.txt"
     )
 
     ordered = phase_plan.sort_values("spot")
@@ -1961,8 +1866,10 @@ def map_root_results_to_plan(result_df: pd.DataFrame, phase_plan: pd.DataFrame,
         )
 
     result = result_df.copy()
-    for col in needed:
-        result[col] = pd.to_numeric(result[col], errors="raise")
+    result["x"] = pd.to_numeric(result["x"], errors="raise")
+    result["y"] = pd.to_numeric(result["y"], errors="raise")
+    result["luminosity"] = pd.to_numeric(result["luminosity"], errors="raise")
+    result["error"] = pd.to_numeric(result["error"], errors="raise")
     result["result_index"] = np.arange(len(result), dtype=int)
 
     plan = phase_plan.copy().reset_index(drop=True)
@@ -1974,7 +1881,7 @@ def map_root_results_to_plan(result_df: pd.DataFrame, phase_plan: pd.DataFrame,
             f"but {len(plan)} global coordinates were supplied."
         )
 
-    mapping, _, _ = greedy_one_to_one(
+    mapping, distances, _ = greedy_one_to_one(
         source_rows=result,
         target_rows=plan,
         source_id="result_index",
@@ -1982,6 +1889,7 @@ def map_root_results_to_plan(result_df: pd.DataFrame, phase_plan: pd.DataFrame,
         sx="x", sy="y", tx="x", ty="y",
         radius=coord_match_radius,
     )
+
     if len(mapping) != len(result):
         raise RuntimeError(
             f"Could not map every ROOT luminosity result back to the global "
@@ -1991,9 +1899,11 @@ def map_root_results_to_plan(result_df: pd.DataFrame, phase_plan: pd.DataFrame,
     plan_lookup = plan.set_index("plan_index")
     records = []
     for result_row in result.itertuples(index=False):
-        p = plan_lookup.loc[mapping[result_row.result_index]]
-        record = {
+        plan_index = mapping[result_row.result_index]
+        p = plan_lookup.loc[plan_index]
+        records.append({
             "spot": int(p["spot"]),
+            # Use exactly the geometry supplied for the integration.
             "x": float(p["x"]),
             "y": float(p["y"]),
             "luminosity": float(result_row.luminosity),
@@ -2005,30 +1915,32 @@ def map_root_results_to_plan(result_df: pd.DataFrame, phase_plan: pd.DataFrame,
             "detection": p["detection"],
             "status": p["status"],
             "geometry_source_phase": p["geometry_source_phase"],
-            "geometry_source_constant": p["geometry_source_constant"],
             "geometry_source_run": p["geometry_source_run"],
             "geometry_mode": p["geometry_mode"],
             "integration_radius_source_phase": p["integration_radius_source_phase"],
-            "integration_radius_source_constant": p["integration_radius_source_constant"],
             "integration_radius_source_run": p["integration_radius_source_run"],
+            # This is the spatial distance used for the GLOBAL-ID assignment,
+            # not the internal ROOT-result -> coordinate-plan matching distance.
             "match_distance": p["match_distance"],
-        }
-        if "cross_constant_only" in p.index:
-            record["cross_constant_only"] = bool(p["cross_constant_only"])
-        records.append(record)
+        })
 
     return pd.DataFrame(records)
 
 
-def run_forced_measurements(d, phase_plan: pd.DataFrame, constant: str,
-                            coord_tag="global_complete"):
-    coord_file = write_complete_coordinate_file(d, phase_plan, tag=coord_tag)
-    phase_measurements = []
+complete_phase_frames = []
+
+for d in matched_datasets:
+    phase_plan = geometry_plan[
+        geometry_plan["phase_order"] == d["phase_order"]
+    ].copy()
+    coord_file = write_complete_coordinate_file(d, phase_plan)
 
     print(
-        f"Forced measurement {d['phase']} / {constant}: "
-        f"{len(phase_plan)} hotspots, {len(d['root_files'])} TH2F files"
+        f"Forced-measurement phase {d['phase']}: "
+        f"{len(phase_plan)} global hotspots, {len(d['root_files'])} TH2F files"
     )
+
+    phase_measurements = []
 
     for root_file in d["root_files"]:
         t_value = extract_parameter_from_name(root_file.name, "T")
@@ -2038,7 +1950,10 @@ def run_forced_measurements(d, phase_plan: pd.DataFrame, constant: str,
         if result_csv.exists():
             result_csv.unlink()
 
-        macro_call = f'{spot_lum_macro}("{root_file}","{coord_file}")'
+        macro_call = (
+            f'{spot_lum_macro}("{root_file}","{coord_file}")'
+        )
+
         completed = subprocess.run(
             ["root", "-l", "-q", macro_call],
             cwd=spot_lum_dir,
@@ -2066,6 +1981,7 @@ def run_forced_measurements(d, phase_plan: pd.DataFrame, constant: str,
         measured = map_root_results_to_plan(raw_result, phase_plan, root_file)
         measured["T"] = t_value
         measured["v"] = v_value
+
         if constant == "T":
             measured["v_fin"] = (
                 v_value - float(vbd_text) if vbd_text else np.nan
@@ -2075,185 +1991,98 @@ def run_forced_measurements(d, phase_plan: pd.DataFrame, constant: str,
 
     phase_complete = pd.concat(phase_measurements, ignore_index=True)
     varying_column = "v" if constant == "T" else "T"
-    return phase_complete.sort_values(
+    phase_complete = phase_complete.sort_values(
         ["spot", varying_column], kind="stable"
     ).reset_index(drop=True)
 
-
-def reorder_complete_columns(df: pd.DataFrame):
     preferred = ["spot", "x", "y", "luminosity", "error", "T", "v"]
-    if "v_fin" in df.columns:
+    if "v_fin" in phase_complete.columns:
         preferred.append("v_fin")
     preferred += [
         "phase", "detection", "status",
         "integration_radius", "integration_area",
-        "geometry_source_phase", "geometry_source_constant",
-    ]
-    if "geometry_source_fixed_value" in df.columns:
-        preferred.append("geometry_source_fixed_value")
-    preferred += [
-        "geometry_source_run", "geometry_mode",
-        "integration_radius_source_phase",
-        "integration_radius_source_constant",
-    ]
-    if "integration_radius_source_fixed_value" in df.columns:
-        preferred.append("integration_radius_source_fixed_value")
-    preferred += [
-        "integration_radius_source_run",
+        "geometry_source_phase", "geometry_source_run", "geometry_mode",
+        "integration_radius_source_phase", "integration_radius_source_run",
         "run_number", "match_distance",
     ]
-    if "cross_constant_only" in df.columns:
-        preferred.append("cross_constant_only")
-    return df[preferred]
+    phase_complete = phase_complete[preferred]
+
+    phase_output = outdir / f"{d['path'].stem}_global_complete.csv"
+    phase_complete.to_csv(phase_output, index=False)
+    print(f"Created: {phase_output}")
+
+    phase_complete["__phase_order"] = d["phase_order"]
+    complete_phase_frames.append(phase_complete)
 
 
 # ============================================================
-# CANONICAL MASTER FILES: ONE PER CONSTANT, SAME IDs
+# FINAL COMPLETE MASTER FILE
 # ============================================================
 
-presence_by_constant = {}
-geometry_plan_by_constant = {}
-phase_changes_by_constant = {}
+master = pd.concat(complete_phase_frames, ignore_index=True, sort=False)
+varying_column = "v" if constant == "T" else "T"
+master = master.sort_values(
+    ["spot", "__phase_order", varying_column], kind="stable"
+).reset_index(drop=True)
+master = master.drop(columns=["__phase_order"])
 
-for constant in CONSTANTS:
-    condition_datasets = [
-        d for d in matched_datasets if d["constant"] == constant
-    ]
-    condition_datasets.sort(key=lambda d: phase_sort_key(d["phase"]))
-    outdir = outdir_by_constant[constant]
-
-    presence = build_presence(condition_datasets, constant)
-    presence_by_constant[constant] = presence
-
-    geometry_plan = build_geometry_plan(
-        condition_datasets, constant, presence
-    )
-    geometry_plan_by_constant[constant] = geometry_plan
-
-    geometry_plan_output = outdir / f"{sensor}_{constant}_geometry_plan.csv"
-    geometry_plan.drop(
-        columns=["phase_order", "condition_order"]
-    ).to_csv(geometry_plan_output, index=False)
-    print(f"Created: {geometry_plan_output}")
-
-    complete_phase_frames = []
-    for condition_index, d in enumerate(condition_datasets):
-        phase_plan = geometry_plan[
-            geometry_plan["condition_order"] == condition_index
-        ].copy()
-        phase_complete = run_forced_measurements(
-            d, phase_plan, constant, coord_tag="global_complete"
-        )
-        phase_complete = reorder_complete_columns(phase_complete)
-
-        phase_output = outdir / f"{d['path'].stem}_global_complete.csv"
-        phase_complete.to_csv(phase_output, index=False)
-        print(f"Created: {phase_output}")
-
-        phase_complete["__condition_order"] = condition_index
-        complete_phase_frames.append(phase_complete)
-
-    master = pd.concat(complete_phase_frames, ignore_index=True, sort=False)
-    varying_column = "v" if constant == "T" else "T"
-    master = master.sort_values(
-        ["spot", "__condition_order", varying_column], kind="stable"
-    ).reset_index(drop=True)
-    master = master.drop(columns=["__condition_order"])
-
-    master_output = outdir / f"{sensor}_{constant}_all_phases_global_ID.csv"
-    master.to_csv(master_output, index=False)
-    print(f"Created canonical master: {master_output}")
-
-    presence_output = outdir / f"{sensor}_{constant}_hotspot_presence.csv"
-    presence.drop(
-        columns=["phase_order", "condition_order"]
-    ).to_csv(presence_output, index=False)
-    print(f"Created: {presence_output}")
-
-    phase_change_rows = []
-    for d in condition_datasets:
-        pp = presence[presence["phase"] == d["phase"]]
-        counts = pp["status"].value_counts()
-        phase_change_rows.append({
-            "phase": d["phase"],
-            "run_number": d["run_number"],
-            "n_detected": int(pp["detected"].sum()),
-            "n_reference": int(counts.get("reference", 0)),
-            "n_appeared": int(counts.get("appeared", 0)),
-            "n_reappeared": int(counts.get("reappeared", 0)),
-            "n_disappeared": int(counts.get("disappeared", 0)),
-            "n_absent": int(counts.get("absent", 0)),
-            "n_not_yet_detected": int(counts.get("not_yet_detected", 0)),
-            "n_never_detected_in_condition": int(
-                counts.get("never_detected_in_condition", 0)
-            ),
-        })
-
-    phase_changes = pd.DataFrame(phase_change_rows)
-    phase_changes_by_constant[constant] = phase_changes
-    phase_changes_output = outdir / f"{sensor}_{constant}_phase_changes.csv"
-    phase_changes.to_csv(phase_changes_output, index=False)
-    print(f"Created: {phase_changes_output}")
-
-    mapping_output = outdir / f"{sensor}_{constant}_global_mapping.csv"
-    mapping_df[mapping_df["constant"] == constant].drop(
-        columns=["phase_order"]
-    ).sort_values(["spot", "phase"], kind="stable").to_csv(
-        mapping_output, index=False
-    )
-    print(f"Created: {mapping_output}")
+master_output = outdir / f"{sensor}_{constant}_all_phases_global_ID.csv"
+master.to_csv(master_output, index=False)
+print(f"Created: {master_output}")
 
 
 # ============================================================
-# SHARED SENSOR-LEVEL CATALOG + MAPPING
+# PRESENCE / CHANGE / CATALOG DIAGNOSTICS
 # ============================================================
 
-catalog_to_save = catalog.copy()
-for constant in CONSTANTS:
-    detections_c = mapping_df[mapping_df["constant"] == constant]
-    last_phase = {}
-    last_run = {}
-    for gid in all_global_spots:
-        seen = detections_c[detections_c["spot"] == gid].sort_values(
-            "phase_order", kind="stable"
-        )
-        if seen.empty:
-            last_phase[gid] = np.nan
-            last_run[gid] = np.nan
-        else:
-            last = seen.iloc[-1]
-            last_phase[gid] = last["phase"]
-            last_run[gid] = last["run_number"]
+presence_output = outdir / f"{sensor}_{constant}_hotspot_presence.csv"
+presence_to_save = presence.drop(columns=["phase_order"])
+presence_to_save.to_csv(presence_output, index=False)
+print(f"Created: {presence_output}")
 
-    catalog_to_save[f"last_seen_phase_{constant}"] = (
-        catalog_to_save["spot"].map(last_phase)
-    )
-    catalog_to_save[f"last_seen_run_{constant}"] = (
-        catalog_to_save["spot"].map(last_run)
-    )
+phase_change_rows = []
+for d in matched_datasets:
+    pp = presence[presence["phase"] == d["phase"]]
+    counts = pp["status"].value_counts()
+    phase_change_rows.append({
+        "phase": d["phase"],
+        "run_number": d["run_number"],
+        "n_detected": int(pp["detected"].sum()),
+        "n_reference": int(counts.get("reference", 0)),
+        "n_appeared": int(counts.get("appeared", 0)),
+        "n_reappeared": int(counts.get("reappeared", 0)),
+        "n_disappeared": int(counts.get("disappeared", 0)),
+        "n_absent": int(counts.get("absent", 0)),
+        "n_not_yet_detected": int(counts.get("not_yet_detected", 0)),
+    })
 
-catalog_to_save = catalog_to_save.drop(columns=["first_seen_phase_order"])
-catalog_to_save = catalog_to_save.sort_values("spot").reset_index(drop=True)
+phase_changes = pd.DataFrame(phase_change_rows)
+phase_changes_output = outdir / f"{sensor}_{constant}_phase_changes.csv"
+phase_changes.to_csv(phase_changes_output, index=False)
+print(f"Created: {phase_changes_output}")
 
-shared_catalog_output = merged_root / f"{sensor}_global_catalog.csv"
-catalog_to_save.to_csv(shared_catalog_output, index=False)
-print(f"Created shared catalog: {shared_catalog_output}")
+last_seen_phase = {}
+last_seen_run = {}
+for gid in all_global_spots:
+    seen = presence[(presence["spot"] == gid) & (presence["detected"])]
+    last = seen.iloc[-1]
+    last_seen_phase[gid] = last["phase"]
+    last_seen_run[gid] = last["run_number"]
 
-shared_mapping_output = merged_root / f"{sensor}_global_mapping.csv"
+catalog["last_seen_phase"] = catalog["spot"].map(last_seen_phase)
+catalog["last_seen_run"] = catalog["spot"].map(last_seen_run)
+catalog = catalog.drop(columns=["first_seen_order"])
+catalog = catalog.sort_values("spot").reset_index(drop=True)
+
+catalog_output = outdir / f"{sensor}_{constant}_global_catalog.csv"
+catalog.to_csv(catalog_output, index=False)
+print(f"Created: {catalog_output}")
+
+mapping_output = outdir / f"{sensor}_{constant}_global_mapping.csv"
 mapping_df.drop(columns=["phase_order"]).sort_values(
-    ["spot", "phase", "constant"], kind="stable"
-).to_csv(shared_mapping_output, index=False)
-print(f"Created shared mapping: {shared_mapping_output}")
-
-# Keep per-condition catalog paths for backward compatibility.  The content is
-# intentionally identical because the global IDs are now sensor-level.
-for constant in CONSTANTS:
-    catalog_output = (
-        outdir_by_constant[constant]
-        / f"{sensor}_{constant}_global_catalog.csv"
-    )
-    catalog_to_save.to_csv(catalog_output, index=False)
-    print(f"Created: {catalog_output}")
+    ["spot", "phase"], kind="stable"
+).to_csv(mapping_output, index=False)
+print(f"Created: {mapping_output}")
 
 
 # ============================================================
@@ -2263,32 +2092,24 @@ for constant in CONSTANTS:
 print("")
 print("============================================")
 print("PHASE 3 COMPLETED")
-print(f"Sensor: {sensor}")
-print(f"Canonical global hotspots: {len(all_global_spots)}")
-print("Primary global-ID reference: before_annealing / T constant")
+print(f"Global hotspots: {len(all_global_spots)}")
 print("")
 
-for constant in CONSTANTS:
+for row in phase_changes.itertuples(index=False):
     print(
-        f"{constant}-constant master uses the same sensor-level global IDs: "
-        f"{outdir_by_constant[constant] / f'{sensor}_{constant}_all_phases_global_ID.csv'}"
+        f"{row.phase}: detected={row.n_detected}, "
+        f"appeared={row.n_appeared}, reappeared={row.n_reappeared}, "
+        f"disappeared={row.n_disappeared}"
     )
-    for row in phase_changes_by_constant[constant].itertuples(index=False):
-        print(
-            f"  {row.phase}: detected={row.n_detected}, "
-            f"appeared={row.n_appeared}, reappeared={row.n_reappeared}, "
-            f"disappeared={row.n_disappeared}, "
-            f"never-in-condition={row.n_never_detected_in_condition}"
-        )
-
 
 print("")
-print("Integration radius policy:")
-print("  - fixed to the largest radius among real detections in the same scan family;")
-print("  - if never detected in that family, geometry/radius fall back to a real")
-print("    detection from the other family only for forced measurement.")
-print(f"Shared catalog: {shared_catalog_output}")
-print(f"Shared mapping: {shared_mapping_output}")
+print("For every hotspot, luminosity and error were measured from TH2F using")
+print("an integration radius fixed from its FIRST real detection and kept constant")
+print("across all phases. Absent hotspots were still measured at propagated coordinates.")
+print(f"Master file:    {master_output}")
+print(f"Geometry plan:  {geometry_plan_output}")
+print(f"Presence file:  {presence_output}")
+print(f"Change report:  {phase_changes_output}")
 print("============================================")
 PY_PHASE3
 }
@@ -2300,50 +2121,40 @@ PY_PHASE3
 main() {
     check_requirements
 
-    ALIGNMENT_TABLE="$DATA_DIR/alignment_${SENSOR}.csv"
-    printf '%s\n' \
-        "phase,constant,run_prefix,run_number,angle,clipy,clipx,shifty,shiftx,is_primary_reference" \
-        > "$ALIGNMENT_TABLE"
-
     printf '\n'
     printf '============================================================\n'
     printf 'AUTOMATED EMMI ANALYSIS\n'
-    printf 'BASE_DIR:   %s\n' "$BASE_DIR"
-    printf 'DATA_DIR:   %s\n' "$DATA_DIR"
-    printf 'SENSOR:     %s\n' "$SENSOR"
-    printf 'CONSTANTS:  T and v\n'
-    printf 'REFERENCE:  before_annealing / T constant\n'
+    printf 'BASE_DIR:  %s\n' "$BASE_DIR"
+    printf 'DATA_DIR:  %s\n' "$DATA_DIR"
+    printf 'SENSOR:    %s\n' "$SENSOR"
+    printf 'CONSTANT:  %s\n' "$CONSTANT"
     printf '============================================================\n'
 
-    local vbd
-    vbd="$(get_vbd)"
-    if [[ -n "$vbd" ]]; then
-        printf 'Configured VBD for %s: %s V\n' "$SENSOR" "$vbd"
-    else
-        warn "VBD for $SENSOR is not configured; v_fin will be NaN in T-constant scans."
+    if [[ "$CONSTANT" == "T" ]]; then
+        local vbd
+        vbd="$(get_vbd)"
+
+        if [[ -n "$vbd" ]]; then
+            printf 'Configured VBD for %s: %s V\n' "$SENSOR" "$vbd"
+        else
+            warn "VBD for $SENSOR is not configured; v_fin will be NaN."
+        fi
     fi
 
     # ---------------- PHASE 1 ----------------
-    # Process before_annealing/T first because it defines the unique
-    # geometrical and global-ID reference; then process before_annealing/v.
     process_before_annealing
 
     # ---------------- PHASE 2 ----------------
     process_annealing_phases
 
     # ---------------- PHASE 3 ----------------
-    # Build one common global-ID catalog for the sensor and generate the two
-    # condition-specific masters using exactly the same IDs.
     merge_all_phases_global_ids
-
-    CONSTANT=""
 
     printf '\n'
     printf '============================================================\n'
     printf 'PHASES 1, 2 AND 3 COMPLETED SUCCESSFULLY\n'
-    printf 'Sensor:             %s\n' "$SENSOR"
-    printf 'Processed constants: T and v\n'
-    printf 'Primary reference:  before_annealing / T constant\n'
+    printf 'Sensor:   %s\n' "$SENSOR"
+    printf 'Constant: %s\n' "$CONSTANT"
     printf 'Alignment metadata: %s\n' "$ALIGNMENT_TABLE"
     printf 'Merged files:       %s\n' "$MERGED_DIR"
     printf '============================================================\n'
