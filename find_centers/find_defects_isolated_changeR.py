@@ -48,7 +48,7 @@ background_box_size = (150, 150)
 background_filter_size = (3, 3)
 
 # Detection threshold = threshold_sigma * local background RMS.
-threshold_sigma = 4.0
+threshold_sigma = 3.0
 
 # Gaussian convolution kernel used for source detection.
 kernel_fwhm = 3.0

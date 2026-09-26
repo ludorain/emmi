@@ -75,14 +75,6 @@ void lum_vs_v_systematics(const char* csv_R20,
             if(!p16||!p24) continue;
             r20.push_back(r); r16.push_back(*p16); r24.push_back(*p24);
         }
-        if(ppoint.is_open()) {
-            for(size_t ip=0;ip<r20.size();++ip){
-                double dL=std::max(std::fabs(r24[ip].luminosity-r20[ip].luminosity),
-                                   std::fabs(r20[ip].luminosity-r16[ip].luminosity));
-                ppoint<<id<<','<<ph<<','<<r20[ip].T<<','<<r20[ip].v<<','<<r20[ip].v_fin<<','
-                      <<r16[ip].luminosity<<','<<r20[ip].luminosity<<','<<r24[ip].luminosity<<','<<dL<<'\n';
-            }
-        }
         if(r20.size()<2) continue;
         auto f20=fit_v_rows(r20,"R20",id);
         auto f16=fit_v_rows(r16,"R16",id);
