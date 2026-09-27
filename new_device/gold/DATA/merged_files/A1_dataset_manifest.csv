@@ -1,0 +1,4 @@
+dataset_key,run_name,run_number,varying_parameter,run_dir,detected_coordinates
+v9,A1_v=9_run=20250825-093810,20250825-093810,T,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_v=9_run=20250825-093810,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_v=9_run=20250825-093810/4coordinates/v9_detected_reference_coordinates.txt
+v7,A1_v=7_run=20250826-035836,20250826-035836,T,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_v=7_run=20250826-035836,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_v=7_run=20250826-035836/4coordinates/v7_detected_reference_coordinates.txt
+T20,A1_T=20_run=20250826-221930,20250826-221930,v,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_T=20_run=20250826-221930,/Users/ludovicarainero/emmi/new_device/gold/DATA/A1_T=20_run=20250826-221930/4coordinates/T20_detected_reference_coordinates.txt

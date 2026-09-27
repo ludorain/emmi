@@ -1,0 +1,4 @@
+dataset_key,run_name,angle,clipy,clipx,shifty,shiftx,is_primary_reference
+v9,A1_v=9_run=20250825-093810,-0.02879999999999991,0,0,0,0,yes
+v7,A1_v=7_run=20250826-035836,-0.07919999999999985,0,0,2.,1.,no
+T20,A1_T=20_run=20250826-221930,0.0,0,0,0.,1.,no
