@@ -306,7 +306,11 @@ prepare_run_output_dirs() {
 # ------------------------------------------------------------
 # PHASE STEP 1 - IMAGE CLEANUP
 # ------------------------------------------------------------
-
+# FASE 1: PULIZIA DELLE IMMAGINI
+# Questa fase applica gli script Python per rimuovere i bias di colonna e filtrare
+# gli hot/cold pixel. Questo viene fatto SOLO sui file di dati, mentre le immagini
+# di errore (*_data=diffe.tif*) vengono copiate intatte, per mantenere integro
+# il calcolo dell'errore.
 cleanup_images() {
     local run_dir="$1"
 
@@ -328,10 +332,18 @@ cleanup_images() {
         stem="$(strip_tif_extension "$filename")"
         output_file="$processed_dir/${stem}_processed.tif"
 
-        "$PYTHON" "$PROCESS_IMAGE" \
-            --input "$input_file" \
-            --process remove_column_bias remove_hot_pixels remove_cold_pixels \
-            --output "$output_file"
+        # --- MODIFICA AGGIUNTA ---
+        # Se il file è un'immagine di errore (data=diffe),
+        # copiamo semplicemente il file senza pulirlo.
+        if [[ "$filename" == *"data=diffe"* ]]; then
+            cp "$input_file" "$output_file"
+        else
+            # Altrimenti applichiamo la pulizia
+            "$PYTHON" "$PROCESS_IMAGE" \
+                --input "$input_file" \
+                --process remove_column_bias remove_hot_pixels remove_cold_pixels \
+                --output "$output_file"
+        fi
 
         ((n_files += 1))
     done < <(
@@ -349,6 +361,10 @@ cleanup_images() {
 # ------------------------------------------------------------
 # ROTATION HELPERS
 # ------------------------------------------------------------
+# ROTAZIONE DELLE IMMAGINI:
+# Analizza l'immagine di fondo ("light") per calcolare l'angolo di inclinazione 
+# rispetto all'orizzontale. Una volta trovato l'angolo, tutte le immagini (dati ed errori)
+# del run corrente vengono ruotate per farle allineare geometricamente.
 
 get_unique_light_image() {
     local directory="$1"
@@ -474,6 +490,11 @@ rotate_all_processed_images() {
 # ------------------------------------------------------------
 # SHIFT HELPERS
 # ------------------------------------------------------------
+# ALLINEAMENTO/TRASLAZIONE (SHIFT):
+# Confronta l'immagine "light" del set corrente con l'immagine "light" di 
+# riferimento primario (quella della fase before_annealing) per trovare di
+# quanti pixel l'immagine è spostata. Applica poi questa traslazione x/y
+# a tutte le immagini per sovrapporle perfettamente al riferimento.
 
 assert_same_image_shape() {
     local reference="$1"
@@ -560,7 +581,10 @@ shift_all_rotated_images() {
 # ------------------------------------------------------------
 # PHASE STEP 3 - REFERENCE COORDINATES
 # ------------------------------------------------------------
-
+# CALCOLO DELLE COORDINATE DEGLI SPOT:
+# Cerca l'immagine (data=diff) associata al secondo valore di temperatura (o voltaggio)
+# più alto. Questa immagine viene usata come "master" per identificare la posizione 
+# spaziale (x,y) e il raggio dei difetti (hotspots) nel run corrente.
 select_second_highest_reference() {
     local rotated_dir="$1"
 
@@ -657,7 +681,9 @@ generate_reference_coordinates() {
 # ------------------------------------------------------------
 # PHASE STEP 4 - TIF -> TH2F
 # ------------------------------------------------------------
-
+# SCRITTURA DEI TH2F:
+# Converte le immagini .tif (dati ed errori) in istogrammi 2D di ROOT (file .root).
+# Combina il file dati (es. _data=diff_) con il corrispettivo file di incertezza (es. _data=diffe_).
 convert_to_th2f() {
     local run_dir="$1"
 
@@ -707,7 +733,10 @@ convert_to_th2f() {
 # ------------------------------------------------------------
 # PHASE STEP 5 - LUMINOSITY
 # ------------------------------------------------------------
-
+# CALCOLO DELLA LUMINOSITÀ:
+# Lancia uno script ROOT (C++) che itera sulle coordinate trovate nel file
+# di riferimento (generato in Phase 3) e calcola l'integrale (la luminosità) per ogni 
+# spot su tutti i file root creati precedentemente. Scrive poi i risultati in file CSV.
 calculate_luminosity() {
     local run_dir="$1"
     local phase="$2"
@@ -1178,6 +1207,13 @@ process_annealing_phases() {
 # ------------------------------------------------------------
 # PHASE 3 - GLOBAL HOTSPOT IDS + FORCED LUMINOSITY MEASUREMENT
 # ------------------------------------------------------------
+# ASSEGNAZIONE DEL GLOBAL ID E CALCOLO FORZATO:
+# In questa fase massiccia (eseguita tramite uno script Python integrato) i risultati CSV 
+# locali vengono confrontati. Viene creato un "catalogo" unificato degli spot.
+# - Assegna lo stesso "Global ID" a uno spot trovato in run diversi, basandosi sulla distanza spaziale.
+# - Ricalcola forzatamente la luminosità: Se uno spot è apparso in una fase ma non viene più trovato,
+#   lo script utilizza le coordinate note di quello spot per eseguire un calcolo forzato dell'intensità
+#   luminosa su quel pixel in ROOT, permettendoti di studiare "l'estinzione" del difetto.
 
 merge_all_phases_global_ids() {
     mkdir -p "$MERGED_DIR"
