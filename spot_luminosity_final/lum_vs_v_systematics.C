@@ -4,6 +4,7 @@
 #include "TF1.h"
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
+#include <cmath>
 
 struct VFitResult {
     int spot=-1;
@@ -21,19 +22,154 @@ static const AnalysisRow* find_v_point(const vector<AnalysisRow>& rows,double x,
     return nullptr;
 }
 
-static VFitResult fit_v_rows(const vector<AnalysisRow>& rows,const string& tag,int spot) {
-    VFitResult fr; fr.spot=spot;
-    if (rows.size()<2) return fr;
-    vector<double>x,y,ex,ey;
-    for(const auto&r:rows){x.push_back(r.v_fin);y.push_back(r.luminosity);ex.push_back(0.0);ey.push_back(r.error);}
-    TGraphErrors gr((int)x.size(),x.data(),y.data(),ex.data(),ey.data());
-    TF1 f(Form("f_sys_v_%s_%d",tag.c_str(),spot),"[0]*TMath::Power(x,[1])",0.0,8.0);
-    f.SetParameters(1.0,2.0); f.SetParNames("A","B");
+static VFitResult fit_v_rows(const vector<AnalysisRow>& rows,
+                             const string& tag,
+                             int spot) {
+
+    VFitResult fr;
+    fr.spot=spot;
+
+    if (rows.size()<2)
+        return fr;
+
+    // ================================================================
+    // Build vectors for the nominal nonlinear fit
+    // ================================================================
+
+    vector<double> x, y, ex, ey;
+
+    for (const auto& r:rows) {
+        x.push_back(r.v_fin);
+        y.push_back(r.luminosity);
+        ex.push_back(0.0);
+        ey.push_back(r.error);
+    }
+
+
+    // ================================================================
+    // STEP 1: logarithmic prefit
+    //
+    // Lum = A * V^B
+    //
+    // ln(Lum) = ln(A) + B ln(V)
+    //
+    // Therefore:
+    //      intercept = ln(A)
+    //      slope     = B
+    // ================================================================
+
+    double A_start = 1.0;
+    double B_start = 2.0;
+
+    vector<double> log_v;
+    vector<double> log_l;
+    vector<double> log_ev;
+    vector<double> log_el;
+
+    for (size_t i=0; i<x.size(); ++i) {
+
+        // The logarithm is defined only for positive values.
+        if (x[i] <= 0.0 || y[i] <= 0.0)
+            continue;
+
+        if (!finite_number(x[i]) ||
+            !finite_number(y[i]) ||
+            !finite_number(ey[i]))
+            continue;
+
+        log_v.push_back(std::log(x[i]));
+        log_l.push_back(std::log(y[i]));
+
+        // No uncertainty on overvoltage
+        log_ev.push_back(0.0);
+
+        // Error propagation:
+        // d(ln L) = dL / L
+        log_el.push_back(std::fabs(ey[i] / y[i]));
+    }
+
+
+    if (log_v.size() >= 2) {
+
+        TGraphErrors gr_log(
+            (int)log_v.size(),
+            log_v.data(),
+            log_l.data(),
+            log_ev.data(),
+            log_el.data()
+        );
+
+        TF1 f_log(
+            Form("f_log_sys_v_%s_%d",tag.c_str(),spot),
+            "[0] + [1]*x",
+            log_v.front(),
+            log_v.back()
+        );
+
+        TFitResultPtr prefit = gr_log.Fit(&f_log,"QRSN0");
+
+        if ((int)prefit == 0) {
+
+            const double lnA_prefit = f_log.GetParameter(0);
+            const double B_prefit   = f_log.GetParameter(1);
+
+            const double A_prefit = std::exp(lnA_prefit);
+
+            if (finite_number(A_prefit) &&
+                finite_number(B_prefit) &&
+                A_prefit > 0.0) {
+
+                A_start = A_prefit;
+                B_start = B_prefit;
+            }
+        }
+    }
+
+
+    // ================================================================
+    // STEP 2: nominal nonlinear fit
+    // ================================================================
+
+    TGraphErrors gr((int)x.size(), x.data(), y.data(), ex.data(),ey.data());
+
+    TF1 f(
+        Form("f_sys_v_%s_%d",tag.c_str(),spot),
+        "[0]*TMath::Power(x,[1])",
+        0.0,
+        8.0
+    );
+
+    f.SetParameters(A_start,B_start);
+    f.SetParNames("A","B");
+
+
     TFitResultPtr fit=gr.Fit(&f,"QRS0");
-    fr.fitted=true; fr.status=(int)fit; fr.covstatus=fit->CovMatrixStatus(); fr.edm=fit->Edm();
-    fr.B=f.GetParameter(1); fr.Berr=f.GetParError(1); fr.chi2=f.GetChisquare(); fr.ndf=f.GetNDF();
-    fr.chi2ndf=(fr.ndf>0)?fr.chi2/fr.ndf:0.0;
-    fr.converged=(fr.status==0 && finite_number(fr.B));
+
+
+    // ================================================================
+    // Store final nonlinear-fit results
+    // ================================================================
+
+    fr.fitted=true;
+    fr.status=(int)fit;
+    fr.covstatus=fit->CovMatrixStatus();
+    fr.edm=fit->Edm();
+
+    fr.B=f.GetParameter(1);
+    fr.Berr=f.GetParError(1);
+
+    fr.chi2=f.GetChisquare();
+    fr.ndf=f.GetNDF();
+
+    fr.chi2ndf=(fr.ndf>0)
+        ? fr.chi2/fr.ndf
+        : 0.0;
+
+    fr.converged=(
+        fr.status==0 &&
+        finite_number(fr.B)
+    );
+
     return fr;
 }
 

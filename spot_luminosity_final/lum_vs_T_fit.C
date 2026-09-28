@@ -43,7 +43,7 @@ struct TRadiusOverlayFit {
 };
 
 // -----------------------------------------------------------------------------
-// Draw a symmetric systematic uncertainty as two green horizontal brackets.
+// Draw a symmetric systematic uncertainty as two horizontal brackets.
 // The horizontal cap is intentionally only slightly wider than the data marker,
 // so statistical and systematic uncertainties remain visually distinct.
 // -----------------------------------------------------------------------------
