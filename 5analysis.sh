@@ -100,7 +100,7 @@ run_analysis() {
   all20="$(all_phases_file_at_radius "$R20_DIR" "$c")"
   all16="$(all_phases_file_at_radius "$R16_DIR" "$c")"
   all24="$(all_phases_file_at_radius "$R24_DIR" "$c")"
-  analysis_base="$MACRO_DIR/analysis/$cond"
+  analysis_base="$MACRO_DIR/analysis_chi<4/$cond"
 
   [[ -f "$all20" ]] || { echo "WARNING: nominal R=20 all-phases file not found: $all20" >&2; return 0; }
   require_deltaL_column "$all20" || return 1

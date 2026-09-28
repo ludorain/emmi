@@ -301,7 +301,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
                   const char* prefix,
                   const char* r16_all_phases_csv = "",
                   const char* r24_all_phases_csv = "") {
-    gStyle->SetOptFit(1111);
+    gStyle->SetOptFit(111);
 
     const double FIT_XMIN=0.0;
     const double FIT_XMAX=8.0;
@@ -594,12 +594,19 @@ void lum_vs_v_fit(const char* all_phases_csv,
 
     // =====================================================================
     // CANVAS 9: B vs global hotspot ID.
-    // IMPORTANT: no chi2/ndf cut. Every converged ROOT fit is shown.
     // =====================================================================
     vector<double> x, ex, B, Bstat, Bsyst;
     for (auto& kv:fits) {
         const auto& f=kv.second;
-        if (!f.converged) continue;
+        if (!f.fit_done ||
+            !f.converged ||
+            !finite_number(f.B) ||
+            !finite_number(f.Berr) ||
+            f.ndf <= 0 ||
+            f.chi2ndf >= 4) {
+            continue;
+    }
+
 
         x.push_back((double)kv.first);
         ex.push_back(0.0);
@@ -620,26 +627,56 @@ void lum_vs_v_fit(const char* all_phases_csv,
             TCanvas* c9=new TCanvas(Form("c9_%s",tag.c_str()),"B vs spot",1800,1000);
             TGraphErrors* grB=new TGraphErrors((int)B.size(),x.data(),B.data(),ex.data(),Bstat.data());
             grB->SetTitle(Form("Sensor %s - Power-law exponent B - %s;Global spot ID;B",sensor.c_str(),ph.c_str()));
-            grB->SetMarkerStyle(21);grB->SetMarkerSize(1.2);grB->SetMarkerColor(kBlack);grB->SetLineColor(kBlack);grB->SetLineWidth(2);
-            grB->SetMinimum(focus?1.0:ymin-0.15*yspan);grB->SetMaximum(focus?3.0:ymax+0.35*yspan);grB->Draw("AP");grB->GetXaxis()->SetLimits(xmin,xmax);
+            grB->SetMarkerStyle(21);
+            grB->SetMarkerSize(1.2);
+            grB->SetMarkerColor(kBlack);
+            grB->SetLineColor(kBlack);
+            grB->SetLineWidth(2);
+            grB->SetMinimum(focus?1.0:ymin-0.15*yspan);
+            grB->SetMaximum(focus?3.0:ymax+0.35*yspan);
+            grB->Draw("AP");
+            grB->GetXaxis()->SetLimits(xmin,xmax);
 
             // Systematic uncertainty uses an accessible palette colour; the
             // statistical error bars and markers remain explicitly black.
             draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kP6Grape,4);grB->Draw("P SAME");
-            TF1* line_B=new TF1(Form("line_B_%s",tag.c_str()),"2",xmin,xmax);line_B->SetLineColor(kP6Red);line_B->SetLineStyle(2);line_B->SetLineWidth(2);line_B->Draw("SAME");
-            TF1* fit_B=new TF1(Form("fit_B_%s",tag.c_str()),"[0]",xmin,xmax);fit_B->SetLineColor(kP10Gray);fit_B->SetLineWidth(2);
-            if(B.size()>=2){grB->Fit(fit_B,"RQ");fit_B->Draw("SAME");}
+            TF1* line_B=new TF1(Form("line_B_%s",tag.c_str()),"2",xmin,xmax);
+            line_B->SetLineColor(kP6Red);
+            line_B->SetLineStyle(2);
+            line_B->SetLineWidth(2);
+            line_B->Draw("SAME");
+            TF1* fit_B=new TF1(Form("fit_B_%s",tag.c_str()),"[0]",xmin,xmax);
+            fit_B->SetLineColor(kP10Gray);
+            fit_B->SetLineWidth(2);
+            if(B.size()>=2){grB->Fit(fit_B,"RQ");
+            fit_B->Draw("SAME");}
             c9->Update();
+            
+            // Statistica
             TPaveStats* stats=(TPaveStats*)grB->FindObject("stats");
             if(!stats){
-                stats=new TPaveStats(.12,.50,.40,.68,"brNDC");
+                stats=new TPaveStats(.68,.72,.94,.90,"brNDC");
                 stats->SetName(Form("B_const_stats_%s",tag.c_str()));
+
                 if(B.size()>=2){
-                    stats->AddText(Form("B_{const} = %.4g #pm %.3g",fit_B->GetParameter(0),fit_B->GetParError(0)));
-                    stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",fit_B->GetChisquare(),fit_B->GetNDF()));
+                    stats->AddText(Form("B_{const} = %.4g #pm %.3g",
+                                        fit_B->GetParameter(0),
+                                        fit_B->GetParError(0)));
+                    stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",
+                                        fit_B->GetChisquare(),
+                                        fit_B->GetNDF()));
                 }
-            } else {stats->SetX1NDC(.12);stats->SetX2NDC(.40);stats->SetY1NDC(.50);stats->SetY2NDC(.68);}
-            stats->SetTextSize(.022);stats->SetFillStyle(0);stats->Draw();
+
+            } else {
+                stats->SetX1NDC(.68);
+                stats->SetX2NDC(.94);
+                stats->SetY1NDC(.72);
+                stats->SetY2NDC(.90);
+            }
+
+            stats->SetTextSize(.022);
+            stats->SetFillStyle(0);
+            stats->Draw();
             TLine* syst_proxy=new TLine(0,0,1,0);syst_proxy->SetLineColor(kP6Grape);syst_proxy->SetLineWidth(4);
             TLegend* leg=new TLegend(.12,.70,.43,.91);leg->SetBorderSize(0);leg->SetFillStyle(0);leg->AddEntry(grB,"B statistical uncertainty","lep");leg->AddEntry(syst_proxy,"B systematic uncertainty","l");if(B.size()>=2)leg->AddEntry(fit_B,"Constant fit: B = const","l");leg->AddEntry(line_B,"Line: B = 2","l");leg->Draw();
             c9->Modified();c9->Update();

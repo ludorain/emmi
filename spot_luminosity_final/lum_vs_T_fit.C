@@ -553,7 +553,13 @@ void lum_vs_T_fit(const char* all_phases_csv,
     vector<double> x,ex,L,Lstat,Lsyst;
     for (auto& kv:fits) {
         const auto& f=kv.second;
-        if (!f.fit_done || !finite_number(f.lambda) || !finite_number(f.lambdaerr)) continue;
+        if (!f.fit_done ||
+        !finite_number(f.lambda) ||
+        !finite_number(f.lambdaerr) ||
+        f.ndf <= 0 ||
+        f.chi2ndf >= 4) {
+        continue;
+    }
         x.push_back(kv.first);
         ex.push_back(0.0);
         L.push_back(f.lambda);
