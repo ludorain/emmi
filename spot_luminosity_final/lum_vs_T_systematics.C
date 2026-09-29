@@ -1,6 +1,7 @@
 #include "analysis_common.h"
 
 #include "TGraphErrors.h"
+#include "TGraph.h"
 #include "TF1.h"
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
@@ -15,7 +16,8 @@ struct TFitResultSys {
     int ndf=0,status=-999,covstatus=-999;
     bool fitted=false,converged=false;
 };
-
+//Old function to estimate the exponential parameters for a given set of rows. 
+/*
 static void estimate_exp_parameters_sys(const vector<AnalysisRow>& rows,double& A0,double& lambda0){
     vector<AnalysisRow> pos; for(const auto&r:rows)if(r.luminosity>0)pos.push_back(r);
     std::sort(pos.begin(),pos.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
@@ -23,6 +25,94 @@ static void estimate_exp_parameters_sys(const vector<AnalysisRow>& rows,double& 
         lambda0=(std::log(pos.back().luminosity)-std::log(pos.front().luminosity))/(pos.back().T-pos.front().T);
         A0=std::exp(std::log(pos.front().luminosity)-lambda0*pos.front().T);
     }else if(pos.size()==1){A0=pos[0].luminosity;lambda0=0.0;}else{A0=1.0;lambda0=0.0;}
+}*/
+
+static void estimate_exp_parameters_sys(const vector<AnalysisRow>& rows,
+                                        double& A0,
+                                        double& lambda0) {
+
+    vector<AnalysisRow> pos;
+
+    // Keep only positive and finite luminosities,
+    // because the logarithm is required for the pre-fit.
+    for (const auto& r : rows) {
+        if (r.luminosity > 0.0 && finite_number(r.luminosity)) {
+            pos.push_back(r);
+        }
+    }
+
+    std::sort(pos.begin(), pos.end(),
+              [](const AnalysisRow& a, const AnalysisRow& b) {
+                  return a.T < b.T;
+              });
+
+    if (pos.size() >= 2 &&
+        std::fabs(pos.back().T - pos.front().T) > 1e-12) {
+
+        // -------------------------------------------------------------
+        // Logarithmic pre-parametrization:
+        //
+        //     L(T) = A exp(lambda T)
+        //
+        // becomes
+        //
+        //     ln(L) = ln(A) + lambda T
+        //
+        // therefore:
+        //     p0 = ln(A)
+        //     p1 = lambda
+        // -------------------------------------------------------------
+
+        TGraph gr_log;
+
+        for (size_t i = 0; i < pos.size(); ++i) {
+            gr_log.SetPoint(i,
+                            pos[i].T,
+                            std::log(pos[i].luminosity));
+        }
+
+        static unsigned long prefit_counter = 0;
+
+        TF1 f_lin(Form("f_lin_sys_init_%lu", prefit_counter++),
+                  "pol1",
+                  pos.front().T,
+                  pos.back().T);
+
+        TFitResultPtr fit_lin = gr_log.Fit(&f_lin, "Q0SN");
+
+        const int status = (int)fit_lin;
+
+        if (status == 0 &&
+            finite_number(f_lin.GetParameter(0)) &&
+            finite_number(f_lin.GetParameter(1))) {
+
+            lambda0 = f_lin.GetParameter(1);
+            A0 = std::exp(f_lin.GetParameter(0));
+
+        } else {
+
+            // Fallback to the previous first-last-point estimate.
+            lambda0 =
+                (std::log(pos.back().luminosity)
+                 - std::log(pos.front().luminosity))
+                /
+                (pos.back().T - pos.front().T);
+
+            A0 =
+                std::exp(std::log(pos.front().luminosity)
+                         - lambda0 * pos.front().T);
+        }
+
+    } else if (pos.size() == 1) {
+
+        A0 = pos[0].luminosity;
+        lambda0 = 0.06;
+
+    } else {
+
+        A0 = 2.0;
+        lambda0 = 0.06;
+    }
 }
 
 static const AnalysisRow* find_T_point(const vector<AnalysisRow>& rows,double x,double tol=1e-9){

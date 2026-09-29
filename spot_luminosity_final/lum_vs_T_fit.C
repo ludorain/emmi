@@ -10,6 +10,8 @@
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
 #include "TLine.h"
+#include "Fit/Fitter.h"
+#include "Math/Functor.h"
 
 struct LambdaSystematicPair {
     bool has16=false,has24=false;
@@ -40,6 +42,51 @@ struct TRadiusOverlayFit {
     double lambda=0.0,lambdaerr=0.0;
     int status=-999;
     bool fit_done=false,converged=false;
+};
+
+struct GlobalChi2T {
+
+    const vector<vector<double>>& T_spots;
+    const vector<vector<double>>& L_spots;
+    const vector<vector<double>>& eL_spots;
+
+    GlobalChi2T(const vector<vector<double>>& T,
+                const vector<vector<double>>& L,
+                const vector<vector<double>>& eL)
+        : T_spots(T), L_spots(L), eL_spots(eL) {}
+
+    double operator()(const double* par) const {
+
+        const double lambda = par[0];
+
+        double chi2 = 0.0;
+
+        for (size_t i = 0; i < T_spots.size(); ++i) {
+
+            // One independent normalization for each hotspot
+            const double A_i = par[1 + i];
+
+            for (size_t j = 0; j < T_spots[i].size(); ++j) {
+
+                const double T   = T_spots[i][j];
+                const double L   = L_spots[i][j];
+                const double err = eL_spots[i][j];
+
+                if (!(err > 0.0) || !finite_number(err))
+                    continue;
+
+                const double model =
+                    A_i * std::exp(lambda * T);
+
+                const double pull =
+                    (L - model) / err;
+
+                chi2 += pull * pull;
+            }
+        }
+
+        return chi2;
+    }
 };
 
 // -----------------------------------------------------------------------------
@@ -87,19 +134,87 @@ static void draw_horizontal_syst_brackets_T(const vector<double>& x,
 static void estimate_exp_parameters_nom(const vector<AnalysisRow>& rows,
                                         double& A0,
                                         double& lambda0) {
-    vector<AnalysisRow> pos;
-    for (const auto& r:rows) if (r.luminosity>0) pos.push_back(r);
-    std::sort(pos.begin(),pos.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
 
-    if (pos.size()>=2 && std::fabs(pos.back().T-pos.front().T)>1e-12) {
-        lambda0=(std::log(pos.back().luminosity)-std::log(pos.front().luminosity))/(pos.back().T-pos.front().T);
-        A0=std::exp(std::log(pos.front().luminosity)-lambda0*pos.front().T);
-    } else if (pos.size()==1) {
-        A0=pos[0].luminosity;
-        lambda0=0.0;
+    vector<AnalysisRow> pos;
+
+    // Mantieni solo i punti con luminosità positiva,
+    // perché dobbiamo calcolare log(L).
+    for (const auto& r : rows) {
+        if (r.luminosity > 0.0 && finite_number(r.luminosity)) {
+            pos.push_back(r);
+        }
+    }
+
+    std::sort(pos.begin(), pos.end(),
+              [](const AnalysisRow& a, const AnalysisRow& b) {
+                  return a.T < b.T;
+              });
+
+    if (pos.size() >= 2 &&
+        std::fabs(pos.back().T - pos.front().T) > 1e-12) {
+
+        // -------------------------------------------------------------
+        // Pre-parametrizzazione logaritmica:
+        //
+        //     L(T) = A exp(lambda T)
+        //
+        // diventa
+        //
+        //     ln(L) = ln(A) + lambda T
+        //
+        // quindi:
+        //     p0 = ln(A)
+        //     p1 = lambda
+        // -------------------------------------------------------------
+
+        TGraph gr_log;
+
+        for (size_t i = 0; i < pos.size(); ++i) {
+            gr_log.SetPoint(i,
+                            pos[i].T,
+                            std::log(pos[i].luminosity));
+        }
+
+        TF1 f_lin("f_lin_init",
+                  "pol1",
+                  pos.front().T,
+                  pos.back().T);
+
+        TFitResultPtr fit_lin = gr_log.Fit(&f_lin, "Q0SN");
+
+        const int status = (int)fit_lin;
+
+        if (status == 0 &&
+            finite_number(f_lin.GetParameter(0)) &&
+            finite_number(f_lin.GetParameter(1))) {
+
+            lambda0 = f_lin.GetParameter(1);
+            A0 = std::exp(f_lin.GetParameter(0));
+
+        } else {
+
+            // Fallback alla vecchia inizializzazione
+            // usando il primo e l'ultimo punto.
+            lambda0 =
+                (std::log(pos.back().luminosity)
+                 - std::log(pos.front().luminosity))
+                /
+                (pos.back().T - pos.front().T);
+
+            A0 =
+                std::exp(std::log(pos.front().luminosity)
+                         - lambda0 * pos.front().T);
+        }
+
+    } else if (pos.size() == 1) {
+
+        A0 = pos[0].luminosity;
+        lambda0 = 0.0;
+
     } else {
-        A0=1.0;
-        lambda0=0.0;
+
+        A0 = 2.0;
+        lambda0 = 0.06;
     }
 }
 
@@ -239,10 +354,7 @@ static map<int,LambdaSystematicPair> read_lambda_systematics(const string& filen
 }
 
 // Write a phase CSV using only the new symmetric-systematic columns.
-static void write_augmented_T_csv(const CsvTable& original,
-                                  const string& phase,
-                                  const map<int,TNominalFit>& fits,
-                                  const string& output_csv) {
+static void write_augmented_T_csv(const CsvTable& original, const string& phase, const map<int,TNominalFit>& fits, const string& output_csv) {
     std::ofstream fout(output_csv);
     if (!fout.is_open()) return;
 
@@ -547,24 +659,170 @@ void lum_vs_T_fit(const char* all_phases_csv,
         return;
     }
 
-    // lambda vs spot: show every fit that produced a finite lambda value and
-    // statistical uncertainty. Fit status, ndf and chi2/ndf are kept only as
-    // diagnostics in the CSV and do not remove points from this canvas.
+    // Lambda vs spot: show every fit that produced a finite lambda value and statistical uncertainty.
+    //Preparing for Canva 5
+
     vector<double> x,ex,L,Lstat,Lsyst;
-    for (auto& kv:fits) {
-        const auto& f=kv.second;
-        if (!f.fit_done ||
+    // Data entering the simultaneous fit
+    vector<vector<double>> T_global;
+    vector<vector<double>> Lum_global;
+    vector<vector<double>> Err_global;
+
+    vector<int> global_spot_ids;
+    vector<double> A_start;
+
+for (auto& kv : fits) {
+
+    const auto& f = kv.second;
+
+    if (!f.fit_done ||
         !finite_number(f.lambda) ||
         !finite_number(f.lambdaerr) ||
+        !finite_number(f.A) ||
         f.ndf <= 0 ||
-        f.chi2ndf >= 4) {
+        f.chi2ndf >= 3.5) {
         continue;
     }
-        x.push_back(kv.first);
-        ex.push_back(0.0);
-        L.push_back(f.lambda);
-        Lstat.push_back(f.lambdaerr);
-        Lsyst.push_back(f.has_param_syst?f.deltaLambda:0.0);
+
+    vector<double> Ti;
+    vector<double> Li;
+    vector<double> Ei;
+
+    for (const auto& r : f.rows) {
+
+        if (!finite_number(r.T) ||
+            !finite_number(r.luminosity) ||
+            !finite_number(r.error) ||
+            r.error <= 0.0) {
+            continue;
+        }
+
+        Ti.push_back(r.T);
+        Li.push_back(r.luminosity);
+        Ei.push_back(r.error);
+        }
+
+    if (Ti.size() < 3)
+        continue;
+
+    // Canvas 5
+
+    x.push_back((double)kv.first);
+    ex.push_back(0.0);
+    L.push_back(f.lambda);
+    Lstat.push_back(f.lambdaerr);
+    Lsyst.push_back(f.has_param_syst ? f.deltaLambda : 0.0);
+
+    // Simultaneous fit
+    T_global.push_back(Ti);
+    Lum_global.push_back(Li);
+    Err_global.push_back(Ei);
+
+    global_spot_ids.push_back(kv.first);
+    A_start.push_back(f.A);
+
+    }
+
+    //Initialize the simultaneous fit parameter lambda
+    double lambda_start = 0.06;
+
+    double sumw = 0.0;
+    double sumwl = 0.0;
+
+    for (size_t i = 0; i < L.size(); ++i) {
+
+        if (Lstat[i] > 0.0 && finite_number(Lstat[i])) {
+
+            const double w =
+                1.0 / (Lstat[i] * Lstat[i]);
+
+            sumw  += w;
+            sumwl += w * L[i];
+        }
+    }
+
+    if (sumw > 0.0)
+        lambda_start = sumwl / sumw;
+    //-----------------------------------------
+    //Performing the global fitting
+    //-----------------------------------------
+
+    //Fit construction
+    double lambda_common = std::numeric_limits<double>::quiet_NaN();
+    double lambda_common_err = std::numeric_limits<double>::quiet_NaN();
+    double global_chi2 = std::numeric_limits<double>::quiet_NaN();
+    int global_ndf = 0;
+    bool global_fit_ok = false;
+
+    if (!T_global.empty()) {
+
+    const size_t nspots = T_global.size();
+    const unsigned int npar = 1 + nspots;
+    vector<double> par0(npar);
+
+    // Shared lambda
+    par0[0] = lambda_start;
+    // Independent A_i
+    for (size_t i = 0; i < nspots; ++i) {
+
+        if (finite_number(A_start[i]) && A_start[i] > 0.0) {
+            par0[1 + i] = A_start[i];
+        } else {
+            par0[1 + i] = 1.0;
+        }
+    }
+
+    GlobalChi2T globalChi2(T_global, Lum_global, Err_global);
+
+    ROOT::Fit::Fitter fitter;
+
+    fitter.Config().SetParamsSettings(npar,par0.data());
+    fitter.Config().ParSettings(0).SetName("lambda");
+
+    for (size_t i = 0; i < nspots; ++i) {
+
+        fitter.Config()
+              .ParSettings(1 + i)
+              .SetName(
+                  Form("A_spot_%d",
+                       global_spot_ids[i])
+              );
+    }
+
+    fitter.Config().MinimizerOptions().SetPrintLevel(0);
+
+    fitter.Config().SetMinimizer("Minuit2","Migrad");
+    
+    //Counting number of points
+    unsigned int npoints = 0;
+
+    for (const auto& v : T_global)
+        npoints += v.size();
+
+    // Perform the fit
+
+    global_fit_ok = fitter.FitFCN(
+            npar,
+            globalChi2,
+            nullptr,
+            npoints,
+            true
+        );
+
+    
+    if (global_fit_ok) {
+
+        const ROOT::Fit::FitResult& result = fitter.Result();
+        lambda_common = result.Parameter(0);
+        lambda_common_err = result.ParError(0);
+        global_chi2 = result.Chi2();
+        global_ndf =(int)npoints - (int)npar;
+        global_fit_ok =
+            result.IsValid() &&
+            finite_number(lambda_common) &&
+            finite_number(lambda_common_err);
+    }
+    
     }
 
     if (!L.empty()) {
@@ -590,6 +848,29 @@ void lum_vs_T_fit(const char* all_phases_csv,
         draw_horizontal_syst_brackets_T(x,L,Lsyst,xmin,xmax,kBlack,4);
         gr->Draw("P SAME");
 
+
+        // Draw the global fit line if the simultaneous fit was successful.
+
+        TLine* global_lambda_line = nullptr;
+
+        if (global_fit_ok) {
+
+            global_lambda_line =
+                new TLine(
+                    xmin,
+                    lambda_common,
+                    xmax,
+                    lambda_common
+                );
+
+            global_lambda_line->SetLineColor(kBlack);
+            global_lambda_line->SetLineWidth(2);
+            global_lambda_line->SetLineStyle(2);
+
+            global_lambda_line->Draw("SAME");
+}
+        //Old fitting
+        /*
         TF1* fc=new TF1("fit_lambda_const","[0]",xmin,xmax);
         fc->SetParNames("lambda_{const}");
         fc->SetLineColor(kBlack);
@@ -597,7 +878,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
         if (L.size()>=2) {
             gr->Fit(fc,"RQ");
             fc->Draw("SAME");
-        }
+        }*/
 
         TLine* syst_proxy_lambda=new TLine(0,0,1,0);
         syst_proxy_lambda->SetLineColor(kBlack);
@@ -607,8 +888,23 @@ void lum_vs_T_fit(const char* all_phases_csv,
         leg->SetBorderSize(0);
         leg->SetFillStyle(0);
         leg->AddEntry(gr,"Statistical uncertainty","lep");
-        leg->AddEntry(syst_proxy_lambda,"Systematic uncertainty (R=16/24)","l");
-        if (L.size()>=2) leg->AddEntry(fc,"Constant fit: lambda = const","l");
+        leg->AddEntry(syst_proxy_lambda,"Systematic uncertainty","l");
+
+        //Old constant fit
+        //if (L.size()>=2) leg->AddEntry(fc,"Constant fit: lambda = const","l");
+
+        if (global_fit_ok && global_lambda_line) {
+        string global_label =
+            Form("#lambda_{common} = %.5f #pm %.5f (stat), #chi^{2}/ndf = %.1f/%d",
+                lambda_common,
+                lambda_common_err,
+                global_chi2,
+                global_ndf);
+
+        leg->AddEntry(global_lambda_line, global_label.c_str(),"l");
+    
+        }
+
         leg->Draw();
 
         c5->SaveAs(Form("%s/%s_lambda_vs_spot.png",outdir.c_str(),pref.c_str()));

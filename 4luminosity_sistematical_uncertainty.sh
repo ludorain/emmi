@@ -36,13 +36,8 @@
 #       -> all sensors, constant T
 #
 # Accepted sensor values: A1 A2 B1 B2
-# Accepted constant values: T, v, T=20, v=5 (case-insensitive)
-#
-# Assumption on directory names
-# -----------------------------
-#   T -> <sensor>_T=20
-#   v -> <sensor>_v=5
-# These two values can be changed below if necessary.
+# Accepted constant values: T, v (case-insensitive)
+
 # ============================================================================
 
 set -u
@@ -59,7 +54,6 @@ R16_DIR="$BASE_DIR/DATA_irradiated_isolated_R=16"
 R24_DIR="$BASE_DIR/DATA_irradiated_isolated_R=24"
 
 T_VALUE="20"
-V_VALUE="5"
 
 ALL_SENSORS=(A1 A2 B1 B2)
 ALL_CONSTANTS=(T v)
@@ -166,7 +160,7 @@ done
 # Using the csv module (instead of pandas) avoids changing the textual values
 # of pre-existing fields such as spot, luminosity, error, T and v.
 # ---------------------------------------------------------------------------
-python3 - "$BASE_DIR" "$T_VALUE" "$V_VALUE" "${SENSORS[*]}" "${CONSTANTS[*]}" <<'PYCODE'
+python3 - "$BASE_DIR" "$T_VALUE" "${SENSORS[*]}" "${CONSTANTS[*]}" <<'PYCODE'
 from __future__ import annotations
 
 import csv
@@ -179,9 +173,8 @@ from pathlib import Path
 
 BASE_DIR = Path(sys.argv[1])
 T_VALUE = sys.argv[2]
-V_VALUE = sys.argv[3]
-SENSORS = sys.argv[4].split()
-CONSTANTS = sys.argv[5].split()
+SENSORS = sys.argv[3].split()
+CONSTANTS = sys.argv[4].split()
 
 RDIRS = {
     16: BASE_DIR / "DATA_irradiated_isolated_R=16",
@@ -248,8 +241,20 @@ def validate_shared_catalogs(sensor: str) -> None:
 def condition_folder(sensor: str, constant: str) -> str:
     if constant == "T":
         return f"{sensor}_T={T_VALUE}"
+
     if constant == "v":
-        return f"{sensor}_v={V_VALUE}"
+        V_VALUES = {
+            "A1": "5",
+            "A2": "5",
+            "B1": "3",
+            "B2": "3",
+        }
+
+        if sensor not in V_VALUES:
+            raise ValueError(f"Unsupported sensor: {sensor}")
+
+        return f"{sensor}_v={V_VALUES[sensor]}"
+
     raise ValueError(f"Unsupported constant: {constant}")
 
 

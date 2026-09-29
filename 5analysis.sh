@@ -49,7 +49,19 @@ command -v python3 >/dev/null 2>&1 || { echo "ERROR: python3 was not found in PA
 
 condition_name() {
   local c="$1"
-  if [[ "$c" == "T" ]]; then printf '%s_T=20' "$SENSOR"; else printf '%s_v=5' "$SENSOR"; fi
+
+  if [[ "$c" == "T" ]]; then
+    printf '%s_T=20' "$SENSOR"
+  else
+    case "$SENSOR" in
+      B1)
+        printf '%s_v=3' "$SENSOR"
+        ;;
+      *)
+        printf '%s_v=5' "$SENSOR"
+        ;;
+    esac
+  fi
 }
 
 all_phases_file_at_radius() {
@@ -100,7 +112,7 @@ run_analysis() {
   all20="$(all_phases_file_at_radius "$R20_DIR" "$c")"
   all16="$(all_phases_file_at_radius "$R16_DIR" "$c")"
   all24="$(all_phases_file_at_radius "$R24_DIR" "$c")"
-  analysis_base="$MACRO_DIR/analysis_chi<4/$cond"
+  analysis_base="$MACRO_DIR/analysis/$cond"
 
   [[ -f "$all20" ]] || { echo "WARNING: nominal R=20 all-phases file not found: $all20" >&2; return 0; }
   require_deltaL_column "$all20" || return 1

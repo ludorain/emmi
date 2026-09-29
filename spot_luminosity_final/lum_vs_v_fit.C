@@ -993,7 +993,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
             !finite_number(f.B) ||
             !finite_number(f.Berr) ||
             f.ndf <= 0 ||
-            f.chi2ndf >= 4) {
+            f.chi2ndf >= 3.5) {
 
             continue;
         }
