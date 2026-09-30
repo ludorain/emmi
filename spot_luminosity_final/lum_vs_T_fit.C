@@ -416,13 +416,15 @@ void lum_vs_T_fit(const char* all_phases_csv,
                   const char* output_dir,
                   const char* prefix,
                   const char* r16_all_phases_csv = "",
-                  const char* r24_all_phases_csv = "") {
+                  const char* r24_all_phases_csv = "",
+                  const char* global_lambda_summary_csv = "") {
     gStyle->SetOptStat(0);
     gStyle->SetOptFit(111);
 
     string ph=phase,outdir=output_dir,pref=prefix;
     const string r16_file=(r16_all_phases_csv ? r16_all_phases_csv : "");
     const string r24_file=(r24_all_phases_csv ? r24_all_phases_csv : "");
+    const string global_summary_file=(global_lambda_summary_csv ? global_lambda_summary_csv : "");
     const bool comparison_mode=(!r16_file.empty() || !r24_file.empty());
     ensure_dir(outdir);
 
@@ -754,16 +756,24 @@ for (auto& kv : fits) {
     int global_ndf = 0;
     bool global_fit_ok = false;
 
+    //Number of hotspots entering the simultaneous fit
+    size_t global_nspots = T_global.size();
+
+    unsigned int global_npoints = 0;
+    for (const auto& v : T_global)
+        global_npoints += v.size();
+
     if (!T_global.empty()) {
 
-    const size_t nspots = T_global.size();
-    const unsigned int npar = 1 + nspots;
+    const unsigned int npar =
+        1 + (unsigned int)global_nspots;
+
     vector<double> par0(npar);
 
     // Shared lambda
     par0[0] = lambda_start;
     // Independent A_i
-    for (size_t i = 0; i < nspots; ++i) {
+    for (size_t i = 0; i < global_nspots; ++i) {
 
         if (finite_number(A_start[i]) && A_start[i] > 0.0) {
             par0[1 + i] = A_start[i];
@@ -779,7 +789,7 @@ for (auto& kv : fits) {
     fitter.Config().SetParamsSettings(npar,par0.data());
     fitter.Config().ParSettings(0).SetName("lambda");
 
-    for (size_t i = 0; i < nspots; ++i) {
+    for (size_t i = 0; i < global_nspots; ++i) {
 
         fitter.Config()
               .ParSettings(1 + i)
@@ -792,12 +802,7 @@ for (auto& kv : fits) {
     fitter.Config().MinimizerOptions().SetPrintLevel(0);
 
     fitter.Config().SetMinimizer("Minuit2","Migrad");
-    
-    //Counting number of points
-    unsigned int npoints = 0;
 
-    for (const auto& v : T_global)
-        npoints += v.size();
 
     // Perform the fit
 
@@ -805,7 +810,7 @@ for (auto& kv : fits) {
             npar,
             globalChi2,
             nullptr,
-            npoints,
+            global_npoints,
             true
         );
 
@@ -816,14 +821,76 @@ for (auto& kv : fits) {
         lambda_common = result.Parameter(0);
         lambda_common_err = result.ParError(0);
         global_chi2 = result.Chi2();
-        global_ndf =(int)npoints - (int)npar;
+        global_ndf =(int)global_npoints - (int)npar;
         global_fit_ok =
             result.IsValid() &&
             finite_number(lambda_common) &&
             finite_number(lambda_common_err);
-    }
+        }
     
     }
+
+    // -------------------------------------------------------------------------
+// Save the simultaneous-fit result for this annealing phase.
+// One row is appended for each phase processed by 5analysis.sh.
+// -------------------------------------------------------------------------
+if (!global_summary_file.empty()) {
+
+    // Check whether the file already exists and contains a header/data.
+    bool write_header = true;
+
+    {
+        std::ifstream check(global_summary_file,
+                            std::ios::binary | std::ios::ate);
+
+        if (check.is_open() && check.tellg() > 0)
+            write_header = false;
+    }
+
+    std::ofstream gout(global_summary_file, std::ios::app);
+
+    if (!gout.is_open()) {
+
+        std::cerr
+            << "Warning: cannot open global lambda summary file: "
+            << global_summary_file
+            << std::endl;
+
+    } else {
+
+        if (write_header) {
+            gout
+                << "phase,"
+                << "lambda_common,"
+                << "lambda_common_stat_error,"
+                << "chi2,"
+                << "ndf,"
+                << "chi2ndf,"
+                << "n_spots,"
+                << "n_points,"
+                << "fit_converged\n";
+        }
+
+        const double global_chi2ndf =
+            (global_ndf > 0 && finite_number(global_chi2))
+            ? global_chi2 / global_ndf
+            : std::numeric_limits<double>::quiet_NaN();
+
+        gout
+            << ph << ','
+            << lambda_common << ','
+            << lambda_common_err << ','
+            << global_chi2 << ','
+            << global_ndf << ','
+            << global_chi2ndf << ','
+            << global_nspots << ','
+            << global_npoints << ','
+            << (global_fit_ok ? 1 : 0)
+            << '\n';
+
+        gout.close();
+    }
+}
 
     if (!L.empty()) {
         TCanvas* c5=new TCanvas("c5_lambda_vs_spot_constfit","lambda vs spot ID",1800,1000);

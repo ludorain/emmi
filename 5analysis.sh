@@ -107,12 +107,34 @@ PY
 }
 
 run_analysis() {
-  local c="$1" cond all20 all16 all24 analysis_base
+  local c="$1" cond all20 all16 all24 analysis_base global_lambda_csv global_B_csv
   cond="$(condition_name "$c")"
   all20="$(all_phases_file_at_radius "$R20_DIR" "$c")"
   all16="$(all_phases_file_at_radius "$R16_DIR" "$c")"
   all24="$(all_phases_file_at_radius "$R24_DIR" "$c")"
+  
   analysis_base="$MACRO_DIR/analysis/$cond"
+  mkdir -p "$analysis_base"
+
+  global_lambda_csv=""
+  global_B_csv=""
+
+  if [[ "$c" == "T" ]]; then
+
+      global_B_csv="$analysis_base/${cond}_global_B_vs_phase.csv"
+
+      # Start from a clean summary file at every complete analysis run.
+      rm -f "$global_B_csv"
+
+  else
+
+      global_lambda_csv="$analysis_base/${cond}_global_lambda_vs_phase.csv"
+
+      # Start from a clean summary file at every complete analysis run.
+      rm -f "$global_lambda_csv"
+
+  fi
+
 
   [[ -f "$all20" ]] || { echo "WARNING: nominal R=20 all-phases file not found: $all20" >&2; return 0; }
   require_deltaL_column "$all20" || return 1
@@ -136,7 +158,7 @@ run_analysis() {
         echo "WARNING: R16/R24 master missing: parameter systematic for B will be unavailable." >&2
         : > "$syscsv"
       fi
-      run_root "lum_vs_v_fit.C(\"$all20\",\"$ph\",\"$syscsv\",\"$outdir\",\"$prefix\")"
+      run_root "lum_vs_v_fit.C(\"$all20\",\"$ph\",\"$syscsv\",\"$outdir\",\"$prefix\",\"\",\"\",\"$global_B_csv\")"
     else
       syscsv="$outdir/${prefix}_lambda_values.csv"
       echo "[analysis] $cond | $ph | exponential fit"
@@ -146,7 +168,7 @@ run_analysis() {
         echo "WARNING: R16/R24 master missing: parameter systematic for lambda will be unavailable." >&2
         : > "$syscsv"
       fi
-      run_root "lum_vs_T_fit.C(\"$all20\",\"$ph\",\"$syscsv\",\"$outdir\",\"$prefix\")"
+      run_root "lum_vs_T_fit.C(\"$all20\",\"$ph\",\"$syscsv\",\"$outdir\",\"$prefix\",\"\",\"\",\"$global_lambda_csv\")"
     fi
   done
 }

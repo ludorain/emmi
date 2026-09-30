@@ -266,6 +266,75 @@ static VGlobalFitResult run_global_v_fit(
     return out;
 }
 
+// -----------------------------------------------------------------------------
+// Append one simultaneous-fit result to the global B-vs-phase summary CSV.
+// -----------------------------------------------------------------------------
+
+static void append_global_B_summary(
+    const string& filename,
+    const string& phase,
+    const VGlobalFitResult& fit,
+    size_t n_spots,
+    size_t n_points)
+{
+    if (filename.empty())
+        return;
+
+
+    // Check whether the file already contains something.
+    bool write_header = true;
+
+    {
+        std::ifstream fin(filename);
+
+        if (fin.good() &&
+            fin.peek() != std::ifstream::traits_type::eof()) {
+
+            write_header = false;
+        }
+    }
+
+
+    std::ofstream fout(filename,std::ios::app);
+
+    if (!fout.is_open()) {
+        std::cerr
+            << "Warning: cannot open global-B summary CSV: "
+            << filename
+            << std::endl;
+        return;
+    }
+
+
+    if (write_header) {
+        fout
+            << "phase,"
+            << "B_global,"
+            << "B_global_stat_error,"
+            << "chi2,"
+            << "ndf,"
+            << "chi2ndf,"
+            << "fit_status,"
+            << "converged,"
+            << "n_spots,"
+            << "n_points\n";
+    }
+
+
+    fout
+        << phase
+        << ',' << fit.B
+        << ',' << fit.Berr
+        << ',' << fit.chi2
+        << ',' << fit.ndf
+        << ',' << fit.chi2ndf
+        << ',' << fit.status
+        << ',' << (fit.converged ? 1 : 0)
+        << ',' << n_spots
+        << ',' << n_points
+        << '\n';
+}
+
 
 // -----------------------------------------------------------------------------
 // Read the R=16 and R=24 fit values produced by lum_vs_v_systematics.C.
@@ -584,7 +653,8 @@ void lum_vs_v_fit(const char* all_phases_csv,
                   const char* output_dir,
                   const char* prefix,
                   const char* r16_all_phases_csv = "",
-                  const char* r24_all_phases_csv = "") {
+                  const char* r24_all_phases_csv = "",
+                const char* global_B_summary_csv = "") {
     gStyle->SetOptFit(111);
 
     const double FIT_XMIN=0.0;
@@ -593,6 +663,8 @@ void lum_vs_v_fit(const char* all_phases_csv,
     const double B_INIT=2.0;
 
     string ph=phase, outdir=output_dir, pref=prefix;
+    const string global_B_csv =
+    (global_B_summary_csv ? global_B_summary_csv : "");
     const string r16_file=(r16_all_phases_csv ? r16_all_phases_csv : "");
     const string r24_file=(r24_all_phases_csv ? r24_all_phases_csv : "");
     const bool comparison_mode=(!r16_file.empty() || !r24_file.empty());
@@ -1089,11 +1161,18 @@ void lum_vs_v_fit(const char* all_phases_csv,
     }
 
     if (sum_w > 0.0)
-        B_global_init = sum_wB/sum_w;
+    B_global_init = sum_wB/sum_w;
 
+    VGlobalFitResult global_fit;
+
+    size_t global_n_points = 0;
+
+    for (const auto& spot_points : global_x) {
+        global_n_points += spot_points.size();
+    }
 
     if (!B.empty()) {
-        VGlobalFitResult global_fit =
+    global_fit =
     run_global_v_fit(
         global_x,
         global_y,
@@ -1147,15 +1226,6 @@ void lum_vs_v_fit(const char* all_phases_csv,
             line_B->SetLineWidth(2);
             line_B->Draw("SAME");
 
-            //Old constant fit 
-            /*
-            TF1* fit_B=new TF1(Form("fit_B_%s",tag.c_str()),"[0]",xmin,xmax);
-            fit_B->SetLineColor(kP10Gray);
-            fit_B->SetLineWidth(2);
-            if(B.size()>=2){grB->Fit(fit_B,"RQ");
-            fit_B->Draw("SAME");}
-            */
-
             TF1* global_B_line=nullptr;
 
             if (global_fit.converged) {
@@ -1184,16 +1254,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
                 stats=new TPaveStats(.62,.72,.88,.90,"brNDC");
                 stats->SetName(Form("B_global_stats_%s",tag.c_str()));
 
-                //Old constant fit
-                /*
-                if(B.size()>=2){
-                    stats->AddText(Form("B_{const} = %.4g #pm %.3g",
-                                        fit_B->GetParameter(0),
-                                        fit_B->GetParError(0)));
-                    stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",
-                                        fit_B->GetChisquare(),
-                                        fit_B->GetNDF()));
-                }*/
+
                if (global_fit.converged) {
 
                 stats->AddText(Form("B_{global} = %.4g #pm %.3g", global_fit.B, global_fit.Berr));
@@ -1223,16 +1284,21 @@ void lum_vs_v_fit(const char* all_phases_csv,
             leg->SetFillStyle(0);
             leg->AddEntry(grB,"B statistical uncertainty","lep");
             leg->AddEntry(syst_proxy,"B systematic uncertainty","l");
-            if(B.size()>=2)
-            {
-                string global_label = Form("Simultaneous fit: B_{global} = %.3f #pm %.3f", global_fit.B, global_fit.Berr);
+            
+            if (global_fit.converged && global_B_line)
+                {
+                    string global_label = Form(
+                        "Simultaneous fit: B_{global} = %.3f #pm %.3f",
+                        global_fit.B,
+                        global_fit.Berr
+                    );
 
-                leg->AddEntry(
-                    global_B_line,
-                    global_label.c_str(),
-                    "l"
-                );
-            }
+                    leg->AddEntry(
+                        global_B_line,
+                        global_label.c_str(),
+                        "l"
+                    );
+                }
             leg->AddEntry(line_B,"Line: B = 2","l");
             leg->Draw();
             c9->Modified();c9->Update();
@@ -1243,6 +1309,21 @@ void lum_vs_v_fit(const char* all_phases_csv,
     } else {
         std::cerr << "Warning: no ROOT-converged B fit is available for Canvas 9 in phase "
                   << ph << std::endl;
+    }
+
+    // =====================================================================
+    // GLOBAL SIMULTANEOUS B FIT SUMMARY
+    // =====================================================================
+
+    if (!global_B_csv.empty()) {
+
+        append_global_B_summary(
+            global_B_csv,
+            ph,
+            global_fit,
+            global_x.size(),
+            global_n_points
+        );
     }
 
     // =====================================================================

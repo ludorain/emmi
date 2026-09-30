@@ -1,0 +1,10 @@
+sensor,phase,run_number,counted_hotspots,disappeared,reappeared_total,reappeared_from_before_annealing,reappeared_from_annealing_75_5,reappeared_from_annealing_75_25,reappeared_from_annealing_100_5,reappeared_from_annealing_100_25,reappeared_from_annealing_125_5,reappeared_from_annealing_125_25,reappeared_from_annealing_150_5,reappeared_from_annealing_150_25
+A2,before_annealing,20260514-190549,596,//,//,//,//,//,//,//,//,//,//,//
+A2,annealing_75_5,20260521-181553,564,183,0,0,//,//,//,//,//,//,//,//
+A2,annealing_75_25,20260608-115621,545,175,130,130,0,//,//,//,//,//,//,//
+A2,annealing_100_5,20260617-090129,498,79,15,7,8,0,//,//,//,//,//,//
+A2,annealing_100_25,20260701-110203,414,104,10,2,2,6,0,//,//,//,//,//
+A2,annealing_125_5,20260727-122841,387,145,114,1,92,7,14,0,//,//,//,//
+A2,annealing_125_25,20260831-115727,360,147,106,6,0,2,13,85,0,//,//,//
+A2,annealing_150_5,20260909-160823,316,325,16,1,2,1,2,2,8,0,//,//
+A2,annealing_150_25,20260917-164036,240,285,200,0,1,1,4,2,4,188,0,//
