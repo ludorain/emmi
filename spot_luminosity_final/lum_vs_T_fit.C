@@ -94,13 +94,7 @@ struct GlobalChi2T {
 // The horizontal cap is intentionally only slightly wider than the data marker,
 // so statistical and systematic uncertainties remain visually distinct.
 // -----------------------------------------------------------------------------
-static void draw_horizontal_syst_brackets_T(const vector<double>& x,
-                                             const vector<double>& y,
-                                             const vector<double>& delta,
-                                             double xmin,
-                                             double xmax,
-                                             int color=kBlack,
-                                             int line_width=4) {
+static void draw_horizontal_syst_brackets_T(const vector<double>& x, const vector<double>& y, const vector<double>& delta, double xmin, double xmax, int color=kBlack, int line_width=4) {
     if (x.empty() || y.size()!=x.size() || delta.size()!=x.size()) return;
 
     double span=xmax-xmin;
@@ -131,9 +125,7 @@ static void draw_horizontal_syst_brackets_T(const vector<double>& x,
     }
 }
 
-static void estimate_exp_parameters_nom(const vector<AnalysisRow>& rows,
-                                        double& A0,
-                                        double& lambda0) {
+static void estimate_exp_parameters_nom(const vector<AnalysisRow>& rows, double& A0, double& lambda0) {
 
     vector<AnalysisRow> pos;
 
@@ -224,12 +216,7 @@ static void estimate_exp_parameters_nom(const vector<AnalysisRow>& rows,
 // model and initial-parameter estimate as the nominal R=20 analysis. "N" keeps
 // ROOT from creating extra fit-statistics boxes for the comparison datasets.
 // -----------------------------------------------------------------------------
-static map<int,TRadiusOverlayFit> build_T_radius_overlays(
-    const string& filename,
-    const string& phase,
-    int color,
-    int marker,
-    const string& tag) {
+static map<int,TRadiusOverlayFit> build_T_radius_overlays(const string& filename, const string& phase, int color, int marker, const string& tag) {
 
     map<int,TRadiusOverlayFit> out;
     if (filename.empty()) return out;
