@@ -4,7 +4,10 @@
 #include "TF1.h"
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
+
+#include <algorithm>
 #include <cmath>
+#include <limits>
 
 struct VFitResult {
     int spot=-1;
@@ -17,26 +20,27 @@ struct VFitResult {
     bool fitted=false,converged=false;
 };
 
-static const AnalysisRow* find_v_point(const vector<AnalysisRow>& rows,double x,double tol=1e-9) {
-    for (const auto& r:rows) if (std::fabs(r.v_fin-x)<=tol) return &r;
+static const AnalysisRow* find_v_point(const vector<AnalysisRow>& rows,
+                                       double x,
+                                       double tol=1e-9) {
+    for (const auto& r:rows) {
+        if (std::fabs(r.v_fin-x)<=tol) return &r;
+    }
     return nullptr;
 }
 
 static VFitResult fit_v_rows(const vector<AnalysisRow>& rows,
                              const string& tag,
                              int spot) {
-
     VFitResult fr;
     fr.spot=spot;
 
-    if (rows.size()<2)
-        return fr;
+    if (rows.size()<2) return fr;
 
-    // ================================================================
-    // Build vectors for the nominal nonlinear fit
-    // ================================================================
-
-    vector<double> x, y, ex, ey;
+    // =====================================================================
+    // Build vectors for the nonlinear fit.
+    // =====================================================================
+    vector<double> x,y,ex,ey;
 
     for (const auto& r:rows) {
         x.push_back(r.v_fin);
@@ -45,110 +49,84 @@ static VFitResult fit_v_rows(const vector<AnalysisRow>& rows,
         ey.push_back(r.error);
     }
 
-
-    // ================================================================
+    // =====================================================================
     // STEP 1: logarithmic prefit
     //
-    // Lum = A * V^B
+    //      Lum = A V^B
     //
-    // ln(Lum) = ln(A) + B ln(V)
+    // becomes
     //
-    // Therefore:
-    //      intercept = ln(A)
-    //      slope     = B
-    // ================================================================
-
-    double A_start = 1.0;
-    double B_start = 2.0;
+    //      ln(Lum) = ln(A) + B ln(V)
+    //
+    // The intercept gives ln(A) and the slope gives B.
+    // =====================================================================
+    double A_start=1.0;
+    double B_start=2.0;
 
     vector<double> log_v;
     vector<double> log_l;
     vector<double> log_ev;
     vector<double> log_el;
 
-    for (size_t i=0; i<x.size(); ++i) {
-
-        // The logarithm is defined only for positive values.
-        if (x[i] <= 0.0 || y[i] <= 0.0)
-            continue;
+    for (size_t i=0;i<x.size();++i) {
+        if (x[i]<=0.0 || y[i]<=0.0) continue;
 
         if (!finite_number(x[i]) ||
             !finite_number(y[i]) ||
-            !finite_number(ey[i]))
+            !finite_number(ey[i])) {
             continue;
+        }
 
         log_v.push_back(std::log(x[i]));
         log_l.push_back(std::log(y[i]));
-
-        // No uncertainty on overvoltage
         log_ev.push_back(0.0);
 
-        // Error propagation:
-        // d(ln L) = dL / L
-        log_el.push_back(std::fabs(ey[i] / y[i]));
+        // d(ln L) = dL/L
+        log_el.push_back(std::fabs(ey[i]/y[i]));
     }
 
+    if (log_v.size()>=2) {
+        TGraphErrors gr_log((int)log_v.size(),
+                            log_v.data(),
+                            log_l.data(),
+                            log_ev.data(),
+                            log_el.data());
 
-    if (log_v.size() >= 2) {
+        TF1 f_log(Form("f_log_sys_v_%s_%d",tag.c_str(),spot),
+                  "[0] + [1]*x",
+                  log_v.front(),
+                  log_v.back());
 
-        TGraphErrors gr_log(
-            (int)log_v.size(),
-            log_v.data(),
-            log_l.data(),
-            log_ev.data(),
-            log_el.data()
-        );
+        TFitResultPtr prefit=gr_log.Fit(&f_log,"QRSN0");
 
-        TF1 f_log(
-            Form("f_log_sys_v_%s_%d",tag.c_str(),spot),
-            "[0] + [1]*x",
-            log_v.front(),
-            log_v.back()
-        );
-
-        TFitResultPtr prefit = gr_log.Fit(&f_log,"QRSN0");
-
-        if ((int)prefit == 0) {
-
-            const double lnA_prefit = f_log.GetParameter(0);
-            const double B_prefit   = f_log.GetParameter(1);
-
-            const double A_prefit = std::exp(lnA_prefit);
+        if ((int)prefit==0) {
+            const double lnA_prefit=f_log.GetParameter(0);
+            const double B_prefit=f_log.GetParameter(1);
+            const double A_prefit=std::exp(lnA_prefit);
 
             if (finite_number(A_prefit) &&
                 finite_number(B_prefit) &&
-                A_prefit > 0.0) {
-
-                A_start = A_prefit;
-                B_start = B_prefit;
+                A_prefit>0.0) {
+                A_start=A_prefit;
+                B_start=B_prefit;
             }
         }
     }
 
+    // =====================================================================
+    // STEP 2: final nonlinear power-law fit.
+    // =====================================================================
+    TGraphErrors gr((int)x.size(),
+                    x.data(),y.data(),ex.data(),ey.data());
 
-    // ================================================================
-    // STEP 2: nominal nonlinear fit
-    // ================================================================
-
-    TGraphErrors gr((int)x.size(), x.data(), y.data(), ex.data(),ey.data());
-
-    TF1 f(
-        Form("f_sys_v_%s_%d",tag.c_str(),spot),
-        "[0]*TMath::Power(x,[1])",
-        0.0,
-        8.0
-    );
+    TF1 f(Form("f_sys_v_%s_%d",tag.c_str(),spot),
+          "[0]*TMath::Power(x,[1])",
+          0.0,8.0);
 
     f.SetParameters(A_start,B_start);
     f.SetParNames("A","B");
 
-
     TFitResultPtr fit=gr.Fit(&f,"QRS0");
-
-
-    // ================================================================
-    // Store final nonlinear-fit results
-    // ================================================================
 
     fr.fitted=true;
     fr.status=(int)fit;
@@ -157,72 +135,116 @@ static VFitResult fit_v_rows(const vector<AnalysisRow>& rows,
 
     fr.B=f.GetParameter(1);
     fr.Berr=f.GetParError(1);
-
     fr.chi2=f.GetChisquare();
     fr.ndf=f.GetNDF();
+    fr.chi2ndf=(fr.ndf>0) ? fr.chi2/fr.ndf : 0.0;
 
-    fr.chi2ndf=(fr.ndf>0)
-        ? fr.chi2/fr.ndf
-        : 0.0;
-
-    fr.converged=(
-        fr.status==0 &&
-        finite_number(fr.B)
-    );
+    fr.converged=(fr.status==0 && finite_number(fr.B));
 
     return fr;
 }
 
-// IMPORTANT: all three radii are read here.  For every hotspot the three fits
-// use exactly the SAME set of genuinely-detected overvoltage points.  This
-// prevents a missing/different operating point at one radius from becoming a
-// fake systematic shift of B.
+// ============================================================================
+// Systematic uncertainty on the individual hotspot exponent B.
+//
+// All three radii are read here. For each hotspot, R=16, R=20 and R=24 are
+// fitted using exactly the SAME genuinely detected overvoltage points.
+// Therefore a missing operating point at one radius cannot generate a fake
+// systematic shift in B.
+//
+// This macro intentionally does NOT calculate a phase-average B.  The average,
+// its propagated statistical error and the RMS are calculated in
+// lum_vs_v_fit.C from the nominal R=20 hotspot population that actually enters
+// the B-vs-global-ID plot.
+// ============================================================================
 void lum_vs_v_systematics(const char* csv_R20,
                           const char* csv_R16,
                           const char* csv_R24,
                           const char* phase,
                           const char* output_csv) {
     string ph=phase;
+
     CsvTable t20=read_analysis_csv(csv_R20,true);
     CsvTable t16=read_analysis_csv(csv_R16,true);
     CsvTable t24=read_analysis_csv(csv_R24,true);
+
     auto a20=filter_phase_detected(t20.rows,ph);
     auto a16=filter_phase_detected(t16.rows,ph);
     auto a24=filter_phase_detected(t24.rows,ph);
 
     map<int,vector<AnalysisRow>> m20,m16,m24;
-    for(const auto&r:a20)m20[r.spot].push_back(r);
-    for(const auto&r:a16)m16[r.spot].push_back(r);
-    for(const auto&r:a24)m24[r.spot].push_back(r);
+    for (const auto& r:a20) m20[r.spot].push_back(r);
+    for (const auto& r:a16) m16[r.spot].push_back(r);
+    for (const auto& r:a24) m24[r.spot].push_back(r);
 
     std::ofstream fout(output_csv);
-    if(!fout.is_open()){std::cerr<<"Error: cannot create "<<output_csv<<std::endl;return;}
-    fout<<"spot,phase,n_common_points,B_R20,Berr_R20,fit_status_R20,B_R16,Berr_R16,fit_status_R16,B_R24,Berr_R24,fit_status_R24,deltaB,converged_all\n";
+    if (!fout.is_open()) {
+        std::cerr << "Error: cannot create " << output_csv << std::endl;
+        return;
+    }
 
-    for(auto&kv:m20){
-        int id=kv.first;
-        if(!m16.count(id)||!m24.count(id)) continue;
+    fout
+        << "spot,phase,n_common_points,"
+        << "B_R20,Berr_R20,fit_status_R20,"
+        << "B_R16,Berr_R16,fit_status_R16,"
+        << "B_R24,Berr_R24,fit_status_R24,"
+        << "deltaB,converged_all\n";
+
+    for (auto& kv:m20) {
+        const int id=kv.first;
+
+        if (!m16.count(id) || !m24.count(id)) continue;
+
         vector<AnalysisRow> r20,r16,r24;
         auto base=kv.second;
-        std::sort(base.begin(),base.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.v_fin<b.v_fin;});
-        for(const auto&r:base){
+
+        std::sort(base.begin(),base.end(),
+                  [](const AnalysisRow& a,const AnalysisRow& b) {
+                      return a.v_fin<b.v_fin;
+                  });
+
+        // Keep only overvoltage points available at all three radii.
+        for (const auto& r:base) {
             const AnalysisRow* p16=find_v_point(m16[id],r.v_fin);
             const AnalysisRow* p24=find_v_point(m24[id],r.v_fin);
-            if(!p16||!p24) continue;
-            r20.push_back(r); r16.push_back(*p16); r24.push_back(*p24);
+
+            if (!p16 || !p24) continue;
+
+            r20.push_back(r);
+            r16.push_back(*p16);
+            r24.push_back(*p24);
         }
-        if(r20.size()<2) continue;
-        auto f20=fit_v_rows(r20,"R20",id);
-        auto f16=fit_v_rows(r16,"R16",id);
-        auto f24=fit_v_rows(r24,"R24",id);
-        bool ok=f20.converged&&f16.converged&&f24.converged;
-        double dB=ok?std::max(std::fabs(f24.B-f20.B),std::fabs(f20.B-f16.B)):
-                      std::numeric_limits<double>::quiet_NaN();
-        fout<<id<<','<<ph<<','<<r20.size()<<','
-            <<f20.B<<','<<f20.Berr<<','<<f20.status<<','
-            <<f16.B<<','<<f16.Berr<<','<<f16.status<<','
-            <<f24.B<<','<<f24.Berr<<','<<f24.status<<','
-            <<dB<<','<<(ok?1:0)<<'\n';
+
+        if (r20.size()<2) continue;
+
+        const auto f20=fit_v_rows(r20,"R20",id);
+        const auto f16=fit_v_rows(r16,"R16",id);
+        const auto f24=fit_v_rows(r24,"R24",id);
+
+        const bool ok=
+            f20.converged &&
+            f16.converged &&
+            f24.converged;
+
+        const double dB = ok
+            ? std::max(std::fabs(f24.B-f20.B),
+                       std::fabs(f20.B-f16.B))
+            : std::numeric_limits<double>::quiet_NaN();
+
+        fout
+            << id << ','
+            << ph << ','
+            << r20.size() << ','
+            << f20.B << ',' << f20.Berr << ',' << f20.status << ','
+            << f16.B << ',' << f16.Berr << ',' << f16.status << ','
+            << f24.B << ',' << f24.Berr << ',' << f24.status << ','
+            << dB << ','
+            << (ok ? 1 : 0)
+            << '\n';
     }
-    std::cout<<"Saved common-point power-law systematic fits to "<<output_csv<<std::endl;
+
+    std::cout
+        << "Saved common-point power-law systematic fits to "
+        << output_csv
+        << std::endl;
 }

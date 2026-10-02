@@ -11,10 +11,11 @@
 #include "TFitResultPtr.h"
 #include "TPaveStats.h"
 #include "TLine.h"
-#include "Fit/Fitter.h"
-#include "Math/Functor.h"
+#include "TH1D.h"
+#include "TPaveText.h"
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
 struct BSystematicPair {
     bool has16=false, has24=false;
@@ -49,292 +50,42 @@ struct VRadiusOverlayFit {
     bool fit_done=false, converged=false;
 };
 
-struct VGlobalFitResult {
-
-    bool fit_done=false;
-    bool converged=false;
-
-    double B=std::numeric_limits<double>::quiet_NaN();
-    double Berr=std::numeric_limits<double>::quiet_NaN();
-
-    double chi2=std::numeric_limits<double>::quiet_NaN();
-    double chi2ndf=std::numeric_limits<double>::quiet_NaN();
-
-    int ndf=0;
-    int status=-999;
-
-    vector<double> A;
-    vector<double> Aerr;
-};
-
-struct GlobalChi2 {
-
-    const vector<vector<double>>& x_spots;
-    const vector<vector<double>>& y_spots;
-    const vector<vector<double>>& ey_spots;
-
-    GlobalChi2(const vector<vector<double>>& x,
-               const vector<vector<double>>& y,
-               const vector<vector<double>>& ey)
-        : x_spots(x),
-          y_spots(y),
-          ey_spots(ey) {}
-
-
-    double operator()(const double* par) const {
-
-        // Shared exponent
-        const double B = par[0];
-
-        double chi2 = 0.0;
-
-        for (size_t i=0; i<x_spots.size(); ++i) {
-
-            // Independent normalization for hotspot i
-            const double A_i = par[1+i];
-
-            for (size_t j=0; j<x_spots[i].size(); ++j) {
-
-                const double model =
-                    A_i * std::pow(x_spots[i][j],B);
-
-                const double diff =
-                    (y_spots[i][j]-model) /
-                    ey_spots[i][j];
-
-                chi2 += diff*diff;
-            }
-        }
-
-        return chi2;
-    }
-};
-
 // -----------------------------------------------------------------------------
-// Function for simultaneous global fit of multiple hotspots with a shared exponent B.
-
-static VGlobalFitResult run_global_v_fit(
-    const vector<vector<double>>& x_data,
-    const vector<vector<double>>& y_data,
-    const vector<vector<double>>& ey_data,
-    const vector<double>& A_inits,
-    double B_init)
-{
-    VGlobalFitResult out;
-
-    const size_t n_spots = x_data.size();
-
-    if (n_spots == 0)
-        return out;
-
-    if (A_inits.size() != n_spots)
-        return out;
-
-
-    // -------------------------------------------------------------
-    // Count total number of experimental points
-    // -------------------------------------------------------------
-
-    size_t n_points = 0;
-
-    for (const auto& v : x_data)
-        n_points += v.size();
-
-
-    // Number of parameters:
-    //
-    // B_global
-    // +
-    // one A_i for every hotspot
-    //
-    const size_t n_parameters = 1 + n_spots;
-
-    if (n_points <= n_parameters)
-        return out;
-
-
-    // -------------------------------------------------------------
-    // Global chi2
-    // -------------------------------------------------------------
-
-    GlobalChi2 globalChi2(x_data,y_data,ey_data);
-
-    ROOT::Math::Functor fcn(
-        globalChi2,
-        (unsigned int)n_parameters
-    );
-
-
-    // -------------------------------------------------------------
-    // Initial parameters
-    // -------------------------------------------------------------
-
-    vector<double> initial_pars(n_parameters);
-
-    initial_pars[0] = B_init;
-
-    for (size_t i=0; i<n_spots; ++i)
-        initial_pars[1+i] = A_inits[i];
-
-
-    // -------------------------------------------------------------
-    // Configure fitter
-    // -------------------------------------------------------------
-
-    ROOT::Fit::Fitter fitter;
-
-    fitter.SetFCN(
-        fcn,
-        initial_pars.data(),
-        (unsigned int)n_points,
-        true
-    );
-
-
-    fitter.Config().ParSettings(0)
-        .SetName("B_global");
-
-    for (size_t i=0; i<n_spots; ++i) {
-
-        fitter.Config()
-              .ParSettings(1+i)
-              .SetName(
-                  Form("A_spot_%d",(int)i)
-              );
-    }
-
-
-    // -------------------------------------------------------------
-    // Execute simultaneous fit
-    // -------------------------------------------------------------
-
-    const bool ok = fitter.FitFCN();
-
-    out.fit_done=true;
-
-    const ROOT::Fit::FitResult& result =
-        fitter.Result();
-
-    out.status=result.Status();
-
-
-    if (!ok)
-        return out;
-
-
-    // -------------------------------------------------------------
-    // Extract shared B
-    // -------------------------------------------------------------
-
-    out.B=result.Value(0);
-    out.Berr=result.Error(0);
-
-
-    // -------------------------------------------------------------
-    // Extract individual A_i
-    // -------------------------------------------------------------
-
-    out.A.resize(n_spots);
-    out.Aerr.resize(n_spots);
-
-    for (size_t i=0; i<n_spots; ++i) {
-
-        out.A[i]=result.Value(1+i);
-        out.Aerr[i]=result.Error(1+i);
-    }
-
-
-    // Since the objective function itself is chi2,
-    // the minimum FCN value is the global chi2.
-    out.chi2=result.MinFcnValue();
-
-    out.ndf= (int)n_points - (int)n_parameters;
-
-    out.chi2ndf=
-        (out.ndf>0)
-        ? out.chi2/out.ndf
-        : 0.0;
-
-
-    out.converged=
-        ok &&
-        result.IsValid() &&
-        finite_number(out.B) &&
-        finite_number(out.Berr);
-
-
-    return out;
-}
-
+// Append the statistics of the accepted individual B values for one annealing
+// phase.  The file is shared by all phases and is reset by 5analysis.sh before
+// a complete analysis run.
 // -----------------------------------------------------------------------------
-// Append one simultaneous-fit result to the global B-vs-phase summary CSV.
-// -----------------------------------------------------------------------------
+static void append_B_phase_summary(const string& filename,
+                                   const string& phase,
+                                   double B_mean,
+                                   double B_mean_stat_error,
+                                   double B_rms,
+                                   size_t n_spots) {
+    if (filename.empty()) return;
 
-static void append_global_B_summary(
-    const string& filename,
-    const string& phase,
-    const VGlobalFitResult& fit,
-    size_t n_spots,
-    size_t n_points)
-{
-    if (filename.empty())
-        return;
-
-
-    // Check whether the file already contains something.
-    bool write_header = true;
-
+    bool write_header=true;
     {
-        std::ifstream fin(filename);
-
-        if (fin.good() &&
-            fin.peek() != std::ifstream::traits_type::eof()) {
-
-            write_header = false;
-        }
+        std::ifstream check(filename,std::ios::binary | std::ios::ate);
+        if (check.is_open() && check.tellg()>0) write_header=false;
     }
-
 
     std::ofstream fout(filename,std::ios::app);
-
     if (!fout.is_open()) {
-        std::cerr
-            << "Warning: cannot open global-B summary CSV: "
-            << filename
-            << std::endl;
+        std::cerr << "Warning: cannot open B-vs-phase summary CSV: "
+                  << filename << std::endl;
         return;
     }
 
-
     if (write_header) {
-        fout
-            << "phase,"
-            << "B_global,"
-            << "B_global_stat_error,"
-            << "chi2,"
-            << "ndf,"
-            << "chi2ndf,"
-            << "fit_status,"
-            << "converged,"
-            << "n_spots,"
-            << "n_points\n";
+        fout << "phase,B_mean,B_mean_stat_error,B_rms,n_spots\n";
     }
 
-
-    fout
-        << phase
-        << ',' << fit.B
-        << ',' << fit.Berr
-        << ',' << fit.chi2
-        << ',' << fit.ndf
-        << ',' << fit.chi2ndf
-        << ',' << fit.status
-        << ',' << (fit.converged ? 1 : 0)
-        << ',' << n_spots
-        << ',' << n_points
-        << '\n';
+    fout << phase << ','
+         << B_mean << ','
+         << B_mean_stat_error << ','
+         << B_rms << ','
+         << n_spots << '\n';
 }
-
 
 // -----------------------------------------------------------------------------
 // Read the R=16 and R=24 fit values produced by lum_vs_v_systematics.C.
@@ -654,8 +405,9 @@ void lum_vs_v_fit(const char* all_phases_csv,
                   const char* prefix,
                   const char* r16_all_phases_csv = "",
                   const char* r24_all_phases_csv = "",
-                const char* global_B_summary_csv = "") {
+                  const char* B_summary_csv = "") {
     gStyle->SetOptFit(111);
+    gStyle->SetOptStat(0);
 
     const double FIT_XMIN=0.0;
     const double FIT_XMAX=8.0;
@@ -663,8 +415,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
     const double B_INIT=2.0;
 
     string ph=phase, outdir=output_dir, pref=prefix;
-    const string global_B_csv =
-    (global_B_summary_csv ? global_B_summary_csv : "");
+    const string summary_file=(B_summary_csv ? B_summary_csv : "");
     const string r16_file=(r16_all_phases_csv ? r16_all_phases_csv : "");
     const string r24_file=(r24_all_phases_csv ? r24_all_phases_csv : "");
     const bool comparison_mode=(!r16_file.empty() || !r24_file.empty());
@@ -1041,289 +792,255 @@ void lum_vs_v_fit(const char* all_phases_csv,
 
     // =====================================================================
     // CANVAS 9: B vs global hotspot ID.
+    //
+    // There is NO simultaneous/common-B fit here.  We keep the B value from
+    // each accepted individual hotspot fit and calculate simple distribution
+    // statistics over exactly the same hotspot population shown in the plot.
     // =====================================================================
     vector<double> x, ex, B, Bstat, Bsyst;
 
-    // Data for the simultaneous global fit
-    vector<vector<double>> global_x;
-    vector<vector<double>> global_y;
-    vector<vector<double>> global_ey;
-    vector<double> global_A_init;
-    vector<int> global_spot_ids;
-
     for (auto& kv:fits) {
-
         const auto& f=kv.second;
 
-        // -------------------------------------------------------------
-        // Keep exactly the same hotspot-quality selection used for
-        // Canvas 9.
-        // -------------------------------------------------------------
-
+        // Keep the same quality selection for the B-vs-ID plot, the B
+        // distribution histogram and the phase-summary statistics.
         if (!f.fit_done ||
             !f.converged ||
             !finite_number(f.B) ||
             !finite_number(f.Berr) ||
             f.ndf <= 0 ||
             f.chi2ndf >= 3.5) {
-
             continue;
         }
-
-        // -------------------------------------------------------------
-        // Prepare original luminosity-vs-overvoltage data for the
-        // simultaneous fit.
-        // -------------------------------------------------------------
-
-        vector<double> gx;
-        vector<double> gy;
-        vector<double> gey;
-
-        for (const auto& r : f.rows) {
-
-            // x > 0 is useful for numerical stability of x^B.
-            if (!(r.v_fin > 0.0))
-                continue;
-
-            if (!finite_number(r.v_fin) ||
-                !finite_number(r.luminosity) ||
-                !finite_number(r.error))
-                continue;
-
-            // A chi2 contribution requires a positive uncertainty.
-            if (!(r.error > 0.0))
-                continue;
-
-            gx.push_back(r.v_fin);
-            gy.push_back(r.luminosity);
-            gey.push_back(r.error);
-        }
-
-
-        // Each hotspot must contain enough points.
-        if (gx.size() < 2)
-            continue;
-
-
-        // -------------------------------------------------------------
-        // Canvas-9 individual B point
-        // -------------------------------------------------------------
 
         x.push_back((double)kv.first);
         ex.push_back(0.0);
-
         B.push_back(f.B);
         Bstat.push_back(f.Berr);
-
-        Bsyst.push_back(
-            f.has_param_syst ? f.deltaB : 0.0
-        );
-
-
-        // -------------------------------------------------------------
-        // Simultaneous-fit dataset
-        // -------------------------------------------------------------
-
-        global_x.push_back(gx);
-        global_y.push_back(gy);
-        global_ey.push_back(gey);
-
-        global_spot_ids.push_back(kv.first);
-
-
-        // The individual nonlinear fit provides an excellent starting
-        // value for the normalization A_i.
-        if (finite_number(f.A) && f.A > 0.0)
-            global_A_init.push_back(f.A);
-        else
-            global_A_init.push_back(A_INIT);
-    }
-
-    // =====================================================================
-    // Seed for minimization
-    double B_global_init = B_INIT;
-    // Use the weighted mean of the individual B values only as initialization of the simultaneous fit.
-    double sum_w  = 0.0;
-    double sum_wB = 0.0;
-
-    for (size_t i=0; i<B.size(); ++i) {
-
-        if (!finite_number(B[i]) ||
-            !finite_number(Bstat[i]) ||
-            Bstat[i] <= 0.0)
-            continue;
-
-        const double w =
-            1.0/(Bstat[i]*Bstat[i]);
-
-        sum_w  += w;
-        sum_wB += w*B[i];
-    }
-
-    if (sum_w > 0.0)
-    B_global_init = sum_wB/sum_w;
-
-    VGlobalFitResult global_fit;
-
-    size_t global_n_points = 0;
-
-    for (const auto& spot_points : global_x) {
-        global_n_points += spot_points.size();
+        Bsyst.push_back(f.has_param_syst ? f.deltaB : 0.0);
     }
 
     if (!B.empty()) {
-    global_fit =
-    run_global_v_fit(
-        global_x,
-        global_y,
-        global_ey,
-        global_A_init,
-        B_global_init
-    );
+        // -----------------------------------------------------------------
+        // Distribution statistics of the accepted individual B_i values.
+        //
+        // Mean:
+        //     B_mean = (1/N) sum_i B_i
+        //
+        // Statistical error on the arithmetic mean, propagated from the
+        // individual fit errors:
+        //     sigma_mean = sqrt(sum_i sigma_i^2) / N
+        //
+        // RMS of the hotspot-to-hotspot distribution:
+        //     RMS = sqrt[(1/N) sum_i (B_i-B_mean)^2]
+        // -----------------------------------------------------------------
+        const size_t nB=B.size();
 
+        double B_mean=0.0;
+        for (double b:B) B_mean+=b;
+        B_mean/=(double)nB;
 
-    if (global_fit.converged) {
+        double sum_stat2=0.0;
+        for (double eb:Bstat) {
+            if (finite_number(eb)) sum_stat2+=eb*eb;
+        }
+        const double B_mean_stat_error=std::sqrt(sum_stat2)/(double)nB;
 
-        std::cout
-            << "Global simultaneous fit: B for current sensor converged "
-            << std::endl;
-    } else {
+        double sum_dev2=0.0;
+        for (double b:B) {
+            const double d=b-B_mean;
+            sum_dev2+=d*d;
+        }
+        const double B_rms=std::sqrt(sum_dev2/(double)nB);
 
-        std::cerr
-            << "Warning: simultaneous global fit did not converge."
-            << std::endl;
-    }
+        std::cout << "B distribution for phase " << ph
+                  << ": mean = " << B_mean
+                  << " +/- " << B_mean_stat_error << " (stat on mean)"
+                  << ", RMS = " << B_rms
+                  << ", N = " << nB
+                  << std::endl;
+
+        // Append one row for this annealing phase.  5analysis.sh removes this
+        // file before starting the phase loop, so rows accumulate only within
+        // the current complete analysis run.
+        append_B_phase_summary(summary_file,
+                               ph,
+                               B_mean,
+                               B_mean_stat_error,
+                               B_rms,
+                               nB);
 
         const string sensor=sensor_from_prefix(pref);
-        double xmin=*std::min_element(x.begin(),x.end())-1.0;
-        double xmax=*std::max_element(x.begin(),x.end())+1.0;
-        double ymin=1e99,ymax=-1e99;
-        for(size_t i=0;i<B.size();++i){const double emax=std::max(std::fabs(Bstat[i]),std::fabs(Bsyst[i]));ymin=std::min(ymin,B[i]-emax);ymax=std::max(ymax,B[i]+emax);}
-        double yspan=ymax-ymin;if(!(yspan>0.0))yspan=std::max(0.2,std::fabs(ymax)*0.2);
+        const double xmin=*std::min_element(x.begin(),x.end())-1.0;
+        const double xmax=*std::max_element(x.begin(),x.end())+1.0;
 
-        auto draw_B_canvas=[&](const string& tag,bool focus){
-            TCanvas* c9=new TCanvas(Form("c9_%s",tag.c_str()),"B vs spot",1800,1000);
-            TGraphErrors* grB=new TGraphErrors((int)B.size(),x.data(),B.data(),ex.data(),Bstat.data());
-            grB->SetTitle(Form("Sensor %s - Power-law exponent B - %s;Global spot ID;B",sensor.c_str(),ph.c_str()));
+        double ymin=1e99,ymax=-1e99;
+        for (size_t i=0;i<B.size();++i) {
+            const double emax=std::max(std::fabs(Bstat[i]),std::fabs(Bsyst[i]));
+            ymin=std::min(ymin,B[i]-emax);
+            ymax=std::max(ymax,B[i]+emax);
+        }
+        double yspan=ymax-ymin;
+        if (!(yspan>0.0)) yspan=std::max(0.2,std::fabs(ymax)*0.2);
+
+        // -------------------------------------------------------------
+        // B vs global hotspot ID.  Two versions are retained, as in the
+        // previous macro: full y range and focused 1<B<3 range.
+        // -------------------------------------------------------------
+        auto draw_B_canvas=[&](const string& tag,bool focus) {
+            TCanvas* c9=new TCanvas(Form("c9_%s",tag.c_str()),
+                                    "B vs global hotspot ID",1800,1000);
+
+            TGraphErrors* grB=new TGraphErrors((int)B.size(),
+                                               x.data(),B.data(),
+                                               ex.data(),Bstat.data());
+            grB->SetTitle(Form("Sensor %s - Power-law exponent B - %s;Global spot ID;B",
+                               sensor.c_str(),ph.c_str()));
             grB->SetMarkerStyle(21);
             grB->SetMarkerSize(1.2);
             grB->SetMarkerColor(kBlack);
             grB->SetLineColor(kBlack);
             grB->SetLineWidth(2);
-            grB->SetMinimum(focus?1.0:ymin-0.15*yspan);
-            grB->SetMaximum(focus?3.0:ymax+0.35*yspan);
+            grB->SetMinimum(focus ? 1.0 : ymin-0.15*yspan);
+            grB->SetMaximum(focus ? 3.0 : ymax+0.35*yspan);
             grB->Draw("AP");
             grB->GetXaxis()->SetLimits(xmin,xmax);
 
-            // Systematic uncertainty uses an accessible palette colour; the
-            // statistical error bars and markers remain explicitly black.
-            draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kP6Grape,4);grB->Draw("P SAME");
-            
-            //Dashed red line at B=2
-            TF1* line_B=new TF1(Form("line_B_%s",tag.c_str()),"2",xmin,xmax);
-            line_B->SetLineColor(kP6Red);
-            line_B->SetLineStyle(2);
-            line_B->SetLineWidth(2);
-            line_B->Draw("SAME");
+            // Systematic uncertainty on each individual B_i.
+            draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kP6Grape,4);
+            grB->Draw("P SAME");
 
-            TF1* global_B_line=nullptr;
+            // Reference B=2.
+            TLine* line_B2=new TLine(xmin,2.0,xmax,2.0);
+            line_B2->SetLineColor(kP6Red);
+            line_B2->SetLineStyle(2);
+            line_B2->SetLineWidth(2);
+            line_B2->Draw("SAME");
 
-            if (global_fit.converged) {
+            // NEW: dashed horizontal line at the arithmetic mean of the
+            // accepted individual B values.
+            TLine* mean_line=new TLine(xmin,B_mean,xmax,B_mean);
+            mean_line->SetLineColor(kP10Gray);
+            mean_line->SetLineStyle(2);
+            mean_line->SetLineWidth(3);
+            mean_line->Draw("SAME");
 
-                global_B_line =
-                    new TF1(
-                        Form("global_B_line_%s",tag.c_str()),
-                        "[0]",
-                        xmin,
-                        xmax
-                    );
+            TLine* syst_proxy=new TLine(0,0,1,0);
+            syst_proxy->SetLineColor(kP6Grape);
+            syst_proxy->SetLineWidth(4);
 
-                global_B_line->SetParameter(0, global_fit.B);
-
-                global_B_line->SetLineColor(kP10Gray);
-                global_B_line->SetLineWidth(2);
-
-                global_B_line->Draw("SAME");
-            }
-
-            c9->Update();
-            
-            // Statistica
-            TPaveStats* stats=(TPaveStats*)grB->FindObject("stats");
-            if(!stats){
-                stats=new TPaveStats(.62,.72,.88,.90,"brNDC");
-                stats->SetName(Form("B_global_stats_%s",tag.c_str()));
-
-
-               if (global_fit.converged) {
-
-                stats->AddText(Form("B_{global} = %.4g #pm %.3g", global_fit.B, global_fit.Berr));
-
-                stats->AddText(
-                    Form(
-                        "#chi^{2}/ndf = %.3g / %d",
-                        global_fit.chi2,
-                        global_fit.ndf
-                    )
-                );
-            }
-
-            } else {
-                stats->SetX1NDC(.62);
-                stats->SetX2NDC(.88);
-                stats->SetY1NDC(.72);
-                stats->SetY2NDC(.90);
-            }
-
-            stats->SetTextSize(.022);
-            stats->SetFillStyle(0);
-            stats->Draw();
-            TLine* syst_proxy=new TLine(0,0,1,0);syst_proxy->SetLineColor(kP6Grape);syst_proxy->SetLineWidth(4);
-            TLegend* leg=new TLegend(.12,.69,.43,.90);
+            TLegend* leg=new TLegend(.12,.67,.48,.91);
             leg->SetBorderSize(0);
             leg->SetFillStyle(0);
             leg->AddEntry(grB,"B statistical uncertainty","lep");
             leg->AddEntry(syst_proxy,"B systematic uncertainty","l");
-            
-            if (global_fit.converged && global_B_line)
-                {
-                    string global_label = Form(
-                        "Simultaneous fit: B_{global} = %.3f #pm %.3f",
-                        global_fit.B,
-                        global_fit.Berr
-                    );
 
-                    leg->AddEntry(
-                        global_B_line,
-                        global_label.c_str(),
-                        "l"
-                    );
-                }
-            leg->AddEntry(line_B,"Line: B = 2","l");
+            string mean_label=Form("Mean B = %.4f #pm %.4f (stat)",
+                                   B_mean,B_mean_stat_error);
+            leg->AddEntry(mean_line,mean_label.c_str(),"l");
+            leg->AddEntry(line_B2,"Reference: B = 2","l");
             leg->Draw();
-            c9->Modified();c9->Update();
-            string base=outdir+"/"+pref+"_B_vs_spot"+(focus?"_focus_1_3":"");c9->SaveAs((base+".png").c_str());c9->SaveAs((base+".pdf").c_str());delete c9;
+
+            // Display the RMS separately from the statistical error on the mean.
+            TPaveText* stats=new TPaveText(.64,.73,.91,.90,"NDC");
+            stats->SetBorderSize(1);
+            stats->SetFillStyle(0);
+            stats->SetTextAlign(12);
+            stats->SetTextSize(.028);
+            stats->AddText(Form("N_{spots} = %d",(int)nB));
+            stats->AddText(Form("Mean B = %.5g",B_mean));
+            stats->AddText(Form("Stat. error on mean = %.4g",B_mean_stat_error));
+            stats->AddText(Form("RMS = %.4g",B_rms));
+            stats->Draw();
+
+            c9->Modified();
+            c9->Update();
+
+            string base=outdir+"/"+pref+"_B_vs_spot"+(focus?"_focus_1_3":"");
+            c9->SaveAs((base+".png").c_str());
+            c9->SaveAs((base+".pdf").c_str());
+            delete c9;
         };
+
         draw_B_canvas("full",false);
         draw_B_canvas("focus",true);
+
+        // -------------------------------------------------------------
+        // SECOND PLOT: binned distribution of the individual B_i values.
+        // This is a diagnostic plot intended to show the shape of the B
+        // distribution.  No Gaussian fit is imposed here.
+        // -------------------------------------------------------------
+        double Bmin=*std::min_element(B.begin(),B.end());
+        double Bmax=*std::max_element(B.begin(),B.end());
+        double Bspan=Bmax-Bmin;
+        if (!(Bspan>0.0)) Bspan=std::max(0.2,std::fabs(Bmax)*0.2);
+
+        const double hist_min=Bmin-0.10*Bspan;
+        const double hist_max=Bmax+0.10*Bspan;
+        const int nbins=std::max(8,
+                         std::min(30,
+                         (int)std::ceil(std::sqrt((double)nB))));
+
+        TCanvas* ch=new TCanvas("c_B_distribution",
+                                "Distribution of B values",1500,1000);
+        ch->SetLeftMargin(0.12);
+        ch->SetBottomMargin(0.12);
+        ch->SetRightMargin(0.05);
+        ch->SetTopMargin(0.08);
+
+        TH1D* hB=new TH1D("h_B_distribution",
+                          Form("Sensor %s - Distribution of power-law exponent B - %s;B;Number of hotspots",
+                               sensor.c_str(),ph.c_str()),
+                          nbins,hist_min,hist_max);
+        hB->SetLineWidth(2);
+        for (double b:B) hB->Fill(b);
+        hB->Draw("HIST");
+
+        const double hist_ymax=std::max(1.0,hB->GetMaximum()*1.12);
+        hB->SetMaximum(hist_ymax);
+
+        // Mean of the B_i distribution.
+        TLine* hist_mean_line=new TLine(B_mean,0.0,B_mean,hist_ymax);
+        hist_mean_line->SetLineColor(kP10Gray);
+        hist_mean_line->SetLineStyle(2);
+        hist_mean_line->SetLineWidth(3);
+        hist_mean_line->Draw("SAME");
+
+        // B=2 reference, retained also in the distribution plot.
+        TLine* hist_B2_line=new TLine(2.0,0.0,2.0,hist_ymax);
+        hist_B2_line->SetLineColor(kP6Red);
+        hist_B2_line->SetLineStyle(2);
+        hist_B2_line->SetLineWidth(2);
+        hist_B2_line->Draw("SAME");
+
+        TPaveText* hstats=new TPaveText(.62,.68,.91,.90,"NDC");
+        hstats->SetBorderSize(1);
+        hstats->SetFillStyle(0);
+        hstats->SetTextAlign(12);
+        hstats->SetTextSize(.030);
+        hstats->AddText(Form("N_{spots} = %d",(int)nB));
+        hstats->AddText(Form("Mean B = %.5g",B_mean));
+        hstats->AddText(Form("Stat. error on mean = %.4g",B_mean_stat_error));
+        hstats->AddText(Form("RMS = %.4g",B_rms));
+        hstats->Draw();
+
+        TLegend* hleg=new TLegend(.14,.73,.45,.89);
+        hleg->SetBorderSize(0);
+        hleg->SetFillStyle(0);
+        hleg->AddEntry(hB,"Individual hotspot B values","l");
+        hleg->AddEntry(hist_mean_line,"Mean B","l");
+        hleg->AddEntry(hist_B2_line,"Reference: B = 2","l");
+        hleg->Draw();
+
+        ch->Modified();
+        ch->Update();
+        ch->SaveAs(Form("%s/%s_B_distribution.png",outdir.c_str(),pref.c_str()));
+        ch->SaveAs(Form("%s/%s_B_distribution.pdf",outdir.c_str(),pref.c_str()));
+        delete ch;
+
     } else {
-        std::cerr << "Warning: no ROOT-converged B fit is available for Canvas 9 in phase "
+        std::cerr << "Warning: no accepted B fit is available for the B-vs-ID statistics in phase "
                   << ph << std::endl;
-    }
-
-    // =====================================================================
-    // GLOBAL SIMULTANEOUS B FIT SUMMARY
-    // =====================================================================
-
-    if (!global_B_csv.empty()) {
-
-        append_global_B_summary(
-            global_B_csv,
-            ph,
-            global_fit,
-            global_x.size(),
-            global_n_points
-        );
     }
 
     // =====================================================================
