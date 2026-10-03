@@ -24,6 +24,7 @@
 #include "TString.h"
 #include "TLatex.h"
 #include "TPad.h"
+#include "TSystem.h"
 
 using namespace std;
 
@@ -123,7 +124,7 @@ static vector<double> build_phase_positions(const vector<string>& phases)
 static string two_line_phase_label(const string& phase)
 {
     const PhaseInfo p = parse_phase(phase);
-    if (p.before) return "#splitline{Before}{annealing}";
+    if (p.before) return "#splitline{Before}{ann.}";
 
     if (finite_value(p.temperature) && finite_value(p.hours)) {
         const double Tround = std::round(p.temperature);
@@ -133,9 +134,9 @@ static string two_line_phase_label(const string& phase)
         string htext;
 
         if (std::fabs(p.temperature - Tround) < 1e-9)
-            Ttext = Form("%.0f^{#circ}C", p.temperature);
+            Ttext = Form("%.0f#circC", p.temperature);
         else
-            Ttext = Form("%.1f^{#circ}C", p.temperature);
+            Ttext = Form("%.1f#circC", p.temperature);
 
         if (std::fabs(p.hours - hround) < 1e-9)
             htext = Form("%.0f h", p.hours);
@@ -204,8 +205,15 @@ static void draw_horizontal_phase_labels(TPad* pad,
         lab->SetTextFont(42);
         lab->SetTextSize(0.031);
         lab->SetTextAlign(22);
-        lab->DrawLatex(x_ndc, 0.135,
+        if(i == 0 || i == 2 || i == 4 || i == 6 || i == 8){
+            lab->DrawLatex(x_ndc - 0.006, 0.135,
                        two_line_phase_label(phases[i]).c_str());
+        }
+        else 
+        {lab->DrawLatex(x_ndc + 0.006, 0.135,
+                       two_line_phase_label(phases[i]).c_str());}
+
+        
     }
 }
 
@@ -447,9 +455,9 @@ void plot_B_vs_phase(
     gr_mean->SetLineWidth(2);
     gr_mean->Draw("PZ SAME");
 
-    TLegend* leg1 = new TLegend(0.13, 0.70, 0.48, 0.88);
-    leg1->SetBorderSize(0);
-    leg1->SetFillStyle(0);
+    TLegend* leg1 = new TLegend(0.13, 0.70, 0.58, 0.88);
+    leg1->SetFillStyle(1001); // Imposta lo sfondo come solido
+    leg1->SetFillColor(0);    // Colora lo sfondo di bianco
     leg1->SetTextSize(0.034);
     leg1->AddEntry(gr_mean, "Mean B", "p");
     leg1->AddEntry((TObject*)nullptr,
@@ -461,14 +469,25 @@ void plot_B_vs_phase(
     leg1->Draw();
 
     c1->Update();
+
     draw_horizontal_phase_labels(
         c1, phases, x,
         frame1->GetXaxis()->GetXmin(),
         frame1->GetXaxis()->GetXmax()
     );
     c1->Update();
-    c1->SaveAs(Form("%s.png", output_name));
-    c1->SaveAs(Form("%s.pdf", output_name));
+
+
+    // Crea la cartella se non esiste
+    gSystem->mkdir("fit_par_vs_phase", kTRUE);
+    
+    // Aggiorna il percorso di base
+    string out_path = string("fit_par_vs_phase/") + output_name;
+
+    // Sostituisci i vecchi c1->SaveAs con questi:
+    c1->Update();
+    c1->SaveAs(Form("%s.png", out_path.c_str()));
+    c1->SaveAs(Form("%s.pdf", out_path.c_str()));
 
     // =====================================================================
     // CANVAS 2: all individual B values + highlighted phase mean
@@ -614,9 +633,9 @@ void plot_B_vs_phase(
     gr_mean_overlay->SetLineWidth(3);
     gr_mean_overlay->Draw("PZ SAME");
 
-    TLegend* leg2 = new TLegend(0.13, 0.69, 0.50, 0.88);
-    leg2->SetBorderSize(0);
-    leg2->SetFillStyle(0);
+    TLegend* leg2 = new TLegend(0.13, 0.69, 0.58, 0.88);
+    leg2->SetFillStyle(1001); // Imposta lo sfondo come solido
+    leg2->SetFillColor(0);    // Colora lo sfondo di bianco
     leg2->SetTextSize(0.033);
     leg2->AddEntry(gr_individual, "Individual hotspot B", "p");
     leg2->AddEntry(gr_mean_overlay, "Phase mean B", "p");
@@ -634,9 +653,12 @@ void plot_B_vs_phase(
         frame2->GetXaxis()->GetXmin(),
         frame2->GetXaxis()->GetXmax()
     );
+    
+    // Sostituisci i vecchi c1->SaveAs con questi:
+
     c2->Update();
-    c2->SaveAs(Form("%s_all_points.png", output_name));
-    c2->SaveAs(Form("%s_all_points.pdf", output_name));
+    c2->SaveAs(Form("%s_all_points.png", out_path.c_str()));
+    c2->SaveAs(Form("%s_all_points.pdf", out_path.c_str()));
 
     cout << "Saved plots:" << endl;
     cout << "  " << output_name << ".png" << endl;

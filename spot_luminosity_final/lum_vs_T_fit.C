@@ -17,13 +17,9 @@
 struct LambdaSystematicPair {
 
     bool has16=false,has24=false;
-
     double l16=0.0,l24=0.0;
-
     bool conv16=false,conv24=false;
-
     bool has_delta=false;
-
     double deltaLambda=0.0;
 
 };
@@ -57,15 +53,10 @@ struct TNominalFit {
 struct TRadiusOverlayFit {
 
     vector<AnalysisRow> rows;
-
     TGraphErrors* graph=nullptr;
-
     TF1* func=nullptr;
-
     double lambda=0.0,lambdaerr=0.0;
-
     int status=-999;
-
     bool fit_done=false,converged=false;
 
 };
@@ -515,19 +506,12 @@ static void write_augmented_T_csv(const CsvTable& original, const string& phase,
 }
 
 void lum_vs_T_fit(const char* all_phases_csv,
-
                   const char* phase,
-
                   const char* systematic_values_csv,
-
                   const char* output_dir,
-
                   const char* prefix,
-
                   const char* r16_all_phases_csv = "",
-
                   const char* r24_all_phases_csv = "",
-
                   const char* lambda_summary_csv = "") {
 
     gStyle->SetOptStat(0);
@@ -640,19 +624,12 @@ void lum_vs_T_fit(const char* all_phases_csv,
         // Main exponential fit 
 
         info.func=new TF1(Form("fit_exp_spot_%d",spot),"[0]*exp([1]*x)",fitmin,fitmax);
-        
         info.func->SetParNames("A","#lambda");
-
         info.func->SetParameters(A0,l0);
-        
         info.func->SetLineColor(kBlack);
-
         info.func->SetLineWidth(2);
-
         TFitResultPtr fit=info.graph->Fit(info.func,"QRS0");
-
         info.fit_done=true;
-
         info.status=(int)fit;
 
         info.covstatus=fit->CovMatrixStatus();
@@ -734,13 +711,9 @@ void lum_vs_T_fit(const char* all_phases_csv,
                                1200,800);
 
         info.graph->SetMarkerColor(kBlack);
-
         info.graph->SetLineColor(kBlack);
-
         info.func->SetLineColor(kBlack);
-
         info.func->SetLineWidth(2);
-
         info.func->SetLineStyle(1);
 
         double ymin=1e99,ymax=-1e99;
@@ -748,9 +721,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
         for (const auto& r:info.rows) {
 
             const double emax=std::max(std::fabs(r.error),std::fabs(r.deltaL));
-
             ymin=std::min(ymin,r.luminosity-emax);
-
             ymax=std::max(ymax,r.luminosity+emax);
 
         }
@@ -772,7 +743,6 @@ void lum_vs_T_fit(const char* all_phases_csv,
         };
 
         expand_overlay_range(fits16);
-
         expand_overlay_range(fits24);
 
         if (ymin>0) ymin*=0.80; else ymin=0.0;
@@ -832,15 +802,10 @@ void lum_vs_T_fit(const char* all_phases_csv,
             // Original 5analysis legend.
 
             leg=new TLegend(0.14,0.68,0.60,0.88);
-
             leg->SetBorderSize(0);
-
             leg->SetFillStyle(0);
-
             leg->AddEntry(info.graph,"Data (statistical uncertainty)","pez");
-
             leg->AddEntry(info.syst_graph,"Systematic uncertainty","e[]");
-
             leg->AddEntry(info.func,"Fit: Lum = A e^{#lambda T}","l");
 
         } else {

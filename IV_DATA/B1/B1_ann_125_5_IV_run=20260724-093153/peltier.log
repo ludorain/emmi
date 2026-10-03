@@ -1,0 +1,570 @@
+ --- temperature: 17 C 
+Fri 24 Jul 09:31:53 CEST 2026
+ --- peltier goto setpoint: 17.0 
+ --- update peltier setpoint: 22.9 
+ --- update peltier setpoint: 22.8 
+ --- update peltier setpoint: 22.7 
+ --- update peltier setpoint: 22.6 
+ --- update peltier setpoint: 22.5 
+ --- update peltier setpoint: 22.4 
+ --- update peltier setpoint: 22.3 
+ --- update peltier setpoint: 22.2 
+ --- update peltier setpoint: 22.1 
+ --- update peltier setpoint: 22.0 
+ --- update peltier setpoint: 21.9 
+ --- update peltier setpoint: 21.8 
+ --- update peltier setpoint: 21.7 
+ --- update peltier setpoint: 21.6 
+ --- update peltier setpoint: 21.5 
+ --- update peltier setpoint: 21.4 
+ --- update peltier setpoint: 21.3 
+ --- update peltier setpoint: 21.2 
+ --- update peltier setpoint: 21.1 
+ --- update peltier setpoint: 21.0 
+ --- update peltier setpoint: 20.9 
+ --- update peltier setpoint: 20.8 
+ --- update peltier setpoint: 20.7 
+ --- update peltier setpoint: 20.6 
+ --- update peltier setpoint: 20.5 
+ --- update peltier setpoint: 20.4 
+ --- update peltier setpoint: 20.3 
+ --- update peltier setpoint: 20.2 
+ --- update peltier setpoint: 20.1 
+ --- update peltier setpoint: 20.0 
+ --- update peltier setpoint: 19.9 
+ --- update peltier setpoint: 19.8 
+ --- update peltier setpoint: 19.7 
+ --- update peltier setpoint: 19.6 
+ --- update peltier setpoint: 19.5 
+ --- update peltier setpoint: 19.4 
+ --- update peltier setpoint: 19.3 
+ --- update peltier setpoint: 19.2 
+ --- update peltier setpoint: 19.1 
+ --- update peltier setpoint: 19.0 
+ --- update peltier setpoint: 18.9 
+ --- update peltier setpoint: 18.8 
+ --- update peltier setpoint: 18.7 
+ --- update peltier setpoint: 18.6 
+ --- update peltier setpoint: 18.5 
+ --- update peltier setpoint: 18.4 
+ --- update peltier setpoint: 18.3 
+ --- update peltier setpoint: 18.2 
+ --- update peltier setpoint: 18.1 
+ --- update peltier setpoint: 18.0 
+ --- update peltier setpoint: 17.9 
+ --- update peltier setpoint: 17.8 
+ --- update peltier setpoint: 17.7 
+ --- update peltier setpoint: 17.6 
+ --- update peltier setpoint: 17.5 
+ --- update peltier setpoint: 17.4 
+ --- update peltier setpoint: 17.3 
+ --- update peltier setpoint: 17.2 
+ --- update peltier setpoint: 17.1 
+ --- update peltier setpoint: 17.0 
+ temp=17.0398320664 | tset=17.0 | diff=.0398320664 | good=1/1 | stable=0/300s 
+ temp=17.0113479768 | tset=17.0 | diff=.0113479768 | good=2/2 | stable=0/300s 
+ temp=16.9812294856 | tset=17.0 | diff=.0187705144 | good=3/3 | stable=0/300s 
+ temp=16.9812923472 | tset=17.0 | diff=.0187076528 | good=4/4 | stable=0/300s 
+ temp=16.9809151776 | tset=17.0 | diff=.0190848224 | good=5/5 | stable=0/300s 
+ temp=16.9806637312 | tset=17.0 | diff=.0193362688 | good=6/6 | stable=0/300s 
+ temp=17.0110965304 | tset=17.0 | diff=.0110965304 | good=7/7 | stable=0/300s 
+ temp=17.0110965304 | tset=17.0 | diff=.0110965304 | good=8/8 | stable=0/300s 
+ temp=17.0418436376 | tset=17.0 | diff=.0418436376 | good=9/9 | stable=0/300s 
+ temp=17.0110965304 | tset=17.0 | diff=.0110965304 | good=10/10 | stable=3/300s 
+ temp=17.0113479768 | tset=17.0 | diff=.0113479768 | good=10/10 | stable=6/300s 
+ temp=17.0109079456 | tset=17.0 | diff=.0109079456 | good=10/10 | stable=9/300s 
+ temp=16.9798465304 | tset=17.0 | diff=.0201534696 | good=10/10 | stable=12/300s 
+ temp=16.948659392 | tset=17.0 | diff=.051340608 | good=9/10 | stable=15/300s 
+ temp=16.9793436376 | tset=17.0 | diff=.0206563624 | good=9/10 | stable=18/300s 
+ temp=17.0106564992 | tset=17.0 | diff=.0106564992 | good=9/10 | stable=21/300s 
+ temp=17.0112222536 | tset=17.0 | diff=.0112222536 | good=9/10 | stable=24/300s 
+ temp=17.011159392 | tset=17.0 | diff=.011159392 | good=9/10 | stable=27/300s 
+ temp=16.9799722536 | tset=17.0 | diff=.0200277464 | good=9/10 | stable=30/300s 
+ temp=17.0100278832 | tset=17.0 | diff=.0100278832 | good=9/10 | stable=33/300s 
+ temp=16.9788407448 | tset=17.0 | diff=.0211592552 | good=9/10 | stable=36/300s 
+ temp=16.978023544 | tset=17.0 | diff=.021976456 | good=9/10 | stable=39/300s 
+ temp=17.0083934816 | tset=17.0 | diff=.0083934816 | good=9/10 | stable=42/300s 
+ temp=16.9774577896 | tset=17.0 | diff=.0225422104 | good=10/10 | stable=45/300s 
+ temp=17.0088335128 | tset=17.0 | diff=.0088335128 | good=10/10 | stable=48/300s 
+ temp=17.0090849592 | tset=17.0 | diff=.0090849592 | good=10/10 | stable=51/300s 
+ temp=17.0088335128 | tset=17.0 | diff=.0088335128 | good=10/10 | stable=54/300s 
+ temp=17.071144928 | tset=17.0 | diff=.071144928 | good=9/10 | stable=57/300s 
+ temp=17.0097764368 | tset=17.0 | diff=.0097764368 | good=9/10 | stable=60/300s 
+ temp=17.010216468 | tset=17.0 | diff=.010216468 | good=9/10 | stable=63/300s 
+ temp=16.9790921912 | tset=17.0 | diff=.0209078088 | good=9/10 | stable=66/300s 
+ temp=16.9793436376 | tset=17.0 | diff=.0206563624 | good=9/10 | stable=69/300s 
+ temp=17.010845084 | tset=17.0 | diff=.010845084 | good=9/10 | stable=72/300s 
+ temp=17.0110965304 | tset=17.0 | diff=.0110965304 | good=9/10 | stable=75/300s 
+ temp=17.0120394544 | tset=17.0 | diff=.0120394544 | good=9/10 | stable=78/300s 
+ temp=17.0123537624 | tset=17.0 | diff=.0123537624 | good=9/10 | stable=81/300s 
+ temp=16.9815437936 | tset=17.0 | diff=.0184562064 | good=9/10 | stable=84/300s 
+ temp=16.9814180704 | tset=17.0 | diff=.0185819296 | good=10/10 | stable=87/300s 
+ temp=16.9799722536 | tset=17.0 | diff=.0200277464 | good=10/10 | stable=90/300s 
+ temp=16.9797208072 | tset=17.0 | diff=.0202791928 | good=10/10 | stable=93/300s 
+ temp=16.9790921912 | tset=17.0 | diff=.0209078088 | good=10/10 | stable=96/300s 
+ temp=17.0414036064 | tset=17.0 | diff=.0414036064 | good=10/10 | stable=99/300s 
+ temp=16.979909392 | tset=17.0 | diff=.020090608 | good=10/10 | stable=102/300s 
+ temp=16.9790293296 | tset=17.0 | diff=.0209706704 | good=10/10 | stable=105/300s 
+ temp=16.978337852 | tset=17.0 | diff=.021662148 | good=10/10 | stable=108/300s 
+ temp=17.0087706512 | tset=17.0 | diff=.0087706512 | good=10/10 | stable=111/300s 
+ temp=17.0083934816 | tset=17.0 | diff=.0083934816 | good=10/10 | stable=114/300s 
+ temp=17.0397692048 | tset=17.0 | diff=.0397692048 | good=10/10 | stable=117/300s 
+ temp=17.0093364056 | tset=17.0 | diff=.0093364056 | good=10/10 | stable=120/300s 
+ temp=16.978337852 | tset=17.0 | diff=.021662148 | good=10/10 | stable=123/300s 
+ temp=17.0093992672 | tset=17.0 | diff=.0093992672 | good=10/10 | stable=126/300s 
+ temp=16.9787778832 | tset=17.0 | diff=.0212221168 | good=10/10 | stable=129/300s 
+ temp=17.0087706512 | tset=17.0 | diff=.0087706512 | good=10/10 | stable=132/300s 
+ temp=17.0407121288 | tset=17.0 | diff=.0407121288 | good=10/10 | stable=135/300s 
+ temp=17.0418436376 | tset=17.0 | diff=.0418436376 | good=10/10 | stable=138/300s 
+ temp=17.0431008696 | tset=17.0 | diff=.0431008696 | good=10/10 | stable=141/300s 
+ temp=16.9815437936 | tset=17.0 | diff=.0184562064 | good=10/10 | stable=144/300s 
+ temp=17.0126680704 | tset=17.0 | diff=.0126680704 | good=10/10 | stable=147/300s 
+ temp=16.9814180704 | tset=17.0 | diff=.0185819296 | good=10/10 | stable=150/300s 
+ temp=16.9813552088 | tset=17.0 | diff=.0186447912 | good=10/10 | stable=153/300s 
+ temp=16.9818581016 | tset=17.0 | diff=.0181418984 | good=10/10 | stable=156/300s 
+ temp=17.0128566552 | tset=17.0 | diff=.0128566552 | good=10/10 | stable=159/300s 
+ temp=17.0138624408 | tset=17.0 | diff=.0138624408 | good=10/10 | stable=162/300s 
+ temp=16.9829267488 | tset=17.0 | diff=.0170732512 | good=10/10 | stable=165/300s 
+ temp=16.982109548 | tset=17.0 | diff=.017890452 | good=10/10 | stable=168/300s 
+ temp=17.0124794856 | tset=17.0 | diff=.0124794856 | good=10/10 | stable=171/300s 
+ temp=17.0119765928 | tset=17.0 | diff=.0119765928 | good=10/10 | stable=174/300s 
+ temp=17.0125423472 | tset=17.0 | diff=.0125423472 | good=10/10 | stable=177/300s 
+ temp=17.0123537624 | tset=17.0 | diff=.0123537624 | good=10/10 | stable=180/300s 
+ temp=17.0128566552 | tset=17.0 | diff=.0128566552 | good=10/10 | stable=183/300s 
+ temp=16.982109548 | tset=17.0 | diff=.017890452 | good=10/10 | stable=186/300s 
+ temp=17.013359548 | tset=17.0 | diff=.013359548 | good=10/10 | stable=189/300s 
+ temp=17.0134852712 | tset=17.0 | diff=.0134852712 | good=10/10 | stable=192/300s 
+ temp=17.0136109944 | tset=17.0 | diff=.0136109944 | good=10/10 | stable=195/300s 
+ temp=16.9831153336 | tset=17.0 | diff=.0168846664 | good=10/10 | stable=198/300s 
+ temp=16.9833039184 | tset=17.0 | diff=.0166960816 | good=10/10 | stable=201/300s 
+ temp=17.0454896104 | tset=17.0 | diff=.0454896104 | good=10/10 | stable=204/300s 
+ temp=17.0151825344 | tset=17.0 | diff=.0151825344 | good=10/10 | stable=207/300s 
+ temp=17.0466211192 | tset=17.0 | diff=.0466211192 | good=10/10 | stable=210/300s 
+ temp=16.9851269048 | tset=17.0 | diff=.0148730952 | good=10/10 | stable=213/300s 
+ temp=17.0161254584 | tset=17.0 | diff=.0161254584 | good=10/10 | stable=216/300s 
+ temp=17.017256967199998 | tset=17.0 | diff=.017256967199998 | good=10/10 | stable=219/300s 
+ temp=16.955134136799998 | tset=17.0 | diff=.044865863200002 | good=10/10 | stable=222/300s 
+ temp=16.9856297976 | tset=17.0 | diff=.0143702024 | good=10/10 | stable=225/300s 
+ temp=17.0167540744 | tset=17.0 | diff=.0167540744 | good=10/10 | stable=228/300s 
+ temp=16.986446998399998 | tset=17.0 | diff=.013553001600002 | good=10/10 | stable=231/300s 
+ temp=17.049135583199998 | tset=17.0 | diff=.049135583199998 | good=10/10 | stable=234/300s 
+ temp=17.0181998912 | tset=17.0 | diff=.0181998912 | good=10/10 | stable=237/300s 
+ temp=16.9560141992 | tset=17.0 | diff=.0439858008 | good=10/10 | stable=240/300s 
+ temp=16.9856926592 | tset=17.0 | diff=.0143073408 | good=10/10 | stable=243/300s 
+ temp=16.986006967199998 | tset=17.0 | diff=.013993032800002 | good=10/10 | stable=246/300s 
+ temp=16.9853154896 | tset=17.0 | diff=.0146845104 | good=10/10 | stable=249/300s 
+ temp=16.984624012 | tset=17.0 | diff=.015375988 | good=10/10 | stable=252/300s 
+ temp=16.9850640432 | tset=17.0 | diff=.0149359568 | good=10/10 | stable=255/300s 
+ temp=16.9847497352 | tset=17.0 | diff=.0152502648 | good=10/10 | stable=258/300s 
+ temp=17.0151196728 | tset=17.0 | diff=.0151196728 | good=10/10 | stable=261/300s 
+ temp=17.0154968424 | tset=17.0 | diff=.0154968424 | good=10/10 | stable=264/300s 
+ temp=16.9832410568 | tset=17.0 | diff=.0167589432 | good=10/10 | stable=267/300s 
+ temp=16.9823609944 | tset=17.0 | diff=.0176390056 | good=10/10 | stable=270/300s 
+ temp=17.0138624408 | tset=17.0 | diff=.0138624408 | good=10/10 | stable=273/300s 
+ temp=16.982738164 | tset=17.0 | diff=.017261836 | good=10/10 | stable=276/300s 
+ temp=16.9822981328 | tset=17.0 | diff=.0177018672 | good=10/10 | stable=279/300s 
+ temp=16.9819838248 | tset=17.0 | diff=.0180161752 | good=10/10 | stable=282/300s 
+ temp=17.0441695168 | tset=17.0 | diff=.0441695168 | good=10/10 | stable=285/300s 
+ temp=17.0138624408 | tset=17.0 | diff=.0138624408 | good=10/10 | stable=288/300s 
+ temp=17.0141767488 | tset=17.0 | diff=.0141767488 | good=10/10 | stable=291/300s 
+ temp=16.9828638872 | tset=17.0 | diff=.0171361128 | good=10/10 | stable=294/300s 
+ temp=16.9510481328 | tset=17.0 | diff=.0489518672 | good=10/10 | stable=297/300s 
+ temp=17.0441695168 | tset=17.0 | diff=.0441695168 | good=10/10 | stable=300/300s 
+ --- temperature: 19 C 
+Fri 24 Jul 10:14:21 CEST 2026
+ --- peltier goto setpoint: 19.0 
+ --- update peltier setpoint: 17.1 
+ --- update peltier setpoint: 17.2 
+ --- update peltier setpoint: 17.3 
+ --- update peltier setpoint: 17.4 
+ --- update peltier setpoint: 17.5 
+ --- update peltier setpoint: 17.6 
+ --- update peltier setpoint: 17.7 
+ --- update peltier setpoint: 17.8 
+ --- update peltier setpoint: 17.9 
+ --- update peltier setpoint: 18.0 
+ --- update peltier setpoint: 18.1 
+ --- update peltier setpoint: 18.2 
+ --- update peltier setpoint: 18.3 
+ --- update peltier setpoint: 18.4 
+ --- update peltier setpoint: 18.5 
+ --- update peltier setpoint: 18.6 
+ --- update peltier setpoint: 18.7 
+ --- update peltier setpoint: 18.8 
+ --- update peltier setpoint: 18.9 
+ --- update peltier setpoint: 19.0 
+ temp=19.052285864799998 | tset=19.0 | diff=.052285864799998 | good=0/1 | stable=0/300s 
+ temp=19.0526001728 | tset=19.0 | diff=.0526001728 | good=0/2 | stable=0/300s 
+ temp=19.0234874672 | tset=19.0 | diff=.0234874672 | good=1/3 | stable=0/300s 
+ temp=18.9937461456 | tset=19.0 | diff=.0062538544 | good=2/4 | stable=0/300s 
+ temp=19.057754824 | tset=19.0 | diff=.057754824 | good=2/5 | stable=0/300s 
+ temp=19.0290821496 | tset=19.0 | diff=.0290821496 | good=3/6 | stable=0/300s 
+ temp=19.0307165512 | tset=19.0 | diff=.0307165512 | good=4/7 | stable=0/300s 
+ temp=19.0320995064 | tset=19.0 | diff=.0320995064 | good=5/8 | stable=0/300s 
+ temp=19.0024210464 | tset=19.0 | diff=.0024210464 | good=6/9 | stable=0/300s 
+ temp=19.065298216 | tset=19.0 | diff=.065298216 | good=6/10 | stable=0/300s 
+ temp=19.0044954792 | tset=19.0 | diff=.0044954792 | good=7/10 | stable=0/300s 
+ temp=19.0047469256 | tset=19.0 | diff=.0047469256 | good=8/10 | stable=3/300s 
+ temp=19.0050612336 | tset=19.0 | diff=.0050612336 | good=8/10 | stable=6/300s 
+ temp=19.0057527112 | tset=19.0 | diff=.0057527112 | good=8/10 | stable=9/300s 
+ temp=19.0069470816 | tset=19.0 | diff=.0069470816 | good=9/10 | stable=12/300s 
+ temp=18.9755084968 | tset=19.0 | diff=.0244915032 | good=9/10 | stable=15/300s 
+ temp=18.975319912 | tset=19.0 | diff=.024680088 | good=9/10 | stable=18/300s 
+ temp=18.9436298808 | tset=19.0 | diff=.0563701192 | good=8/10 | stable=21/300s 
+ temp=18.9735597872 | tset=19.0 | diff=.0264402128 | good=8/10 | stable=24/300s 
+ temp=19.0045583408 | tset=19.0 | diff=.0045583408 | good=9/10 | stable=27/300s 
+ temp=19.0344882472 | tset=19.0 | diff=.0344882472 | good=9/10 | stable=30/300s 
+ temp=19.0036782784 | tset=19.0 | diff=.0036782784 | good=9/10 | stable=33/300s 
+ temp=19.0032382472 | tset=19.0 | diff=.0032382472 | good=9/10 | stable=36/300s 
+ temp=19.0029868008 | tset=19.0 | diff=.0029868008 | good=9/10 | stable=39/300s 
+ temp=19.0651724928 | tset=19.0 | diff=.0651724928 | good=8/10 | stable=42/300s 
+ temp=19.0035525552 | tset=19.0 | diff=.0035525552 | good=8/10 | stable=45/300s 
+ temp=19.0038040016 | tset=19.0 | diff=.0038040016 | good=8/10 | stable=48/300s 
+ temp=19.0043068944 | tset=19.0 | diff=.0043068944 | good=9/10 | stable=51/300s 
+ temp=19.005626988 | tset=19.0 | diff=.005626988 | good=9/10 | stable=54/300s 
+ temp=18.9751313272 | tset=19.0 | diff=.0248686728 | good=9/10 | stable=57/300s 
+ temp=18.9436927424 | tset=19.0 | diff=.0563072576 | good=8/10 | stable=60/300s 
+ temp=18.9736226488 | tset=19.0 | diff=.0263773512 | good=8/10 | stable=63/300s 
+ temp=18.973434064 | tset=19.0 | diff=.026565936 | good=8/10 | stable=66/300s 
+ temp=18.9728683096 | tset=19.0 | diff=.0271316904 | good=8/10 | stable=69/300s 
+ temp=19.034676832 | tset=19.0 | diff=.034676832 | good=9/10 | stable=72/300s 
+ temp=19.0026724928 | tset=19.0 | diff=.0026724928 | good=9/10 | stable=75/300s 
+ temp=19.0023581848 | tset=19.0 | diff=.0023581848 | good=9/10 | stable=78/300s 
+ temp=19.0331681536 | tset=19.0 | diff=.0331681536 | good=9/10 | stable=81/300s 
+ temp=19.0020438768 | tset=19.0 | diff=.0020438768 | good=9/10 | stable=84/300s 
+ temp=19.001540984 | tset=19.0 | diff=.001540984 | good=9/10 | stable=87/300s 
+ temp=19.0329795688 | tset=19.0 | diff=.0329795688 | good=10/10 | stable=90/300s 
+ temp=19.0344882472 | tset=19.0 | diff=.0344882472 | good=10/10 | stable=93/300s 
+ temp=19.0042440328 | tset=19.0 | diff=.0042440328 | good=10/10 | stable=96/300s 
+ temp=18.9736855104 | tset=19.0 | diff=.0263144896 | good=10/10 | stable=99/300s 
+ temp=19.0052498184 | tset=19.0 | diff=.0052498184 | good=10/10 | stable=102/300s 
+ temp=19.0050612336 | tset=19.0 | diff=.0050612336 | good=10/10 | stable=105/300s 
+ temp=19.0055641264 | tset=19.0 | diff=.0055641264 | good=10/10 | stable=108/300s 
+ temp=19.0060041576 | tset=19.0 | diff=.0060041576 | good=10/10 | stable=111/300s 
+ temp=19.0058155728 | tset=19.0 | diff=.0058155728 | good=10/10 | stable=114/300s 
+ temp=19.0063184656 | tset=19.0 | diff=.0063184656 | good=10/10 | stable=117/300s 
+ temp=19.0379456352 | tset=19.0 | diff=.0379456352 | good=10/10 | stable=120/300s 
+ temp=19.0070728048 | tset=19.0 | diff=.0070728048 | good=10/10 | stable=123/300s 
+ temp=19.0068213584 | tset=19.0 | diff=.0068213584 | good=10/10 | stable=126/300s 
+ temp=18.975948528 | tset=19.0 | diff=.024051472 | good=10/10 | stable=129/300s 
+ temp=18.976262836 | tset=19.0 | diff=.023737164 | good=10/10 | stable=132/300s 
+ temp=18.9758856664 | tset=19.0 | diff=.0241143336 | good=10/10 | stable=135/300s 
+ temp=18.9755713584 | tset=19.0 | diff=.0244286416 | good=10/10 | stable=138/300s 
+ temp=19.0375684656 | tset=19.0 | diff=.0375684656 | good=10/10 | stable=141/300s 
+ temp=19.0070099432 | tset=19.0 | diff=.0070099432 | good=10/10 | stable=144/300s 
+ temp=19.00688422 | tset=19.0 | diff=.00688422 | good=10/10 | stable=147/300s 
+ temp=19.0069470816 | tset=19.0 | diff=.0069470816 | good=10/10 | stable=150/300s 
+ temp=19.0063184656 | tset=19.0 | diff=.0063184656 | good=10/10 | stable=153/300s 
+ temp=19.0063184656 | tset=19.0 | diff=.0063184656 | good=10/10 | stable=156/300s 
+ temp=18.975005604 | tset=19.0 | diff=.024994396 | good=10/10 | stable=159/300s 
+ temp=19.0061298808 | tset=19.0 | diff=.0061298808 | good=10/10 | stable=162/300s 
+ temp=19.0066956352 | tset=19.0 | diff=.0066956352 | good=10/10 | stable=165/300s 
+ temp=19.007198528 | tset=19.0 | diff=.007198528 | good=10/10 | stable=168/300s 
+ temp=19.0078900056 | tset=19.0 | diff=.0078900056 | good=10/10 | stable=171/300s 
+ temp=19.0386371128 | tset=19.0 | diff=.0386371128 | good=10/10 | stable=174/300s 
+ temp=19.0395800368 | tset=19.0 | diff=.0395800368 | good=10/10 | stable=177/300s 
+ temp=18.946584376 | tset=19.0 | diff=.053415624 | good=9/10 | stable=180/300s 
+ temp=18.9768285904 | tset=19.0 | diff=.0231714096 | good=9/10 | stable=183/300s 
+ temp=18.9766400056 | tset=19.0 | diff=.0233599944 | good=9/10 | stable=186/300s 
+ temp=18.9761999744 | tset=19.0 | diff=.0238000256 | good=9/10 | stable=189/300s 
+ temp=18.976262836 | tset=19.0 | diff=.023737164 | good=9/10 | stable=192/300s 
+ temp=19.0068213584 | tset=19.0 | diff=.0068213584 | good=9/10 | stable=195/300s 
+ temp=19.0067584968 | tset=19.0 | diff=.0067584968 | good=9/10 | stable=198/300s 
+ temp=19.037819912 | tset=19.0 | diff=.037819912 | good=9/10 | stable=201/300s 
+ temp=19.0382599432 | tset=19.0 | diff=.0382599432 | good=9/10 | stable=204/300s 
+ temp=19.0380713584 | tset=19.0 | diff=.0380713584 | good=9/10 | stable=207/300s 
+ temp=19.0067584968 | tset=19.0 | diff=.0067584968 | good=10/10 | stable=210/300s 
+ temp=19.0079528672 | tset=19.0 | diff=.0079528672 | good=10/10 | stable=213/300s 
+ temp=18.9772686216 | tset=19.0 | diff=.0227313784 | good=10/10 | stable=216/300s 
+ temp=18.9773943448 | tset=19.0 | diff=.0226056552 | good=10/10 | stable=219/300s 
+ temp=19.0089586528 | tset=19.0 | diff=.0089586528 | good=10/10 | stable=222/300s 
+ temp=19.0099015768 | tset=19.0 | diff=.0099015768 | good=10/10 | stable=225/300s 
+ temp=18.9789658848 | tset=19.0 | diff=.0210341152 | good=10/10 | stable=228/300s 
+ temp=18.9787773 | tset=19.0 | diff=.0212227 | good=10/10 | stable=231/300s 
+ temp=19.0405229608 | tset=19.0 | diff=.0405229608 | good=10/10 | stable=234/300s 
+ temp=19.0096501304 | tset=19.0 | diff=.0096501304 | good=10/10 | stable=237/300s 
+ temp=19.0091472376 | tset=19.0 | diff=.0091472376 | good=10/10 | stable=240/300s 
+ temp=19.0092729608 | tset=19.0 | diff=.0092729608 | good=10/10 | stable=243/300s 
+ temp=18.9780229608 | tset=19.0 | diff=.0219770392 | good=10/10 | stable=246/300s 
+ temp=18.9780229608 | tset=19.0 | diff=.0219770392 | good=10/10 | stable=249/300s 
+ temp=18.9467729608 | tset=19.0 | diff=.0532270392 | good=9/10 | stable=252/300s 
+ temp=18.9767028672 | tset=19.0 | diff=.0232971328 | good=9/10 | stable=255/300s 
+ temp=18.9760742512 | tset=19.0 | diff=.0239257488 | good=9/10 | stable=258/300s 
+ temp=19.0070099432 | tset=19.0 | diff=.0070099432 | good=9/10 | stable=261/300s 
+ temp=19.007198528 | tset=19.0 | diff=.007198528 | good=9/10 | stable=264/300s 
+ temp=19.0061298808 | tset=19.0 | diff=.0061298808 | good=9/10 | stable=267/300s 
+ temp=19.0058155728 | tset=19.0 | diff=.0058155728 | good=9/10 | stable=270/300s 
+ temp=19.0053755416 | tset=19.0 | diff=.0053755416 | good=9/10 | stable=273/300s 
+ temp=19.0361226488 | tset=19.0 | diff=.0361226488 | good=9/10 | stable=276/300s 
+ temp=19.0681898496 | tset=19.0 | diff=.0681898496 | good=8/10 | stable=279/300s 
+ temp=19.0383228048 | tset=19.0 | diff=.0383228048 | good=9/10 | stable=282/300s 
+ temp=19.008770068 | tset=19.0 | diff=.008770068 | good=9/10 | stable=285/300s 
+ temp=19.0095244072 | tset=19.0 | diff=.0095244072 | good=9/10 | stable=288/300s 
+ temp=19.0107187776 | tset=19.0 | diff=.0107187776 | good=9/10 | stable=291/300s 
+ temp=19.0114102552 | tset=19.0 | diff=.0114102552 | good=9/10 | stable=294/300s 
+ temp=19.012227456 | tset=19.0 | diff=.012227456 | good=9/10 | stable=297/300s 
+ temp=19.0131075184 | tset=19.0 | diff=.0131075184 | good=9/10 | stable=300/300s 
+ --- temperature: 21 C 
+Fri 24 Jul 10:36:13 CEST 2026
+ --- peltier goto setpoint: 21.0 
+ --- update peltier setpoint: 19.1 
+ --- update peltier setpoint: 19.2 
+ --- update peltier setpoint: 19.3 
+ --- update peltier setpoint: 19.4 
+ --- update peltier setpoint: 19.5 
+ --- update peltier setpoint: 19.6 
+ --- update peltier setpoint: 19.7 
+ --- update peltier setpoint: 19.8 
+ --- update peltier setpoint: 19.9 
+ --- update peltier setpoint: 20.0 
+ --- update peltier setpoint: 20.1 
+ --- update peltier setpoint: 20.2 
+ --- update peltier setpoint: 20.3 
+ --- update peltier setpoint: 20.4 
+ --- update peltier setpoint: 20.5 
+ --- update peltier setpoint: 20.6 
+ --- update peltier setpoint: 20.7 
+ --- update peltier setpoint: 20.8 
+ --- update peltier setpoint: 20.9 
+ --- update peltier setpoint: 21.0 
+ temp=21.0575973784 | tset=21.0 | diff=.0575973784 | good=0/1 | stable=0/300s 
+ temp=21.0261587936 | tset=21.0 | diff=.0261587936 | good=1/2 | stable=0/300s 
+ temp=21.0575345168 | tset=21.0 | diff=.0575345168 | good=1/3 | stable=0/300s 
+ temp=21.0287989808 | tset=21.0 | diff=.0287989808 | good=2/4 | stable=0/300s 
+ temp=21.0303076592 | tset=21.0 | diff=.0303076592 | good=3/5 | stable=0/300s 
+ temp=21.0318163376 | tset=21.0 | diff=.0318163376 | good=4/6 | stable=0/300s 
+ temp=21.0025150472 | tset=21.0 | diff=.0025150472 | good=5/7 | stable=0/300s 
+ temp=21.0346451096 | tset=21.0 | diff=.0346451096 | good=6/8 | stable=0/300s 
+ temp=21.005218096 | tset=21.0 | diff=.005218096 | good=7/9 | stable=0/300s 
+ temp=21.005846712 | tset=21.0 | diff=.005846712 | good=8/10 | stable=3/300s 
+ temp=21.0066010512 | tset=21.0 | diff=.0066010512 | good=9/10 | stable=6/300s 
+ temp=20.9754767744 | tset=21.0 | diff=.0245232256 | good=9/10 | stable=9/300s 
+ temp=21.006789636 | tset=21.0 | diff=.006789636 | good=10/10 | stable=12/300s 
+ temp=21.0066639128 | tset=21.0 | diff=.0066639128 | good=10/10 | stable=15/300s 
+ temp=21.0069153592 | tset=21.0 | diff=.0069153592 | good=10/10 | stable=18/300s 
+ temp=21.0069782208 | tset=21.0 | diff=.0069782208 | good=10/10 | stable=21/300s 
+ temp=21.0068524976 | tset=21.0 | diff=.0068524976 | good=10/10 | stable=24/300s 
+ temp=20.9759796672 | tset=21.0 | diff=.0240203328 | good=10/10 | stable=27/300s 
+ temp=20.9750367432 | tset=21.0 | diff=.0249632568 | good=10/10 | stable=30/300s 
+ temp=21.0059095736 | tset=21.0 | diff=.0059095736 | good=10/10 | stable=33/300s 
+ temp=20.9747224352 | tset=21.0 | diff=.0252775648 | good=10/10 | stable=36/300s 
+ temp=21.005218096 | tset=21.0 | diff=.005218096 | good=10/10 | stable=39/300s 
+ temp=21.0057209888 | tset=21.0 | diff=.0057209888 | good=10/10 | stable=42/300s 
+ temp=21.0054695424 | tset=21.0 | diff=.0054695424 | good=10/10 | stable=45/300s 
+ temp=21.0053438192 | tset=21.0 | diff=.0053438192 | good=10/10 | stable=48/300s 
+ temp=20.9739052344 | tset=21.0 | diff=.0260947656 | good=10/10 | stable=51/300s 
+ temp=20.9730880336 | tset=21.0 | diff=.0269119664 | good=10/10 | stable=54/300s 
+ temp=21.0035836944 | tset=21.0 | diff=.0035836944 | good=10/10 | stable=57/300s 
+ temp=21.0038980024 | tset=21.0 | diff=.0038980024 | good=10/10 | stable=60/300s 
+ temp=21.0353365872 | tset=21.0 | diff=.0353365872 | good=10/10 | stable=63/300s 
+ temp=21.0356508952 | tset=21.0 | diff=.0356508952 | good=10/10 | stable=66/300s 
+ temp=21.0367195424 | tset=21.0 | diff=.0367195424 | good=10/10 | stable=69/300s 
+ temp=21.0060352968 | tset=21.0 | diff=.0060352968 | good=10/10 | stable=72/300s 
+ temp=20.9749738816 | tset=21.0 | diff=.0250261184 | good=10/10 | stable=75/300s 
+ temp=20.9746595736 | tset=21.0 | diff=.0253404264 | good=10/10 | stable=78/300s 
+ temp=20.9743452656 | tset=21.0 | diff=.0256547344 | good=10/10 | stable=81/300s 
+ temp=20.974596712 | tset=21.0 | diff=.025403288 | good=10/10 | stable=84/300s 
+ temp=20.9746595736 | tset=21.0 | diff=.0253404264 | good=10/10 | stable=87/300s 
+ temp=21.0054066808 | tset=21.0 | diff=.0054066808 | good=10/10 | stable=90/300s 
+ temp=21.005532404 | tset=21.0 | diff=.005532404 | good=10/10 | stable=93/300s 
+ temp=21.004903788 | tset=21.0 | diff=.004903788 | good=10/10 | stable=96/300s 
+ temp=20.973025172 | tset=21.0 | diff=.026974828 | good=10/10 | stable=99/300s 
+ temp=21.0028922168 | tset=21.0 | diff=.0028922168 | good=10/10 | stable=102/300s 
+ temp=21.0025779088 | tset=21.0 | diff=.0025779088 | good=10/10 | stable=105/300s 
+ temp=21.0026407704 | tset=21.0 | diff=.0026407704 | good=10/10 | stable=108/300s 
+ temp=21.002703632 | tset=21.0 | diff=.002703632 | good=10/10 | stable=111/300s 
+ temp=21.0340793552 | tset=21.0 | diff=.0340793552 | good=10/10 | stable=114/300s 
+ temp=21.0350222792 | tset=21.0 | diff=.0350222792 | good=10/10 | stable=117/300s 
+ temp=21.0360280648 | tset=21.0 | diff=.0360280648 | good=10/10 | stable=120/300s 
+ temp=21.0054066808 | tset=21.0 | diff=.0054066808 | good=10/10 | stable=123/300s 
+ temp=21.0055952656 | tset=21.0 | diff=.0055952656 | good=10/10 | stable=126/300s 
+ temp=21.0059724352 | tset=21.0 | diff=.0059724352 | good=10/10 | stable=129/300s 
+ temp=20.9757282208 | tset=21.0 | diff=.0242717792 | good=10/10 | stable=132/300s 
+ temp=20.975539636 | tset=21.0 | diff=.024460364 | good=10/10 | stable=135/300s 
+ temp=21.0067267744 | tset=21.0 | diff=.0067267744 | good=10/10 | stable=138/300s 
+ temp=20.9759796672 | tset=21.0 | diff=.0240203328 | good=10/10 | stable=141/300s 
+ temp=21.0069782208 | tset=21.0 | diff=.0069782208 | good=10/10 | stable=144/300s 
+ temp=21.0067267744 | tset=21.0 | diff=.0067267744 | good=10/10 | stable=147/300s 
+ temp=20.9750996048 | tset=21.0 | diff=.0249003952 | good=10/10 | stable=150/300s 
+ temp=20.973968096 | tset=21.0 | diff=.026031904 | good=10/10 | stable=153/300s 
+ temp=20.9734023416 | tset=21.0 | diff=.0265976584 | good=10/10 | stable=156/300s 
+ temp=21.0037722792 | tset=21.0 | diff=.0037722792 | good=10/10 | stable=159/300s 
+ temp=21.0033951096 | tset=21.0 | diff=.0033951096 | good=10/10 | stable=162/300s 
+ temp=21.0034579712 | tset=21.0 | diff=.0034579712 | good=10/10 | stable=165/300s 
+ temp=21.0035836944 | tset=21.0 | diff=.0035836944 | good=10/10 | stable=168/300s 
+ temp=21.0031436632 | tset=21.0 | diff=.0031436632 | good=10/10 | stable=171/300s 
+ temp=21.0034579712 | tset=21.0 | diff=.0034579712 | good=10/10 | stable=174/300s 
+ temp=21.0343308016 | tset=21.0 | diff=.0343308016 | good=10/10 | stable=177/300s 
+ temp=21.0034579712 | tset=21.0 | diff=.0034579712 | good=10/10 | stable=180/300s 
+ temp=21.0038351408 | tset=21.0 | diff=.0038351408 | good=10/10 | stable=183/300s 
+ temp=21.0043380336 | tset=21.0 | diff=.0043380336 | good=10/10 | stable=186/300s 
+ temp=20.9737166496 | tset=21.0 | diff=.0262833504 | good=10/10 | stable=189/300s 
+ temp=20.9732137568 | tset=21.0 | diff=.0267862432 | good=10/10 | stable=192/300s 
+ temp=21.0353994488 | tset=21.0 | diff=.0353994488 | good=10/10 | stable=195/300s 
+ temp=21.036153788 | tset=21.0 | diff=.036153788 | good=10/10 | stable=198/300s 
+ temp=21.0055952656 | tset=21.0 | diff=.0055952656 | good=10/10 | stable=201/300s 
+ temp=21.0370338504 | tset=21.0 | diff=.0370338504 | good=10/10 | stable=204/300s 
+ temp=20.9754767744 | tset=21.0 | diff=.0245232256 | good=10/10 | stable=207/300s 
+ temp=21.005846712 | tset=21.0 | diff=.005846712 | good=10/10 | stable=210/300s 
+ temp=20.9750996048 | tset=21.0 | diff=.0249003952 | good=10/10 | stable=213/300s 
+ temp=21.0059095736 | tset=21.0 | diff=.0059095736 | good=10/10 | stable=216/300s 
+ temp=21.00616102 | tset=21.0 | diff=.00616102 | good=10/10 | stable=219/300s 
+ temp=20.9756653592 | tset=21.0 | diff=.0243346408 | good=10/10 | stable=222/300s 
+ temp=20.9757910824 | tset=21.0 | diff=.0242089176 | good=10/10 | stable=225/300s 
+ temp=20.9747852968 | tset=21.0 | diff=.0252147032 | good=10/10 | stable=228/300s 
+ temp=21.0050295112 | tset=21.0 | diff=.0050295112 | good=10/10 | stable=231/300s 
+ temp=20.9737795112 | tset=21.0 | diff=.0262204888 | good=10/10 | stable=234/300s 
+ temp=20.9722708328 | tset=21.0 | diff=.0277291672 | good=10/10 | stable=237/300s 
+ temp=21.0032065248 | tset=21.0 | diff=.0032065248 | good=10/10 | stable=240/300s 
+ temp=21.033953632 | tset=21.0 | diff=.033953632 | good=10/10 | stable=243/300s 
+ temp=21.0034579712 | tset=21.0 | diff=.0034579712 | good=10/10 | stable=246/300s 
+ temp=21.0341422168 | tset=21.0 | diff=.0341422168 | good=10/10 | stable=249/300s 
+ temp=21.0032065248 | tset=21.0 | diff=.0032065248 | good=10/10 | stable=252/300s 
+ temp=21.0034579712 | tset=21.0 | diff=.0034579712 | good=10/10 | stable=255/300s 
+ temp=21.0038351408 | tset=21.0 | diff=.0038351408 | good=10/10 | stable=258/300s 
+ temp=20.9730880336 | tset=21.0 | diff=.0269119664 | good=10/10 | stable=261/300s 
+ temp=21.0037094176 | tset=21.0 | diff=.0037094176 | good=10/10 | stable=264/300s 
+ temp=21.0044637568 | tset=21.0 | diff=.0044637568 | good=10/10 | stable=267/300s 
+ temp=21.0051552344 | tset=21.0 | diff=.0051552344 | good=10/10 | stable=270/300s 
+ temp=21.0052809576 | tset=21.0 | diff=.0052809576 | good=10/10 | stable=273/300s 
+ temp=21.004903788 | tset=21.0 | diff=.004903788 | good=10/10 | stable=276/300s 
+ temp=21.005218096 | tset=21.0 | diff=.005218096 | good=10/10 | stable=279/300s 
+ temp=21.0047780648 | tset=21.0 | diff=.0047780648 | good=10/10 | stable=282/300s 
+ temp=21.0049666496 | tset=21.0 | diff=.0049666496 | good=10/10 | stable=285/300s 
+ temp=20.9738423728 | tset=21.0 | diff=.0261576272 | good=10/10 | stable=288/300s 
+ temp=21.0045266184 | tset=21.0 | diff=.0045266184 | good=10/10 | stable=291/300s 
+ temp=21.005218096 | tset=21.0 | diff=.005218096 | good=10/10 | stable=294/300s 
+ temp=21.036468096 | tset=21.0 | diff=.036468096 | good=10/10 | stable=297/300s 
+ temp=20.9746595736 | tset=21.0 | diff=.0253404264 | good=10/10 | stable=300/300s 
+ --- temperature: 23 C 
+Fri 24 Jul 10:57:56 CEST 2026
+ --- peltier goto setpoint: 23.0 
+ --- update peltier setpoint: 21.1 
+ --- update peltier setpoint: 21.2 
+ --- update peltier setpoint: 21.3 
+ --- update peltier setpoint: 21.4 
+ --- update peltier setpoint: 21.5 
+ --- update peltier setpoint: 21.6 
+ --- update peltier setpoint: 21.7 
+ --- update peltier setpoint: 21.8 
+ --- update peltier setpoint: 21.9 
+ --- update peltier setpoint: 22.0 
+ --- update peltier setpoint: 22.1 
+ --- update peltier setpoint: 22.2 
+ --- update peltier setpoint: 22.3 
+ --- update peltier setpoint: 22.4 
+ --- update peltier setpoint: 22.5 
+ --- update peltier setpoint: 22.6 
+ --- update peltier setpoint: 22.7 
+ --- update peltier setpoint: 22.8 
+ --- update peltier setpoint: 22.9 
+ --- update peltier setpoint: 23.0 
+ temp=23.0190787872 | tset=23.0 | diff=.0190787872 | good=1/1 | stable=0/300s 
+ temp=22.9890231576 | tset=23.0 | diff=.0109768424 | good=2/2 | stable=0/300s 
+ temp=23.0519003272 | tset=23.0 | diff=.0519003272 | good=2/3 | stable=0/300s 
+ temp=23.05397476 | tset=23.0 | diff=.05397476 | good=2/4 | stable=0/300s 
+ temp=23.0243591616 | tset=23.0 | diff=.0243591616 | good=3/5 | stable=0/300s 
+ temp=23.0256792552 | tset=23.0 | diff=.0256792552 | good=4/6 | stable=0/300s 
+ temp=23.0266850408 | tset=23.0 | diff=.0266850408 | good=5/7 | stable=0/300s 
+ temp=22.9966294112 | tset=23.0 | diff=.0033705888 | good=6/8 | stable=0/300s 
+ temp=22.9965665496 | tset=23.0 | diff=.0034334504 | good=7/9 | stable=0/300s 
+ temp=22.9971951656 | tset=23.0 | diff=.0028048344 | good=8/10 | stable=3/300s 
+ temp=22.9976351968 | tset=23.0 | diff=.0023648032 | good=8/10 | stable=6/300s 
+ temp=22.9979495048 | tset=23.0 | diff=.0020504952 | good=8/10 | stable=9/300s 
+ temp=22.9675795672 | tset=23.0 | diff=.0324204328 | good=9/10 | stable=12/300s 
+ temp=22.9664480584 | tset=23.0 | diff=.0335519416 | good=10/10 | stable=15/300s 
+ temp=22.9653165496 | tset=23.0 | diff=.0346834504 | good=10/10 | stable=18/300s 
+ temp=22.9956864872 | tset=23.0 | diff=.0043135128 | good=10/10 | stable=21/300s 
+ temp=22.9950578712 | tset=23.0 | diff=.0049421288 | good=10/10 | stable=24/300s 
+ temp=22.9941778088 | tset=23.0 | diff=.0058221912 | good=10/10 | stable=27/300s 
+ temp=22.9938006392 | tset=23.0 | diff=.0061993608 | good=10/10 | stable=30/300s 
+ temp=22.9938006392 | tset=23.0 | diff=.0061993608 | good=10/10 | stable=33/300s 
+ temp=22.9932977464 | tset=23.0 | diff=.0067022536 | good=10/10 | stable=36/300s 
+ temp=22.992731992 | tset=23.0 | diff=.007268008 | good=10/10 | stable=39/300s 
+ temp=22.9921662376 | tset=23.0 | diff=.0078337624 | good=10/10 | stable=42/300s 
+ temp=23.0540376216 | tset=23.0 | diff=.0540376216 | good=9/10 | stable=45/300s 
+ temp=23.0240448536 | tset=23.0 | diff=.0240448536 | good=9/10 | stable=48/300s 
+ temp=22.993360608 | tset=23.0 | diff=.006639392 | good=9/10 | stable=51/300s 
+ temp=23.0249877776 | tset=23.0 | diff=.0249877776 | good=9/10 | stable=54/300s 
+ temp=22.9943663936 | tset=23.0 | diff=.0056336064 | good=9/10 | stable=57/300s 
+ temp=23.0256792552 | tset=23.0 | diff=.0256792552 | good=9/10 | stable=60/300s 
+ temp=22.9953093176 | tset=23.0 | diff=.0046906824 | good=9/10 | stable=63/300s 
+ temp=23.0267479024 | tset=23.0 | diff=.0267479024 | good=9/10 | stable=66/300s 
+ temp=23.027753688 | tset=23.0 | diff=.027753688 | good=9/10 | stable=69/300s 
+ temp=22.9975094736 | tset=23.0 | diff=.0024905264 | good=9/10 | stable=72/300s 
+ temp=22.998075228 | tset=23.0 | diff=.001924772 | good=10/10 | stable=75/300s 
+ temp=22.9975094736 | tset=23.0 | diff=.0024905264 | good=10/10 | stable=78/300s 
+ temp=22.9663851968 | tset=23.0 | diff=.0336148032 | good=10/10 | stable=81/300s 
+ temp=22.9975094736 | tset=23.0 | diff=.0024905264 | good=10/10 | stable=84/300s 
+ temp=22.9972580272 | tset=23.0 | diff=.0027419728 | good=10/10 | stable=87/300s 
+ temp=22.9975094736 | tset=23.0 | diff=.0024905264 | good=10/10 | stable=90/300s 
+ temp=22.9970065808 | tset=23.0 | diff=.0029934192 | good=10/10 | stable=93/300s 
+ temp=22.9971951656 | tset=23.0 | diff=.0028048344 | good=10/10 | stable=96/300s 
+ temp=22.9966294112 | tset=23.0 | diff=.0033705888 | good=10/10 | stable=99/300s 
+ temp=22.9648136568 | tset=23.0 | diff=.0351863432 | good=10/10 | stable=102/300s 
+ temp=22.9953093176 | tset=23.0 | diff=.0046906824 | good=10/10 | stable=105/300s 
+ temp=22.9950578712 | tset=23.0 | diff=.0049421288 | good=10/10 | stable=108/300s 
+ temp=22.9946807016 | tset=23.0 | diff=.0053192984 | good=10/10 | stable=111/300s 
+ temp=23.0261192864 | tset=23.0 | diff=.0261192864 | good=10/10 | stable=114/300s 
+ temp=23.0263078712 | tset=23.0 | diff=.0263078712 | good=10/10 | stable=117/300s 
+ temp=23.0266850408 | tset=23.0 | diff=.0266850408 | good=10/10 | stable=120/300s 
+ temp=22.995875072 | tset=23.0 | diff=.004124928 | good=10/10 | stable=123/300s 
+ temp=22.9645622104 | tset=23.0 | diff=.0354377896 | good=10/10 | stable=126/300s 
+ temp=22.9951835944 | tset=23.0 | diff=.0048164056 | good=10/10 | stable=129/300s 
+ temp=22.9951835944 | tset=23.0 | diff=.0048164056 | good=10/10 | stable=132/300s 
+ temp=22.9957493488 | tset=23.0 | diff=.0042506512 | good=10/10 | stable=135/300s 
+ temp=22.9956864872 | tset=23.0 | diff=.0043135128 | good=10/10 | stable=138/300s 
+ temp=22.9957493488 | tset=23.0 | diff=.0042506512 | good=10/10 | stable=141/300s 
+ temp=22.9958122104 | tset=23.0 | diff=.0041877896 | good=10/10 | stable=144/300s 
+ temp=22.995246456 | tset=23.0 | diff=.004753544 | good=10/10 | stable=147/300s 
+ temp=22.9946807016 | tset=23.0 | diff=.0053192984 | good=10/10 | stable=150/300s 
+ temp=22.993989224 | tset=23.0 | diff=.006010776 | good=10/10 | stable=153/300s 
+ temp=23.0250506392 | tset=23.0 | diff=.0250506392 | good=10/10 | stable=156/300s 
+ temp=22.9948064248 | tset=23.0 | diff=.0051935752 | good=10/10 | stable=159/300s 
+ temp=22.9944921168 | tset=23.0 | diff=.0055078832 | good=10/10 | stable=162/300s 
+ temp=22.9944292552 | tset=23.0 | diff=.0055707448 | good=10/10 | stable=165/300s 
+ temp=22.994303532 | tset=23.0 | diff=.005696468 | good=10/10 | stable=168/300s 
+ temp=22.9941778088 | tset=23.0 | diff=.0058221912 | good=10/10 | stable=171/300s 
+ temp=23.0253649472 | tset=23.0 | diff=.0253649472 | good=10/10 | stable=174/300s 
+ temp=23.0259307016 | tset=23.0 | diff=.0259307016 | good=10/10 | stable=177/300s 
+ temp=23.0264335944 | tset=23.0 | diff=.0264335944 | good=10/10 | stable=180/300s 
+ temp=23.027125072 | tset=23.0 | diff=.027125072 | good=10/10 | stable=183/300s 
+ temp=22.9966922728 | tset=23.0 | diff=.0033077272 | good=10/10 | stable=186/300s 
+ temp=22.9963151032 | tset=23.0 | diff=.0036848968 | good=10/10 | stable=189/300s 
+ temp=22.9655051344 | tset=23.0 | diff=.0344948656 | good=10/10 | stable=192/300s 
+ temp=22.9651908264 | tset=23.0 | diff=.0348091736 | good=10/10 | stable=195/300s 
+ temp=22.99618938 | tset=23.0 | diff=.00381062 | good=10/10 | stable=198/300s 
+ temp=22.9964408264 | tset=23.0 | diff=.0035591736 | good=10/10 | stable=201/300s 
+ temp=22.996503688 | tset=23.0 | diff=.003496312 | good=10/10 | stable=204/300s 
+ temp=22.9959379336 | tset=23.0 | diff=.0040620664 | good=10/10 | stable=207/300s 
+ temp=22.9954350408 | tset=23.0 | diff=.0045649592 | good=10/10 | stable=210/300s 
+ temp=22.9947435632 | tset=23.0 | diff=.0052564368 | good=10/10 | stable=213/300s 
+ temp=22.9939263624 | tset=23.0 | diff=.0060736376 | good=10/10 | stable=216/300s 
+ temp=22.9936120544 | tset=23.0 | diff=.0063879456 | good=10/10 | stable=219/300s 
+ temp=22.9931720232 | tset=23.0 | diff=.0068279768 | good=10/10 | stable=222/300s 
+ temp=23.024610608 | tset=23.0 | diff=.024610608 | good=10/10 | stable=225/300s 
+ temp=23.0253649472 | tset=23.0 | diff=.0253649472 | good=10/10 | stable=228/300s 
+ temp=23.0256163936 | tset=23.0 | diff=.0256163936 | good=10/10 | stable=231/300s 
+ temp=22.994932148 | tset=23.0 | diff=.005067852 | good=10/10 | stable=234/300s 
+ temp=22.994932148 | tset=23.0 | diff=.005067852 | good=10/10 | stable=237/300s 
+ temp=22.9950578712 | tset=23.0 | diff=.0049421288 | good=10/10 | stable=240/300s 
+ temp=22.995246456 | tset=23.0 | diff=.004753544 | good=10/10 | stable=243/300s 
+ temp=22.9953721792 | tset=23.0 | diff=.0046278208 | good=10/10 | stable=246/300s 
+ temp=22.995560764 | tset=23.0 | diff=.004439236 | good=10/10 | stable=249/300s 
+ temp=22.9957493488 | tset=23.0 | diff=.0042506512 | good=10/10 | stable=252/300s 
+ temp=22.9959379336 | tset=23.0 | diff=.0040620664 | good=10/10 | stable=255/300s 
+ temp=22.9954979024 | tset=23.0 | diff=.0045020976 | good=10/10 | stable=258/300s 
+ temp=22.9950578712 | tset=23.0 | diff=.0049421288 | good=10/10 | stable=261/300s 
+ temp=22.9944921168 | tset=23.0 | diff=.0055078832 | good=10/10 | stable=264/300s 
+ temp=22.9944292552 | tset=23.0 | diff=.0055707448 | good=10/10 | stable=267/300s 
+ temp=23.0254906704 | tset=23.0 | diff=.0254906704 | good=10/10 | stable=270/300s 
+ temp=23.0259307016 | tset=23.0 | diff=.0259307016 | good=10/10 | stable=273/300s 
+ temp=22.9951207328 | tset=23.0 | diff=.0048792672 | good=10/10 | stable=276/300s 
+ temp=22.9950578712 | tset=23.0 | diff=.0049421288 | good=10/10 | stable=279/300s 
+ temp=22.9951207328 | tset=23.0 | diff=.0048792672 | good=10/10 | stable=282/300s 
+ temp=23.0263707328 | tset=23.0 | diff=.0263707328 | good=10/10 | stable=285/300s 
+ temp=22.9958122104 | tset=23.0 | diff=.0041877896 | good=10/10 | stable=288/300s 
+ temp=22.995875072 | tset=23.0 | diff=.004124928 | good=10/10 | stable=291/300s 
+ temp=22.9960636568 | tset=23.0 | diff=.0039363432 | good=10/10 | stable=294/300s 
+ temp=23.0275022416 | tset=23.0 | diff=.0275022416 | good=10/10 | stable=297/300s 
+ temp=22.9970694424 | tset=23.0 | diff=.0029305576 | good=10/10 | stable=300/300s 

@@ -1,0 +1,200 @@
+ --- temperature: 17 C 
+Mon  7 Sep 12:21:41 CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_290K_A1
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+--- measurements written to file: HAMA3_sn31_290K_A1.zero.csv
+--- commands written to file: HAMA3_sn31_290K_A1.zero.scpi
+
+--- Keithley 'zero' program completed: 42.097472 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_290K_A1
+--- calculate expected Vbd for HAMA3 at T = 290 K
+--- Vbd = 50.568 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.6
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.6, 55.6], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1341 points in the buffer
+--- measurements written to file: HAMA3_sn31_290K_A1.ivscan.csv
+--- commands written to file: HAMA3_sn31_290K_A1.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 209.949255 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_290K_A1_zoom
+--- calculate expected Vbd for HAMA3 at T = 290 K
+--- Vbd = 50.568 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.6
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.6, 55.6], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+--- measurements written to file: HAMA3_sn31_290K_A1_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_290K_A1_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 151.377953 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 19 C 
+Mon  7 Sep 12:44:26 CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_292K_A1
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+--- measurements written to file: HAMA3_sn31_292K_A1.zero.csv
+--- commands written to file: HAMA3_sn31_292K_A1.zero.scpi
+
+--- Keithley 'zero' program completed: 42.101373 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_292K_A1
+--- calculate expected Vbd for HAMA3 at T = 292 K
+--- Vbd = 50.676 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.7
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.7, 55.7], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1314 points in the buffer
+--- measurements written to file: HAMA3_sn31_292K_A1.ivscan.csv
+--- commands written to file: HAMA3_sn31_292K_A1.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 205.885097 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_292K_A1_zoom
+--- calculate expected Vbd for HAMA3 at T = 292 K
+--- Vbd = 50.676 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.7
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.7, 55.7], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+--- measurements written to file: HAMA3_sn31_292K_A1_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_292K_A1_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 150.572702 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 21 C 
+Mon  7 Sep 13:07:06 CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_294K_A1
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+--- measurements written to file: HAMA3_sn31_294K_A1.zero.csv
+--- commands written to file: HAMA3_sn31_294K_A1.zero.scpi
+
+--- Keithley 'zero' program completed: 42.097218 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_294K_A1
+--- calculate expected Vbd for HAMA3 at T = 294 K
+--- Vbd = 50.784 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.8
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.8, 55.8], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1278 points in the buffer
+--- measurements written to file: HAMA3_sn31_294K_A1.ivscan.csv
+--- commands written to file: HAMA3_sn31_294K_A1.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 201.626126 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_294K_A1_zoom
+--- calculate expected Vbd for HAMA3 at T = 294 K
+--- Vbd = 50.784 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.8
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.8, 55.8], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+--- measurements written to file: HAMA3_sn31_294K_A1_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_294K_A1_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 150.960159 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 23 C 
+Mon  7 Sep 13:29:41 CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_296K_A1
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+--- measurements written to file: HAMA3_sn31_296K_A1.zero.csv
+--- commands written to file: HAMA3_sn31_296K_A1.zero.scpi
+
+--- Keithley 'zero' program completed: 42.107055 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_296K_A1
+--- calculate expected Vbd for HAMA3 at T = 296 K
+--- Vbd = 50.892 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.9
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.9, 55.9], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1233 points in the buffer
+--- measurements written to file: HAMA3_sn31_296K_A1.ivscan.csv
+--- commands written to file: HAMA3_sn31_296K_A1.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 196.395332 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_296K_A1_zoom
+--- calculate expected Vbd for HAMA3 at T = 296 K
+--- Vbd = 50.892 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.9
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.9, 55.9], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+--- measurements written to file: HAMA3_sn31_296K_A1_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_296K_A1_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 149.347841 seconds
+--- plot is ready and saved: waiting for 5 seconds

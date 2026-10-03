@@ -80,6 +80,165 @@ inline void common_radius_rows(const vector<AnalysisRow>& r20,const vector<Analy
 
 inline void save_canvas_both(TCanvas* c,const string& base){c->SaveAs((base+".png").c_str());c->SaveAs((base+".pdf").c_str());}
 
+struct PhaseInfo {
+    string raw;
+    bool before = false;
+    double temperature = std::numeric_limits<double>::quiet_NaN();
+    double hours = std::numeric_limits<double>::quiet_NaN();
+};
+
+static PhaseInfo parse_phase_for_spacing(const string& phase)
+{
+    PhaseInfo p;
+    p.raw = phase;
+
+    if (phase == "before_annealing") {
+        p.before = true;
+        return p;
+    }
+
+    const string prefix = "annealing_T=";
+    if (phase.find(prefix) != 0) return p;
+
+    const size_t pos_h = phase.find("_h=");
+    if (pos_h == string::npos) return p;
+
+    try {
+        const string Tstr = phase.substr(prefix.size(), pos_h - prefix.size());
+        const string hstr = phase.substr(pos_h + 3);
+        p.temperature = stod(Tstr);
+        p.hours = stod(hstr);
+    }
+    catch (...) {
+        p.temperature = std::numeric_limits<double>::quiet_NaN();
+        p.hours = std::numeric_limits<double>::quiet_NaN();
+    }
+
+    return p;
+}
+
+static double phase_step_units(const string& phase)
+{
+    const PhaseInfo p = parse_phase_for_spacing(phase);
+
+    if (p.before) return 0.0;
+
+    if (finite_number(p.hours) && p.hours > 0.0)
+        return p.hours / 5.0;
+
+    return 1.0;
+}
+
+static vector<double> build_phase_positions(const vector<string>& phases)
+{
+    vector<double> x(phases.size(), 0.0);
+    if (phases.empty()) return x;
+
+    x[0] = 0.0;
+
+    for (size_t i = 1; i < phases.size(); ++i) {
+        double step = phase_step_units(phases[i]);
+        if (!(step > 0.0) || !finite_number(step)) step = 1.0;
+        x[i] = x[i - 1] + step;
+    }
+
+    return x;
+}
+
+// Etichette asse x su due righe
+static string two_line_phase_label(const string& phase)
+{
+    const PhaseInfo p = parse_phase_for_spacing(phase);
+
+    if (p.before)
+        return "#splitline{Before}{ann.}";
+
+    if (finite_number(p.temperature) && finite_number(p.hours)) {
+
+        string Ttext;
+        string htext;
+
+        if (std::fabs(p.temperature - std::round(p.temperature)) < 1e-9)
+            Ttext = Form("%.0f#circC", p.temperature);
+        else
+            Ttext = Form("%.1f#circC", p.temperature);
+
+        if (std::fabs(p.hours - std::round(p.hours)) < 1e-9)
+            htext = Form("%.0f h", p.hours);
+        else
+            htext = Form("%.1f h", p.hours);
+
+        return "#splitline{" + Ttext + "}{" + htext + "}";
+    }
+
+    return phase;
+}
+
+
+//Riadattamento asse x per step proporzionali all'annealing
+static TH1D* make_phase_frame(const char* name,
+                              const char* title,
+                              const vector<string>& phases,
+                              const vector<double>& xpos,
+                              double ymin,
+                              double ymax)
+{
+    if (phases.empty() || xpos.empty()) return nullptr;
+
+    const int max_unit = std::max(0, (int)std::llround(xpos.back()));
+    const int nbins = max_unit + 1;
+
+    TH1D* frame = new TH1D(name, title, nbins, -0.5, max_unit + 0.5);
+
+    frame->SetMinimum(ymin);
+    frame->SetMaximum(ymax);
+
+    frame->GetXaxis()->SetLabelSize(0.0);   // nasconde le label automatiche
+    frame->GetXaxis()->SetTitleSize(0.045);
+    frame->GetXaxis()->SetTitleOffset(1.95);
+
+    frame->GetYaxis()->SetLabelSize(0.040);
+    frame->GetYaxis()->SetTitleSize(0.045);
+    frame->GetYaxis()->SetTitleOffset(1.15);
+
+    return frame;
+}
+
+static void draw_horizontal_phase_labels(TPad* pad,
+                                         const vector<string>& phases,
+                                         const vector<double>& xpos,
+                                         double xmin,
+                                         double xmax)
+{
+    if (!pad || phases.empty() || xpos.empty() || !(xmax > xmin)) return;
+
+    pad->Update();
+
+    const double left   = pad->GetLeftMargin();
+    const double right  = pad->GetRightMargin();
+    const double usable = 1.0 - left - right;
+
+    for (size_t i = 0; i < phases.size(); ++i) {
+
+        const double frac  = (xpos[i] - xmin) / (xmax - xmin);
+        const double x_ndc = left + frac * usable;
+
+        TLatex* lab = new TLatex();
+        lab->SetNDC();
+        lab->SetTextFont(42);
+        lab->SetTextSize(0.028);   // leggermente più piccolo per evitare overlap
+        lab->SetTextAlign(22);
+        if (i == 0 || i== 2 || i == 4 || i == 6 || i == 8) {
+            lab->DrawLatex(x_ndc - 0.003, 0.15, two_line_phase_label(phases[i]).c_str());
+        } else {
+            lab->DrawLatex(x_ndc + 0.002, 0.15, two_line_phase_label(phases[i]).c_str());
+        }
+        //lab->DrawLatex(x_ndc, 0.25, two_line_phase_label(phases[i]).c_str());
+    }
+}
+
+
+
 inline void run_phase_analysis(const char* csvfile,const char* output_dir,const char* prefix,bool T_const,
                                const char* csv_R16="",const char* csv_R24="") {
     gStyle->SetOptStat(0);
@@ -88,20 +247,238 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
     const int FORCED_COLOR=kP6Red;
     const vector<int> line_colors={kP10Yellow,kP10Gray,kP10Violet,kP10Brown,kP10Orange,kP10Green};
 
+    // =====================================================================
+    // Manually selected hotspots
+    // =====================================================================
+    struct ManualPhaseGroup {
+        string title;
+        vector<int> ids;
+    };
+
+
     string out=output_dir,pref=prefix;
-    ensure_dir(out);ensure_dir(out+"/single_spots");ensure_dir(out+"/grouped");ensure_dir(out+"/ratios");ensure_dir(out+"/fit_parameter_vs_phase");
+
+    vector<ManualPhaseGroup> MANUAL_GROUPS;
+    if (pref == "A1_T=20") {
+
+        MANUAL_GROUPS = {
+            {
+                "Decreasing and disappearing uniformly, L>1000",
+                {13, 64}
+            },
+
+            {
+                "Decreasing and disappearing uniformly, 400< L < 1000",
+                {72, 4, 8, 10}
+            },
+
+            {
+                "Decreasing and disappearing uniformly, L < 400",
+                {15, 16, 26, 39}
+            },
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            {
+                "Decreasing and disappearing fluctuating, L>1000",
+                {87}
+            },
+
+            {
+                "Decreasing and disappearing fluctuating, 400< L < 1000",
+                {58, 35}
+            },
+
+            {   //Some examples
+                "Decreasing and disappearing fluctuating, L < 400",
+                {2, 9, 11, 14, 19, 23, 28, 44, 52, 53, 71, 74, 76}
+            },
+            // ==============================================================
+            {
+                "Decreasing uniformly, L>800",
+                {18, 48, 54, 67, 85, 91}
+            },
+
+            {
+                "Decreasing uniformly, L < 800",
+                {22, 56, 86, 93, 95}
+            },
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            {
+                "Decreasing fluctuating,  L>800",
+                {0, 3, 6, 33, 57, 59, 69, 77, 88, 92}
+            },
+
+            {   //Some examples
+                "Decreasing fluctuating,  L<800",
+                {1, 5, 12, 17, 27, 31, 32, 34, 70}
+            },
+
+            // ==============================================================
+            {
+                "Peaks for high L",
+                {24, 37, 73}
+            },
+
+            {
+                "Peaks for low L",
+                {7, 50}
+            },
+
+            // ==============================================================
+            {
+                "Approximately constant hotspots",
+                {94, 96}
+            },
+
+             // ==============================================================
+            {
+                "Increasing hotspots",
+                {25, 42, 80, 97}
+            },
+
+            // ==============================================================
+            {
+                "Appeared",
+                {78, 83}
+            }
+
+        };
+
+    }
+    else if (pref == "B1_T=20") {
+MANUAL_GROUPS = {
+            {
+                "Decreasing and disappearing uniformly, L>1000",
+                {23, 30, 42}
+            },
+
+            {
+                "Decreasing and disappearing uniformly, 400< L < 1000",
+                {0, 17, 18, 38, 61}
+            },
+
+            {   //Some examples
+                "Decreasing and disappearing uniformly, L < 400",
+                {1, 3, 4, 8, 12, 13, 15, 22, 24, 32}
+            },
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            {
+                "Decreasing and disappearing fluctuating, L>1000",
+                {20, 25, 59}
+            },
+
+            {
+                "Decreasing and disappearing fluctuating, 400< L < 1000",
+                {5, 37, 40, 43, 45, 52, 102}
+            },
+
+            {   //Some examples
+                "Decreasing and disappearing fluctuating, L < 400",
+                {10, 19, 27, 28, 35, 48, 58, 62, 69, 72, 75, 81, 82, 96}
+            },
+            // ==============================================================
+            {
+                "Decreasing uniformly, L>800",
+                {34, 36, 65, 78, 85, 100, 101, 107, 112}
+            },
+
+            {
+                "Decreasing uniformly, L < 800",
+                {6, 74, 104, 105}
+            },
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+            {
+                "Decreasing fluctuating,  L>800",
+                {11, 26, 29, 53, 60, 89, 90, 114, 115, 117}
+            },
+
+            {   //Some examples
+                "Decreasing fluctuating,  L<800",
+                {31, 46, 64, 83, 88, 91, 92, 93, 94, 108, 110}
+            },
+
+            // ==============================================================
+            {
+                "Peaks for high L",
+                {9, 14, 16, 70, 87}
+            },
+
+            {
+                "Peaks for low L",
+                {2, 7, 84, 106}
+            },
+
+            // ==============================================================
+            {
+                "Approximately constant hotspots",
+                {21, 54, 79, 103, 111}
+            },
+
+             // ==============================================================
+            {
+                "Increasing hotspots",
+                {109}
+            },
+
+            // ==============================================================
+            {
+                "Appeared high L - (1)",
+                {71, 76, 77}
+            }, 
+
+            {
+                "Appeared high L - (2)",
+                {86, 97, 118}
+            }, 
+
+            {
+                "Appeared low L",
+                {97, 98, 103, 113}
+            }
+
+
+
+        };
+        
+    }
+    ensure_dir(out);
+    ensure_dir(out+"/single_spots");
+    ensure_dir(out+"/grouped");
+    ensure_dir(out+"/manual_grouped");
+    ensure_dir(out+"/ratios");
+    ensure_dir(out+"/fit_parameter_vs_phase");
 
     CsvTable table=read_analysis_csv(csvfile,T_const);if(table.rows.empty())return;
     bool has_vfin=has_col(table,"v_fin");
     vector<string> phases=phases_present_in_rows(table.rows);if(phases.empty())return;
     map<string,int>pidx;for(int i=0;i<(int)phases.size();++i)pidx[phases[i]]=i;
 
+
+    //Pre-calculate the position of phases on x axis
+    vector<double> phase_x = build_phase_positions(phases);
+    double phase_xmin = -1.0;
+    double phase_xmax = phase_x.empty() ? 0.5 : phase_x.back() + 0.5;
+
     string condition=analysis_condition_label(pref,T_const);
     double representative=-1e99;
     for(const auto&r:table.rows) representative=std::max(representative,T_const?r.v:r.T);
-    string full_condition=T_const
-        ? Form("%s, representative v = %.3g V (max available)",condition.c_str(),representative)
-        : Form("%s, representative T = %.3g C (max available)",condition.c_str(),representative);
+    string sensor = sensor_from_prefix(pref);
+
+    double v_over_rep = representative;
+
+    if (sensor == "A1")
+        v_over_rep = 7.0;
+    else if (sensor == "B1")
+        v_over_rep = 5.0;
+
+    string full_condition = T_const
+        ? Form("%s, v_{over} = %.0f V",
+            condition.c_str(),
+            v_over_rep)
+        : Form("%s, T = %.3g #circC",
+            condition.c_str(),
+            representative);
 
     map<int,map<string,vector<AnalysisRow>>> all_by_spot;
     for(const auto&r:table.rows)if(pidx.count(r.phase))all_by_spot[r.spot][r.phase].push_back(r);
@@ -130,7 +507,7 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
         }
         if(xall.empty())continue;if(ymin>0)ymin*=.95;ymax*=1.08;if(ymax<=ymin)ymax=ymin+1;
         TCanvas*c=new TCanvas(Form("c_phase_single_%d",spot),"",2400,850);c->SetGrid();c->SetBottomMargin(.18);
-        TH1D*frame=new TH1D(Form("frame_single_%d",spot),Form("%s - Spot %d: luminosity vs phase",full_condition.c_str(),spot),(int)phases.size(),-.5,(double)phases.size()-.5);
+        TH1D*frame=new TH1D(Form("frame_single_%d",spot),Form("%s - Spot %d: luminosity vs phase",full_condition.c_str(),spot),(int)phases.size(),-1.0,(double)phases.size()-1.0);
         frame->SetMinimum(ymin);frame->SetMaximum(ymax);frame->GetXaxis()->SetTitle("annealing phase");frame->GetYaxis()->SetTitle("luminosity");
         for(int i=0;i<(int)phases.size();++i)frame->GetXaxis()->SetBinLabel(i+1,phase_short_label(phases[i]).c_str());
         frame->GetXaxis()->LabelsOption("h");frame->GetXaxis()->SetLabelSize(.034);frame->GetYaxis()->SetTitleOffset(1.15);frame->Draw();
@@ -164,6 +541,306 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
         leg->Draw();TLegend*status=new TLegend(.10,.76,.42,.90);status->SetBorderSize(0);status->SetFillStyle(0);status->SetTextSize(.030);if(det_ex)status->AddEntry(det_ex,"Detected measurement","lep");if(for_ex)status->AddEntry(for_ex,"Forced measurement","lep");status->Draw();
         save_canvas_both(c,Form("%s/grouped/%s_luminosity_vs_phase_group_%02d_order_%d",out.c_str(),pref.c_str(),counter,gkv.first));delete c;++counter;
     }}
+
+    // =====================================================================
+    // MANUALLY SELECTED GROUPS
+    //
+    // Each entry of MANUAL_GROUPS produces one canvas containing exactly
+    // the hotspot IDs specified by the user.
+    // =====================================================================
+    int manual_canvas_id = 0;
+
+    for (const auto& group : MANUAL_GROUPS) {
+
+        const vector<int>& ids = group.ids;
+        const string& manual_title = group.title;
+
+        if (ids.empty())
+        continue;
+
+    // -------------------------------------------------------------
+    // Determine y range using only the manually selected hotspots.
+    // -------------------------------------------------------------
+    double ymin = 1e99;
+    double ymax = -1e99;
+    bool has_valid_spot = false;
+
+    for (int id : ids) {
+
+        if (!rep.count(id)) {
+            std::cerr
+                << "WARNING: manually selected hotspot "
+                << id
+                << " is not present in the dataset."
+                << std::endl;
+            continue;
+        }
+
+        for (const auto& pkv : rep[id]) {
+
+            const auto& r = pkv.second;
+
+            double emax =
+                std::max(std::fabs(r.error),
+                         std::fabs(r.deltaL));
+
+            ymin = std::min(ymin, r.luminosity - emax);
+            ymax = std::max(ymax, r.luminosity + emax);
+
+            has_valid_spot = true;
+        }
+    }
+
+    if (!has_valid_spot)
+        continue;
+
+    if (ymin > 0)
+        ymin *= 0.8;
+    else
+        ymin *= 1.2;
+
+    ymax *= 1.25;
+
+    if (ymax <= ymin)
+        ymax = ymin + 1.0;
+
+
+    // -------------------------------------------------------------
+    // Canvas
+    // -------------------------------------------------------------
+    string title = full_condition + " - " + manual_title;
+
+    TCanvas* c = new TCanvas(
+        Form("c_phase_manual_%d", manual_canvas_id),
+        title.c_str(),
+        2400,
+        1200
+    );
+
+    c->SetGrid();
+    c->SetBottomMargin(.20);
+    c->SetTopMargin(0.10);
+
+    c->SetLeftMargin(0.13);
+    c->SetRightMargin(0.04);
+
+    // -------------------------------------------------------------
+    // Frame
+    // -------------------------------------------------------------
+    TH1D* frame =
+        make_phase_frame(
+            Form("frame_manual_%d", manual_canvas_id),
+            title.c_str(),
+            phases,
+            phase_x,
+            ymin,
+            ymax
+        );
+
+    frame->GetXaxis()->SetTitle("Annealing phase");
+    frame->GetYaxis()->SetTitle("Luminosity");
+    frame->GetYaxis()->SetTitleOffset(1.25);
+
+    frame->Draw();
+
+
+    // -------------------------------------------------------------
+    // Legends
+    // -------------------------------------------------------------
+    TLegend* leg = new TLegend(.73,.56,.93,.90);
+
+    leg->SetBorderSize(0);
+    leg->SetFillStyle(0);
+    leg->SetTextSize(.027);
+
+    TGraphErrors* det_ex = nullptr;
+    TGraphErrors* for_ex = nullptr;
+
+
+    // -------------------------------------------------------------
+    // Draw manually selected hotspots.
+    // -------------------------------------------------------------
+        int ig = 0;
+
+        for (int id : ids) {
+
+            if (!rep.count(id))
+                continue;
+
+            vector<double> xall, yall;
+            vector<double> xd, yd, exd, ed;
+            vector<double> xf, yf, exf, ef;
+            vector<double> xs, ys, exs, esyst;
+
+            for (int i=0; i<(int)phases.size(); ++i) {
+
+                if (!rep[id].count(phases[i]))
+                    continue;
+
+                const auto& r = rep[id][phases[i]];
+                const double xphase = phase_x[i];
+
+                xall.push_back(xphase);
+                yall.push_back(r.luminosity);
+
+                xs.push_back(xphase);
+                ys.push_back(r.luminosity);
+                exs.push_back(0.0);
+                esyst.push_back(r.deltaL);
+
+                if (r.detected) {
+                    xd.push_back(xphase);
+                    yd.push_back(r.luminosity);
+                    exd.push_back(0.0);
+                    ed.push_back(r.error);
+                }
+                else {
+                    xf.push_back(xphase);
+                    yf.push_back(r.luminosity);
+                    exf.push_back(0.0);
+                    ef.push_back(r.error);
+                }
+            }
+
+            if (xall.empty())
+                continue;
+
+
+            int col =
+                line_colors[ig % line_colors.size()];
+
+
+            // Connecting line
+            TGraph* line = new TGraph(
+                    (int)xall.size(),
+                    xall.data(),
+                    yall.data());
+
+            line->SetLineColor(col);
+            line->SetLineWidth(3);
+            line->Draw("L SAME");
+
+
+            // Systematic uncertainty
+            TGraphErrors* gy =
+                new TGraphErrors(
+                    (int)xs.size(),
+                    xs.data(),
+                    ys.data(),
+                    exs.data(),
+                    esyst.data()
+                );
+
+            gy->SetLineColor(col);
+            gy->SetLineStyle(2);
+            gy->SetLineWidth(1);
+            gy->SetMarkerSize(0);
+            gy->Draw("[] SAME");
+
+
+            // Detected values
+            if (!xd.empty()) {
+
+                TGraphErrors* gd =
+                    new TGraphErrors(
+                        (int)xd.size(),
+                        xd.data(),
+                        yd.data(),
+                        exd.data(),
+                        ed.data()
+                    );
+
+                gd->SetLineColor(DETECTED_COLOR);
+                gd->SetMarkerColor(DETECTED_COLOR);
+                gd->SetMarkerStyle(20);
+                gd->SetMarkerSize(1.15);
+                gd->Draw("PE SAME");
+
+                if (!det_ex)
+                    det_ex = gd;
+            }
+
+
+            // Forced values
+            if (!xf.empty()) {
+
+                TGraphErrors* gf =
+                    new TGraphErrors(
+                        (int)xf.size(),
+                        xf.data(),
+                        yf.data(),
+                        exf.data(),
+                        ef.data()
+                    );
+
+                gf->SetLineColor(DETECTED_COLOR);
+                gf->SetMarkerColor(DETECTED_COLOR);
+                gf->SetMarkerStyle(25);
+                gf->SetMarkerSize(1.15);
+                gf->Draw("PE SAME");
+
+                if (!for_ex)
+                    for_ex = gf;
+            }
+
+
+            leg->AddEntry(line,Form("spot %d",id),"l");
+
+            ++ig;
+        }
+
+
+        leg->Draw();
+
+        draw_horizontal_phase_labels(
+            (TPad*)gPad,
+            phases,
+            phase_x,
+            phase_xmin,
+            phase_xmax
+        );
+        // Detection-status legend
+        //TLegend* status = new TLegend(.10,.76,.42,.90);
+        /*
+        status->SetBorderSize(0);
+        status->SetFillStyle(0);
+        status->SetTextSize(.030);
+
+        if (det_ex)
+            status->AddEntry(
+                det_ex,
+                "Detected measurement",
+                "lep"
+            );
+
+        if (for_ex)
+            status->AddEntry(
+                for_ex,
+                "Forced measurement",
+                "lep"
+            );
+
+        status->Draw();*/
+
+
+        // -------------------------------------------------------------
+        // Save PNG + PDF.
+        // -------------------------------------------------------------
+        save_canvas_both(
+            c,
+            Form(
+                "%s/manual_grouped/%s_%s",
+                out.c_str(),
+                pref.c_str(),
+                safe_token(manual_title).c_str()
+            )
+        );
+
+        delete c;
+
+        ++manual_canvas_id;
+    }
+
 
     // =====================================================================
     // RATIOS: statistical errors only. Produce automatic-range and fixed-focus
