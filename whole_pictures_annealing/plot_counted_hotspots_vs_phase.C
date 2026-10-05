@@ -1,6 +1,9 @@
+// root -l 'plot_counted_hotspots_vs_phase.C("hotspot_phase_summary_gold_error.csv", "hotspots_gold")'
+
 #include <TCanvas.h>
 #include <TColor.h>
 #include <TGraph.h>
+#include <TGraphErrors.h>
 #include <TLegend.h>
 #include <TAxis.h>
 #include <TH1D.h>
@@ -26,8 +29,8 @@ using namespace std;
 struct SummaryRow {
     string sensor;
     string phase;
-    string run_number;
     double counted_hotspots = numeric_limits<double>::quiet_NaN();
+    double counted_hotspots_error = numeric_limits<double>::quiet_NaN();
 };
 
 struct PhaseInfo {
@@ -184,7 +187,7 @@ static vector<SummaryRow> read_summary_csv(const char* csv_path)
         col[header_fields[i]] = i;
 
     const vector<string> required = {
-        "sensor", "phase", "run_number", "counted_hotspots"
+        "sensor", "phase", "counted_hotspots", "counted_hotspots_error"
     };
 
     for (const auto& name : required) {
@@ -206,7 +209,7 @@ static vector<SummaryRow> read_summary_csv(const char* csv_path)
 
         vector<string> fields = split_csv_simple(line);
         const int max_needed = max({
-            col["sensor"], col["phase"], col["run_number"], col["counted_hotspots"]
+            col["sensor"], col["phase"], col["counted_hotspots"], col["counted_hotspots_error"]
         });
 
         if ((int)fields.size() <= max_needed) {
@@ -218,10 +221,11 @@ static vector<SummaryRow> read_summary_csv(const char* csv_path)
             SummaryRow r;
             r.sensor = fields[col["sensor"]];
             r.phase = fields[col["phase"]];
-            r.run_number = fields[col["run_number"]];
             r.counted_hotspots = stod(fields[col["counted_hotspots"]]);
+            r.counted_hotspots_error = stod(fields[col["counted_hotspots_error"]]);
 
             if (!finite_value(r.counted_hotspots)) continue;
+            if (!finite_value(r.counted_hotspots_error)) continue;
             rows.push_back(r);
         } catch (...) {
             cerr << "WARNING: malformed row skipped:\n" << line << endl;
@@ -279,7 +283,7 @@ static void draw_time_labels(
         lab->SetTextFont(42);
         lab->SetTextSize(0.032);
         lab->SetTextAlign(22);
-        lab->DrawLatex(x_ndc, 0.105, label.c_str());
+        lab->DrawLatex(x_ndc, 0.13, label.c_str());
     }
 
     TLatex* title = new TLatex();
@@ -287,7 +291,7 @@ static void draw_time_labels(
     title->SetTextFont(42);
     title->SetTextSize(0.047);
     title->SetTextAlign(22);
-    title->DrawLatex(0.5, 0.035, "annealing time");
+    title->DrawLatex(0.5, 0.035, "Annealing time");
 }
 
 // Draw one temperature label centred above each 5 h / 25 h pair and
@@ -351,7 +355,7 @@ static void draw_temperature_blocks(
 }
 
 void plot_counted_hotspots_vs_phase(
-    const char* csv_path = "hotspot_phase_summary_all_sensors.csv",
+    const char* csv_path = "hotspot_phase_summary_all_sensor_error.csv",
     const char* output_prefix = "counted_hotspots_vs_phase")
 {
     gStyle->SetOptStat(0);
@@ -403,14 +407,18 @@ void plot_counted_hotspots_vs_phase(
     const vector<SummaryRow> rows = read_summary_csv(csv_path);
 
     map<string, map<string, double>> data;
+    // Systematic uncertainties
+    map<string, map<string, double>> data_error;
     double ymin_data = numeric_limits<double>::infinity();
     double ymax_data = -numeric_limits<double>::infinity();
 
     for (const auto& r : rows) {
         if (!x_phase.count(r.phase)) continue;
         data[r.sensor][r.phase] = r.counted_hotspots;
-        ymin_data = min(ymin_data, r.counted_hotspots);
-        ymax_data = max(ymax_data, r.counted_hotspots);
+        data_error[r.sensor][r.phase] = r.counted_hotspots_error;
+        // Include the systematic uncertainty in the y-axis range.
+        ymin_data = min(ymin_data, r.counted_hotspots - r.counted_hotspots_error);
+        ymax_data = max(ymax_data, r.counted_hotspots + r.counted_hotspots_error);
     }
 
     if (!finite_value(ymin_data) || !finite_value(ymax_data))
@@ -449,7 +457,7 @@ void plot_counted_hotspots_vs_phase(
 
     TH1D* frame = new TH1D(
         "frame_counted_hotspots",
-        ";;counted hotspots",
+        ";;Counted hotspots",
         nbins,
         xmin,
         xmax
@@ -490,35 +498,143 @@ void plot_counted_hotspots_vs_phase(
     leg->SetTextSize(0.038);
 
     vector<TGraph*> graphs;
+    vector<TGraphErrors*> syst_graphs;
 
     for (const auto& sensor : sensors) {
+
         vector<double> xv;
         vector<double> yv;
 
+        vector<double> exv;
+        vector<double> eyv;
+
+
         auto sensor_it = data.find(sensor);
-        if (sensor_it == data.end()) continue;
+
+        if (sensor_it == data.end())
+            continue;
+
+
+        auto error_sensor_it = data_error.find(sensor);
+
+        if (error_sensor_it == data_error.end())
+            continue;
+
 
         for (size_t i = 0; i < phases.size(); ++i) {
-            auto phase_it = sensor_it->second.find(phases[i]);
-            if (phase_it == sensor_it->second.end()) continue;
+
+            auto phase_it =
+                sensor_it->second.find(phases[i]);
+
+            if (phase_it == sensor_it->second.end())
+                continue;
+
+
+            auto error_phase_it =
+                error_sensor_it->second.find(phases[i]);
+
+            if (error_phase_it ==
+                error_sensor_it->second.end())
+                continue;
+
 
             xv.push_back(x[i]);
-            yv.push_back(phase_it->second);
+
+            yv.push_back(
+                phase_it->second
+            );
+
+            // No uncertainty along x.
+            exv.push_back(0.0);
+
+            // Systematic uncertainty along y.
+            eyv.push_back(
+                error_phase_it->second
+            );
         }
 
-        if (xv.empty()) continue;
 
-        TGraph* gr = new TGraph((int)xv.size(), xv.data(), yv.data());
-        gr->SetName(Form("gr_%s", sensor.c_str()));
-        gr->SetLineColor(sensor_color.at(sensor));
-        gr->SetMarkerColor(sensor_color.at(sensor));
-        gr->SetMarkerStyle(sensor_marker.at(sensor));
+        if (xv.empty())
+            continue;
+
+
+        // =====================================================
+        // SYSTEMATIC UNCERTAINTY
+        //
+        // Draw only ROOT brackets.
+        // =====================================================
+        TGraphErrors* gr_syst =
+            new TGraphErrors(
+                (int)xv.size(),
+                xv.data(),
+                yv.data(),
+                exv.data(),
+                eyv.data()
+            );
+
+
+        gr_syst->SetName(
+            Form("gr_syst_%s", sensor.c_str())
+        );
+
+        gr_syst->SetLineColor(
+            sensor_color.at(sensor)
+        );
+
+        gr_syst->SetLineWidth(2);
+
+
+        // ROOT option []:
+        // draw uncertainties as brackets.
+        gr_syst->Draw("[] SAME");
+
+
+        // =====================================================
+        // CENTRAL VALUES + CONNECTING LINE
+        // =====================================================
+        TGraph* gr =
+            new TGraph(
+                (int)xv.size(),
+                xv.data(),
+                yv.data()
+            );
+
+
+        gr->SetName(
+            Form("gr_%s", sensor.c_str())
+        );
+
+        gr->SetLineColor(
+            sensor_color.at(sensor)
+        );
+
+        gr->SetMarkerColor(
+            sensor_color.at(sensor)
+        );
+
+        gr->SetMarkerStyle(
+            sensor_marker.at(sensor)
+        );
+
         gr->SetMarkerSize(1.45);
+
         gr->SetLineWidth(3);
+
+
+        // Draw after systematic brackets so that
+        // markers remain clearly visible.
         gr->Draw("PL SAME");
 
-        leg->AddEntry(gr, sensor.c_str(), "lp");
+
+        leg->AddEntry(
+            gr,
+            sensor.c_str(),
+            "lp"
+        );
+
+
         graphs.push_back(gr);
+        syst_graphs.push_back(gr_syst);
     }
 
     leg->Draw();

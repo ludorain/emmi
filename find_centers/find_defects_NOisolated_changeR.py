@@ -47,7 +47,7 @@ def parse_arguments():
                         help='Display background-subtracted image with circles on detected sources')
 
     # SourceFinder / deblending parameters
-    parser.add_argument('--npixels', type=int, default=30,
+    parser.add_argument('--npixels', type=int, default=36,
                         help='Minimum number of connected pixels for source detection')
     parser.add_argument('--nlevels', type=int, default=32,
                         help='Number of multi-thresholding levels for deblending')

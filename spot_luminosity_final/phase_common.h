@@ -245,7 +245,7 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
     const int MAX_SPOTS_PER_CANVAS=6;
     const int DETECTED_COLOR=kP6Blue;
     const int FORCED_COLOR=kP6Red;
-    const vector<int> line_colors={kP10Yellow,kP10Gray,kP10Violet,kP10Brown,kP10Orange,kP10Green};
+    const vector<int> line_colors={kP10Cyan, kP10Ash, kP10Green, kP10Orange, kP10Brown, kP10Red, kP10Yellow,kP10Violet,kP10Blue, kP8Pink, kBlack, kP6Grape, kP10Gray};
 
     // =====================================================================
     // Manually selected hotspots
@@ -310,13 +310,13 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
 
             {   //Some examples
                 "Decreasing fluctuating,  L<800",
-                {1, 5, 12, 17, 27, 31, 32, 34, 70}
+                {1, 5, 12, 17, 31, 32, 34, 70}
             },
 
             // ==============================================================
             {
-                "Peaks for high L",
-                {24, 37, 73}
+                "Peak for high L",
+                { 37}
             },
 
             {
@@ -406,13 +406,13 @@ MANUAL_GROUPS = {
 
             {
                 "Peaks for low L",
-                {2, 7, 84, 106}
+                {106}
             },
 
             // ==============================================================
             {
                 "Approximately constant hotspots",
-                {21, 54, 79, 103, 111}
+                {21, 54, 79, 103}
             },
 
              // ==============================================================
@@ -424,17 +424,17 @@ MANUAL_GROUPS = {
             // ==============================================================
             {
                 "Appeared high L - (1)",
-                {71, 76, 77}
+                {71, 76}
             }, 
 
             {
                 "Appeared high L - (2)",
-                {86, 97, 118}
+                {86}
             }, 
 
             {
                 "Appeared low L",
-                {97, 98, 103, 113}
+                {77}
             }
 
 

@@ -1,0 +1,10 @@
+phase,run_number,n_detected,n_reference,n_appeared,n_reappeared,n_disappeared,n_absent,n_not_yet_detected
+before_annealing,20260516-064844,169,169,0,0,0,0,33
+annealing_T=75_h=5,20260523-062735,170,0,11,0,10,0,22
+annealing_T=75_h=25,20260602-133829,157,0,4,3,20,7,18
+annealing_T=100_h=5,20260613-015321,152,0,5,6,16,21,13
+annealing_T=100_h=25,20260629-230214,130,0,4,4,30,33,9
+annealing_T=125_h=5,20260725-020716,110,0,3,9,32,54,6
+annealing_T=125_h=25,20260902-011233,90,0,1,8,29,78,5
+annealing_T=150_h=5,20260912-010115,76,0,4,6,24,101,1
+annealing_T=150_h=25,20260919-004123,54,0,1,7,30,118,0

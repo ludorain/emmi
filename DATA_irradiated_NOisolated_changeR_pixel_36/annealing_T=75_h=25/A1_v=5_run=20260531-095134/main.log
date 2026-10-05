@@ -1,0 +1,49 @@
+ --- ensure everything is off 
+ --- autofocus sensor: A1 
+ --- done autofocus sensor: 0h 2m 41s 
+ --- sleeping to cool down: 30m 
+ --- there you go, ready to rock 
+ --- sensor align: sensor=A1 dx=0 dy=0 
+ --- done sensor align: 0h 0m 48s 
+ --- loop over temperatures: 17 19 21 23 
+ --- next temperature: temp=17 vbreak=51.13 
+ --- reached temperature: 0h 38m 31s 
+ --- loop over overvoltages: 5 
+ --- next overvoltage: vover=5 vbias=56.13 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -56.13 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260531-095134_x=0_y=0_z=0_T=17_v=56.13 
+ --- done acquiring picture: 1h 38m 29s 
+ --- next temperature: temp=19 vbreak=51.24 
+ --- reached temperature: 0h 15m 46s 
+ --- loop over overvoltages: 5 
+ --- next overvoltage: vover=5 vbias=56.24 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -56.24 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260531-095134_x=0_y=0_z=0_T=19_v=56.24 
+ --- done acquiring picture: 1h 38m 24s 
+ --- next temperature: temp=21 vbreak=51.35 
+ --- reached temperature: 0h 15m 49s 
+ --- loop over overvoltages: 5 
+ --- next overvoltage: vover=5 vbias=56.35 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -56.35 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260531-095134_x=0_y=0_z=0_T=21_v=56.35 
+ --- done acquiring picture: 1h 38m 24s 
+ --- next temperature: temp=23 vbreak=51.46 
+ --- reached temperature: 0h 15m 47s 
+ --- loop over overvoltages: 5 
+ --- next overvoltage: vover=5 vbias=56.46 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -56.46 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260531-095134_x=0_y=0_z=0_T=23_v=56.46 
+ --- done acquiring picture: 1h 38m 24s 
+ --- ensure everything is off 
+ --- all done, so long 
+real 30788.62
+user 541.64
+sys 254.45

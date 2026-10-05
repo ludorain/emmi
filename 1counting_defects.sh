@@ -33,7 +33,7 @@ shopt -s nullglob
 # ------------------------------------------------------------
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="$BASE_DIR/DATA_irradiated_NOisolated_changeR"
+DATA_DIR="$BASE_DIR/DATA_irradiated_NOisolated_changeR_pixel_36"
 
 PROCESS_IMAGE="$BASE_DIR/manipulate_images/process_image.py"
 TIF2TH2="$BASE_DIR/manipulate_images/tif2th2.py"

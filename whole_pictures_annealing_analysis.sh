@@ -44,7 +44,7 @@ shopt -s nullglob
 # ------------------------------------------------------------
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="$BASE_DIR/whole_pictures_annealing"
+DATA_DIR="$BASE_DIR/whole_pictures_annealing/pixels=36"
 
 PROCESS_IMAGE="$BASE_DIR/manipulate_images/process_image.py"
 TIF2TH2="$BASE_DIR/manipulate_images/tif2th2.py"
@@ -1795,7 +1795,7 @@ main() {
     printf '============================================================\n'
     printf 'PIPELINE COMPLETED SUCCESSFULLY\n'
     printf 'Combined summary:\n'
-    printf '  %s\n' "$DATA_DIR/hotspot_phase_summary_all_sensors.csv"
+    printf '  %s\n' "$DATA_DIR/hotspot_phase_summary_all_sensors_pixel=36.csv"
     printf '============================================================\n'
 }
 

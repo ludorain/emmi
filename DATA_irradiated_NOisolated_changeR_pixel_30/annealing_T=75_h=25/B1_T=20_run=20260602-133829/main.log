@@ -1,0 +1,52 @@
+ --- ensure everything is off 
+ --- autofocus sensor: B1 
+ --- done autofocus sensor: 0h 2m 37s 
+ --- sleeping to cool down: 30m 
+ --- there you go, ready to rock 
+ --- sensor align: sensor=B1 dx=0 dy=0 
+ --- done sensor align: 0h 0m 48s 
+ --- loop over temperatures: 20 
+ --- next temperature: temp=20 vbreak=50.90 
+ --- reached temperature: 0h 6m 28s 
+ --- loop over overvoltages: 5 3 2.5 2 1.5 0.75 
+ --- next overvoltage: vover=5 vbias=55.90 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -55.90 
+ --- acquiring picture: exposure=5000ms nframes=10 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=55.90 
+ --- done acquiring picture: 1h 17m 14s 
+ --- next overvoltage: vover=3 vbias=53.90 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -53.90 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=53.90 
+ --- done acquiring picture: 1h 38m 24s 
+ --- next overvoltage: vover=2.5 vbias=53.40 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -53.40 
+ --- acquiring picture: exposure=5000ms nframes=30 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=53.40 
+ --- done acquiring picture: 1h 59m 36s 
+ --- next overvoltage: vover=2 vbias=52.90 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -52.90 
+ --- acquiring picture: exposure=5000ms nframes=40 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=52.90 
+ --- done acquiring picture: 2h 20m 45s 
+ --- next overvoltage: vover=1.5 vbias=52.40 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -52.40 
+ --- acquiring picture: exposure=5000ms nframes=80 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=52.40 
+ --- done acquiring picture: 3h 49m 41s 
+ --- next overvoltage: vover=0.75 vbias=51.65 
+ --- switching Keithley output: OFF 
+ --- setting Keithley voltage: -51.65 
+ --- acquiring picture: exposure=5000ms nframes=300 nrepeat=25 
+ --- prefix=run=20260602-133829_x=0_y=0_z=0_T=20_v=51.65 
+ --- done acquiring picture: 11h 30m 33s 
+ --- ensure everything is off 
+ --- all done, so long 
+real 83773.31
+user 1693.78
+sys 1538.93

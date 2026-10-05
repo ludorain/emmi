@@ -1,0 +1,2336 @@
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73 
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.000.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.000.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.000.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.001.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.001.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.001.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.002.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.002.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.002.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.003.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.003.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.003.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.004.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.004.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.004.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.005.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.005.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.005.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.006.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.006.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.006.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.007.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.007.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.007.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.008.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.008.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.008.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.009.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.009.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.009.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.010.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.010.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.010.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.011.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.011.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.011.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.012.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.012.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.012.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.013.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.013.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.013.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.014.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.014.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.014.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.015.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.015.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.015.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.016.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.016.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.016.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.017.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.017.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.017.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.018.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.018.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.018.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.019.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.019.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.019.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.020.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.020.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.020.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.021.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.021.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.021.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.022.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.022.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.022.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.023.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.023.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.023.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=dark.024.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=hot.024.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.024.tif
+ --- reading images from run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.stack.tif: found 25 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.tif
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diffe.tif
+ --- opening input image: run=20260524-053913_x=0_y=0_z=0_T=17_v=53.73_data=diff.tif
+ --- contrast_stretching
+ --- done acquiring picture: 1h 38m 22s 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84 
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.000.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.000.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.000.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.001.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.001.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.001.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.002.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.002.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.002.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.003.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.003.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.003.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.004.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.004.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.004.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.005.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.005.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.005.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.006.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.006.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.006.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.007.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.007.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.007.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.008.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.008.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.008.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.009.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.009.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.009.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.010.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.010.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.010.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.011.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.011.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.011.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.012.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.012.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.012.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.013.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.013.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.013.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.014.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.014.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.014.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.015.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.015.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.015.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.016.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.016.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.016.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.017.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.017.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.017.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.018.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.018.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.018.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.019.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.019.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.019.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.020.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.020.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.020.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.021.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.021.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.021.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.022.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.022.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.022.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.023.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.023.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.023.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=dark.024.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=hot.024.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.024.tif
+ --- reading images from run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.stack.tif: found 25 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.tif
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diffe.tif
+ --- opening input image: run=20260524-053913_x=0_y=0_z=0_T=19_v=53.84_data=diff.tif
+ --- contrast_stretching
+ --- done acquiring picture: 1h 38m 23s 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95 
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.000.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.000.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.000.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.001.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.001.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.001.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.002.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.002.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.002.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.003.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.003.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.003.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.004.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.004.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.004.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.005.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.005.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.005.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.006.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.006.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.006.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.007.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.007.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.007.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.008.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.008.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.008.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.009.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.009.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.009.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.010.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.010.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.010.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.011.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.011.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.011.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.012.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.012.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.012.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.013.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.013.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.013.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.014.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.014.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.014.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.015.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.015.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.015.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.016.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.016.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.016.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.017.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.017.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.017.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.018.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.018.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.018.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.019.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.019.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.019.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.020.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.020.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.020.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.021.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.021.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.021.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.022.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.022.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.022.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.023.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.023.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.023.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=dark.024.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=hot.024.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.024.tif
+ --- reading images from run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.stack.tif: found 25 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.tif
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diffe.tif
+ --- opening input image: run=20260524-053913_x=0_y=0_z=0_T=21_v=53.95_data=diff.tif
+ --- contrast_stretching
+ --- done acquiring picture: 1h 38m 23s 
+ --- acquiring picture: exposure=5000ms nframes=20 nrepeat=25 
+ --- prefix=run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06 
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.000.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.000.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.000.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.001.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.001.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.001.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.002.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.002.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.002.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.003.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.003.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.003.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.004.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.004.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.004.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.005.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.005.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.005.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.006.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.006.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.006.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.007.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.007.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.007.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.008.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.008.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.008.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.009.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.009.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.009.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.010.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.010.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.010.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.011.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.011.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.011.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.012.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.012.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.012.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.013.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.013.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.013.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.014.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.014.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.014.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.015.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.015.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.015.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.016.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.016.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.016.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.017.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.017.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.017.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.018.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.018.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.018.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.019.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.019.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.019.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.020.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.020.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.020.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.021.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.021.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.021.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.022.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.022.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.022.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.023.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.023.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.023.tif
+ --- acquire dark 
+ --- switching Keithley output: OFF 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=dark.024.tif
+ --- acquire hot 
+ --- switching Keithley output: ON 
+set exposure: 5000.0 ms
+armed
+triggered
+acquired 20 frames: /run/emmi/camera/stack.tif
+disarmed
+ --- reading images from /run/emmi/camera/stack.tif: found 20 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=hot.024.tif
+ --- switching Keithley output: OFF 
+ --- subtract 
+Subtracted image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.024.tif
+ --- reading images from run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.stack.tif: found 25 frames
+ --- filtering images from outliers
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.tif
+ --- image saved to run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diffe.tif
+ --- opening input image: run=20260524-053913_x=0_y=0_z=0_T=23_v=54.06_data=diff.tif
+ --- contrast_stretching
+ --- done acquiring picture: 1h 38m 22s 

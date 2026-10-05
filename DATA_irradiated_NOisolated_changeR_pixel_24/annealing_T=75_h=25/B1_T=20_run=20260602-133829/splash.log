@@ -1,0 +1,28 @@
+Tue  2 Jun 13:38:33 CEST 2026
+
+ --------------------- 
+ EMMI MEASURE_2 SCRIPT 
+ --------------------- 
+
+ EXPOSURE: 5000 
+ NFRAMES_DARK: 20 
+
+ BOARD: 31 
+ SENSOR: B1 
+
+ VBRK_AT20C: 50.9 
+ VBRK_COEFF: 0.055 
+
+ DXPOS: 0 
+ DYPOS: 0 
+ DZPOS: 0 
+
+ TEMPS: 20 
+ VOVERS: 5 3 2.5 2 1.5 0.75 
+
+ NREPEAT: 25 
+
+ LIGHTONLY: false 
+ CLEAN: true 
+
+

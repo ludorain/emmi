@@ -1,0 +1,316 @@
+ --- autofocus sensor: B1 
+ --- update peltier auto mode: off 
+ --- switching Gude moving on 
+ switched moving on 
+ --- recallencoder: 94442 28322 92975 
+ --- homing 
+ --- moving: x=19.8 y=6.0 mm 
+ --- autofocusing 
+disarmed
+set exposure: 50.0 ms
+armed
+triggered
+ --- switching Gude light on 
+ switched light on 
+ --- moving: z=19.45 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.45.tif
+ --- opening input image: z=19.45.tif
+ --- contrast_stretching
+ --- moving: z=19.46 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.46.tif
+ --- opening input image: z=19.46.tif
+ --- contrast_stretching
+ --- moving: z=19.47 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.47.tif
+ --- opening input image: z=19.47.tif
+ --- contrast_stretching
+ --- moving: z=19.48 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.48.tif
+ --- opening input image: z=19.48.tif
+ --- contrast_stretching
+ --- moving: z=19.49 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.49.tif
+ --- opening input image: z=19.49.tif
+ --- contrast_stretching
+ --- moving: z=19.50 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.50.tif
+ --- opening input image: z=19.50.tif
+ --- contrast_stretching
+ --- moving: z=19.51 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.51.tif
+ --- opening input image: z=19.51.tif
+ --- contrast_stretching
+ --- moving: z=19.52 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.52.tif
+ --- opening input image: z=19.52.tif
+ --- contrast_stretching
+ --- moving: z=19.53 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.53.tif
+ --- opening input image: z=19.53.tif
+ --- contrast_stretching
+ --- moving: z=19.54 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.54.tif
+ --- opening input image: z=19.54.tif
+ --- contrast_stretching
+ --- moving: z=19.55 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.55.tif
+ --- opening input image: z=19.55.tif
+ --- contrast_stretching
+ --- moving: z=19.56 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.56.tif
+ --- opening input image: z=19.56.tif
+ --- contrast_stretching
+ --- moving: z=19.57 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.57.tif
+ --- opening input image: z=19.57.tif
+ --- contrast_stretching
+ --- moving: z=19.58 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.58.tif
+ --- opening input image: z=19.58.tif
+ --- contrast_stretching
+ --- moving: z=19.59 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.59.tif
+ --- opening input image: z=19.59.tif
+ --- contrast_stretching
+ --- moving: z=19.60 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.60.tif
+ --- opening input image: z=19.60.tif
+ --- contrast_stretching
+ --- moving: z=19.61 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.61.tif
+ --- opening input image: z=19.61.tif
+ --- contrast_stretching
+ --- moving: z=19.62 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.62.tif
+ --- opening input image: z=19.62.tif
+ --- contrast_stretching
+ --- moving: z=19.63 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.63.tif
+ --- opening input image: z=19.63.tif
+ --- contrast_stretching
+ --- moving: z=19.64 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.64.tif
+ --- opening input image: z=19.64.tif
+ --- contrast_stretching
+ --- moving: z=19.65 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.65.tif
+ --- opening input image: z=19.65.tif
+ --- contrast_stretching
+ --- moving: z=19.66 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.66.tif
+ --- opening input image: z=19.66.tif
+ --- contrast_stretching
+ --- moving: z=19.67 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.67.tif
+ --- opening input image: z=19.67.tif
+ --- contrast_stretching
+ --- moving: z=19.68 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.68.tif
+ --- opening input image: z=19.68.tif
+ --- contrast_stretching
+ --- moving: z=19.69 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.69.tif
+ --- opening input image: z=19.69.tif
+ --- contrast_stretching
+ --- moving: z=19.70 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.70.tif
+ --- opening input image: z=19.70.tif
+ --- contrast_stretching
+ --- moving: z=19.71 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.71.tif
+ --- opening input image: z=19.71.tif
+ --- contrast_stretching
+ --- moving: z=19.72 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.72.tif
+ --- opening input image: z=19.72.tif
+ --- contrast_stretching
+ --- moving: z=19.73 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.73.tif
+ --- opening input image: z=19.73.tif
+ --- contrast_stretching
+ --- moving: z=19.74 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.74.tif
+ --- opening input image: z=19.74.tif
+ --- contrast_stretching
+ --- moving: z=19.75 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.75.tif
+ --- opening input image: z=19.75.tif
+ --- contrast_stretching
+ --- moving: z=19.76 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.76.tif
+ --- opening input image: z=19.76.tif
+ --- contrast_stretching
+ --- moving: z=19.77 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.77.tif
+ --- opening input image: z=19.77.tif
+ --- contrast_stretching
+ --- moving: z=19.78 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.78.tif
+ --- opening input image: z=19.78.tif
+ --- contrast_stretching
+ --- moving: z=19.79 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.79.tif
+ --- opening input image: z=19.79.tif
+ --- contrast_stretching
+ --- moving: z=19.80 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.80.tif
+ --- opening input image: z=19.80.tif
+ --- contrast_stretching
+ --- moving: z=19.81 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.81.tif
+ --- opening input image: z=19.81.tif
+ --- contrast_stretching
+ --- moving: z=19.82 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.82.tif
+ --- opening input image: z=19.82.tif
+ --- contrast_stretching
+ --- moving: z=19.83 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.83.tif
+ --- opening input image: z=19.83.tif
+ --- contrast_stretching
+ --- moving: z=19.84 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.84.tif
+ --- opening input image: z=19.84.tif
+ --- contrast_stretching
+ --- moving: z=19.85 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to z=19.85.tif
+ --- opening input image: z=19.85.tif
+ --- contrast_stretching
+ --- moving: z=19.677426355129523 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to focus.tif
+ --- opening input image: focus.tif
+ --- contrast_stretching
+ --- switching Gude light off 
+ switched light off 
+disarmed
+ --- all done, so long 
+ --- saveencoder: 93561 28352 92982 
+ --- switching Gude moving off 
+ switched moving off 
+ --- done autofocus sensor: 0h 2m 35s 

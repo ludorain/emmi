@@ -89,8 +89,7 @@ static void append_B_phase_summary(const string& filename,
 
 // -----------------------------------------------------------------------------
 // Read the R=16 and R=24 fit values produced by lum_vs_v_systematics.C.
-// ROOT fit status == 0 is the convergence criterion; ndf is intentionally not
-// required because a two-point/two-parameter fit can converge with ndf == 0.
+// ROOT fit status == 0 is the convergence criterion;
 // -----------------------------------------------------------------------------
 static map<int,BSystematicPair> read_B_systematics(const string& filename) {
     map<int,BSystematicPair> out;
@@ -144,10 +143,9 @@ static map<int,BSystematicPair> read_B_systematics(const string& filename) {
 }
 
 // -----------------------------------------------------------------------------
-// Draw a symmetric systematic uncertainty as two green horizontal brackets.
+// Draw a symmetric systematic uncertainty as two black horizontal brackets.
 // The bracket width is defined as a small fraction of the visible x range, so it
 // remains only slightly wider than the experimental marker for any axis scale.
-// This is deliberately different from a conventional statistical error bar.
 // -----------------------------------------------------------------------------
 static void draw_horizontal_syst_brackets(const vector<double>& x,
                                            const vector<double>& y,
@@ -191,7 +189,7 @@ static void draw_horizontal_syst_brackets(const vector<double>& x,
 }
 
 // -----------------------------------------------------------------------------
-// Write an analysis CSV using the new symmetric-systematic convention.
+// Write an analysis CSV using the symmetric-systematic convention.
 // -----------------------------------------------------------------------------
 static void write_augmented_v_csv(const CsvTable& original,
                                   const string& phase,
@@ -406,7 +404,8 @@ void lum_vs_v_fit(const char* all_phases_csv,
                   const char* r16_all_phases_csv = "",
                   const char* r24_all_phases_csv = "",
                   const char* B_summary_csv = "") {
-    gStyle->SetOptFit(111);
+    //gStyle->SetOptFit(111);
+    gStyle->SetOptFit(0);
     gStyle->SetOptStat(0);
 
     const double FIT_XMIN=0.0;
@@ -664,7 +663,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
             info.graph->SetMaximum(ymax+0.15*span);
         }
 
-        info.graph->Draw("AP");
+        info.graph->Draw("APZ");
         c->Update();
 
         vector<double> sx, sy, sd;
@@ -687,14 +686,14 @@ void lum_vs_v_fit(const char* all_phases_csv,
         auto it16=fits16.find(id);
         if (it16!=fits16.end() && it16->second.graph) {
             ov16=&it16->second;
-            ov16->graph->Draw("PE SAME");
+            ov16->graph->Draw("PZ SAME");
             if (ov16->fit_done && ov16->func) ov16->func->Draw("SAME");
         }
 
         auto it24=fits24.find(id);
         if (it24!=fits24.end() && it24->second.graph) {
             ov24=&it24->second;
-            ov24->graph->Draw("PE SAME");
+            ov24->graph->Draw("PZ SAME");
             if (ov24->fit_done && ov24->func) ov24->func->Draw("SAME");
         }
 
@@ -753,28 +752,19 @@ void lum_vs_v_fit(const char* all_phases_csv,
 
         c->Update();
         
-        TPaveStats* stats=(TPaveStats*)info.graph->FindObject("stats");
-        if (!stats) {
-            // Fallback: explicitly create a TPaveStats so fit information is
-            // always visible even when ROOT does not attach an automatic box
-            // after a quiet/zero-draw fit.
-            stats=new TPaveStats(0.12,comparison_mode ? 0.43 : 0.51,
-                                 comparison_mode ? 0.66 : 0.48,
-                                 comparison_mode ? 0.65 : 0.71,"brNDC");
-            stats->SetName(Form("fit_stats_spot_%d",id));
-            stats->AddText(Form("A = %.4g #pm %.3g",info.A,info.Aerr));
-            stats->AddText(Form("B = %.4g #pm %.3g",info.B,info.Berr));
-            stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",info.chi2,info.ndf));
-        } else {
-            stats->SetX1NDC(0.12);
-            stats->SetX2NDC(comparison_mode ? 0.66 : 0.48);
-            stats->SetY1NDC(comparison_mode ? 0.43 : 0.51);
-            stats->SetY2NDC(comparison_mode ? 0.65 : 0.71);
+        if (!comparison_mode) {
+            TPaveStats* stats=(TPaveStats*)info.graph->FindObject("stats");
+            if (!stats) {
+                stats=new TPaveStats(0.12, 0.51, 0.48, 0.71, "brNDC");
+                stats->SetName(Form("fit_stats_spot_%d",id));
+                stats->AddText(Form("A = %.4g #pm %.3g",info.A,info.Aerr));
+                stats->AddText(Form("B = %.4g #pm %.3g",info.B,info.Berr));
+                stats->AddText(Form("#chi^{2}/ndf = %.3g / %d",info.chi2,info.ndf));
+                stats->SetTextSize(0.020);
+                stats->SetBorderSize(1);
+                stats->SetFillStyle(0);
+                stats->Draw(); }
         }
-        stats->SetTextSize(0.020);
-        stats->SetBorderSize(1);
-        stats->SetFillStyle(0);
-        stats->Draw();
 
         c->Modified();
         c->Update();
@@ -901,13 +891,13 @@ void lum_vs_v_fit(const char* all_phases_csv,
             grB->SetMarkerColor(kBlack);
             grB->SetLineColor(kBlack);
             grB->SetLineWidth(2);
-            grB->SetMinimum(focus ? 1.0 : ymin-0.15*yspan);
-            grB->SetMaximum(focus ? 3.0 : ymax+0.35*yspan);
-            grB->Draw("AP");
+            grB->SetMinimum(focus ? -10.0 : ymin-0.15*yspan);
+            grB->SetMaximum(focus ? 20.0 : ymax+0.35*yspan);
+            grB->Draw("APZ");
             grB->GetXaxis()->SetLimits(xmin,xmax);
 
             // Systematic uncertainty on each individual B_i.
-            draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kP6Grape,4);
+            draw_horizontal_syst_brackets(x,B,Bsyst,xmin,xmax,kBlack,4);
             grB->Draw("P SAME");
 
             // Reference B=2.
@@ -922,11 +912,11 @@ void lum_vs_v_fit(const char* all_phases_csv,
             TLine* mean_line=new TLine(xmin,B_mean,xmax,B_mean);
             mean_line->SetLineColor(kP10Gray);
             mean_line->SetLineStyle(2);
-            mean_line->SetLineWidth(3);
+            mean_line->SetLineWidth(2);
             mean_line->Draw("SAME");
 
             TLine* syst_proxy=new TLine(0,0,1,0);
-            syst_proxy->SetLineColor(kP6Grape);
+            syst_proxy->SetLineColor(kBlack);
             syst_proxy->SetLineWidth(4);
 
             TLegend* leg=new TLegend(.12,.67,.48,.91);
@@ -965,6 +955,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
         draw_B_canvas("full",false);
         draw_B_canvas("focus",true);
 
+        /*
         // -------------------------------------------------------------
         // SECOND PLOT: binned distribution of the individual B_i values.
         // This is a diagnostic plot intended to show the shape of the B
@@ -1041,6 +1032,131 @@ void lum_vs_v_fit(const char* all_phases_csv,
     } else {
         std::cerr << "Warning: no accepted B fit is available for the B-vs-ID statistics in phase "
                   << ph << std::endl;
+    } */
+        // -------------------------------------------------------------
+        // SECOND PLOT: binned distribution of the individual B_i values.
+        // This plot is meant to inspect the shape of the hotspot-to-hotspot
+        // distribution; no Gaussian fit is imposed here.
+        // -------------------------------------------------------------
+        if (!B.empty()) {
+
+            double hmin = *std::min_element(B.begin(),B.end());
+            double hmax = *std::max_element(B.begin(),B.end());
+
+            if (!(hmax > hmin)) {
+                const double half = std::max(0.1,0.10*std::fabs(hmax));
+                hmin -= half;
+                hmax += half;
+            } else {
+                const double margin = 0.10*(hmax-hmin);
+                hmin -= margin;
+                hmax += margin;
+            }
+
+            // Use a finer binning than the previous sqrt(N) choice.
+            // This keeps enough granularity to inspect the distribution shape.
+            int nbins = std::max(
+                15,
+                (int)std::ceil(2.0*std::sqrt((double)B.size()))
+            );
+            nbins = std::min(nbins,60);
+
+            TCanvas* ch = new TCanvas(
+                "c_B_distribution",
+                "B distribution",
+                1900,900
+            );
+
+            // Reserve a right-side area for the summary box so that it does
+            // not overlap the histogram.
+            ch->SetRightMargin(0.28);
+
+            TH1D* hB = new TH1D(
+                "h_B_distribution",
+                Form("Sensor %s - Distribution of fitted B - %s;B;Hotspots",
+                     sensor.c_str(),ph.c_str()),
+                nbins,hmin,hmax
+            );
+
+            hB->SetLineColor(kP6Blue);
+            hB->SetFillColor(kP6Blue);
+            hB->SetFillStyle(1001);
+            hB->SetLineWidth(2);
+
+            for (double B_i : B)
+                hB->Fill(B_i);
+
+            hB->Draw("HIST");
+
+            const double ymax_hist = hB->GetMaximum();
+
+            // ---------------------------------------------------------
+            // Mean B.
+            // ---------------------------------------------------------
+            TLine* mean_hist_line = new TLine(
+                B_mean,0.0,
+                B_mean,1.05*ymax_hist
+            );
+            mean_hist_line->SetLineColor(kBlack);
+            mean_hist_line->SetLineWidth(2);
+            mean_hist_line->SetLineStyle(2);
+            mean_hist_line->Draw("SAME");
+
+            // ---------------------------------------------------------
+            // Reference B = 2.
+            // ---------------------------------------------------------
+            TLine* B2_hist_line = new TLine(
+                2.0,0.0,
+                2.0,1.05*ymax_hist
+            );
+            B2_hist_line->SetLineColor(kP6Red);
+            B2_hist_line->SetLineWidth(2);
+            B2_hist_line->SetLineStyle(2);
+            B2_hist_line->Draw("SAME");
+
+            // ---------------------------------------------------------
+            // Statistics box in the reserved right-side area.
+            // ---------------------------------------------------------
+            TPaveText* stats_box = new TPaveText(
+                0.74,0.66,
+                0.97,0.88,
+                "NDC"
+            );
+
+            stats_box->SetBorderSize(0);
+            stats_box->SetFillStyle(0);
+            stats_box->SetTextAlign(12);
+
+            stats_box->AddText(Form("Mean B = %.5f",B_mean));
+            stats_box->AddText(
+                Form("Stat. error on mean = %.5f",
+                     B_mean_stat_error)
+            );
+            stats_box->AddText(Form("RMS = %.5f",B_rms));
+            stats_box->AddText(Form("N = %zu",B.size()));
+
+            stats_box->Draw();
+
+            ch->Modified();
+            ch->Update();
+
+            ch->SaveAs(
+                Form("%s/%s_B_distribution.png",
+                     outdir.c_str(),pref.c_str())
+            );
+            ch->SaveAs(
+                Form("%s/%s_B_distribution.pdf",
+                     outdir.c_str(),pref.c_str())
+            );
+
+            delete ch;
+        }
+
+    } else {
+        std::cerr
+            << "Warning: no accepted B fit is available for the B-vs-ID "
+               "statistics in phase "
+            << ph << std::endl;
     }
 
     // =====================================================================

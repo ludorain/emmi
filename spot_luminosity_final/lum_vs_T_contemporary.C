@@ -71,11 +71,36 @@ bool phase_less_Tcontemporary(const string& a, const string& b) {
 }
 
 string pretty_phase_Tcontemporary(const string& phase) {
-    if (phase == "before_annealing") return "Before annealing";
+    /*if (phase == "before_annealing") return "Before annealing";
     double T = 0.0, h = 0.0;
     if (std::sscanf(phase.c_str(), "annealing_T=%lf_h=%lf", &T, &h) == 2)
-        return Form("%g #circC, %g h", T, h);
+        return Form("%g^{#circ}C, %g h", T, h);
+    return phase;*/
+
+    //Prova temporanea per capire dove diamine sta l'errore
+    if (phase == "before_annealing")
+        return "Before annealing";
+
+    double T = 0.0, h = 0.0;
+
+    int nread = std::sscanf(
+        phase.c_str(),
+        "annealing_T=%lf_h=%lf",
+        &T, &h
+    );
+
+    std::cout << "RAW PHASE = [" << phase << "]"
+              << "  nread = " << nread
+              << "  T = " << T
+              << "  h = " << h
+              << std::endl;
+
+    if (nread == 2)
+        return Form("%g#circC, %g h", T, h);
+
+    std::cout << "WARNING: phase parsing failed!" << std::endl;
     return phase;
+
 }
 
 int phase_color_Tcontemporary(size_t i) {

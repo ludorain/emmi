@@ -516,7 +516,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
 
     gStyle->SetOptStat(0);
 
-    gStyle->SetOptFit(111);
+    gStyle->SetOptFit(0);
 
     // Statistical errors are drawn with option Z (no end caps).
     // Systematic errors are drawn with ROOT bracket option [].

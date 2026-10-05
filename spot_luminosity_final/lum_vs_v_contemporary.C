@@ -72,7 +72,7 @@ string pretty_phase_Vcontemporary(const string& phase) {
     if (phase == "before_annealing") return "Before annealing";
     double T = 0.0, h = 0.0;
     if (std::sscanf(phase.c_str(), "annealing_T=%lf_h=%lf", &T, &h) == 2)
-        return Form("%g °C, %g h", T, h);
+        return Form("%g#circC, %g h", T, h);
     return phase;
 }
 

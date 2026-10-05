@@ -1,0 +1,36 @@
+ --- sensor align: sensor=B1 dx=0 dy=0 
+ --- update peltier auto mode: off 
+ --- switching Gude moving on 
+ switched moving on 
+ --- recallencoder: 93561 28352 92982 
+ --- homing xy 
+ --- moving: x=19.8 y=6.0 mm 
+set exposure: 50.0 ms
+armed
+triggered
+ --- switching Gude light on 
+ switched light on 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to sensor_align.tif
+0 0
+0 0
+ --- jogging: dx=.07434 dy=-.04158 mm 
+ --- moving: x=19.87431368385315 y=5.958450502929687 mm 
+acquired 1 frames: /run/emmi/camera/stack.tif
+ --- reading images from /run/emmi/camera/stack.tif: found 1 frames
+ --- filtering images from outliers
+ --- image saved to sensor_align.tif
+ --- opening input image: sensor_align.tif
+ --- contrast_stretching
+0 0
+ --- switching Gude light off 
+ switched light off 
+disarmed
+ --- saveencoder: 93912 28156 92982 
+ --- switching Gude moving off 
+ switched moving off 
+ --- update peltier setpoint: 20.1 
+ --- update peltier auto mode: on 
+ --- done sensor align: 0h 0m 48s 
