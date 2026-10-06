@@ -499,23 +499,84 @@ MANUAL_GROUPS = {
     // forced=open red square. Canvas deliberately twice as wide.
     // =====================================================================
     for(auto&skv:rep){
-        int spot=skv.first;vector<double>xall,yall,xd,yd,exd,ed,xf,yf,exf,ef,xs,ys,exs,esyst;double ymin=1e99,ymax=-1e99;
-        for(int i=0;i<(int)phases.size();++i){if(!skv.second.count(phases[i]))continue;const auto&r=skv.second[phases[i]];
-            xall.push_back(i);yall.push_back(r.luminosity);xs.push_back(i);ys.push_back(r.luminosity);exs.push_back(0);esyst.push_back(r.deltaL);
-            if(r.detected){xd.push_back(i);yd.push_back(r.luminosity);exd.push_back(0);ed.push_back(r.error);}else{xf.push_back(i);yf.push_back(r.luminosity);exf.push_back(0);ef.push_back(r.error);}
-            double emax=std::max(std::fabs(r.error),std::fabs(r.deltaL));ymin=std::min(ymin,r.luminosity-emax);ymax=std::max(ymax,r.luminosity+emax);
+        int spot=skv.first;
+        vector<double>xall,yall,xd,yd,exd,ed,xf,yf,exf,ef,xs,ys,exs,esyst;
+        double ymin=1e99,ymax=-1e99;
+        for(int i=0;i<(int)phases.size();++i)
+        {if(!skv.second.count(phases[i]))continue;
+            const auto&r=skv.second[phases[i]];
+            xall.push_back(i);
+            yall.push_back(r.luminosity);
+            xs.push_back(i);
+            ys.push_back(r.luminosity);
+            exs.push_back(0);
+            esyst.push_back(r.deltaL);
+            if(r.detected)
+            {xd.push_back(i);
+            yd.push_back(r.luminosity);
+            exd.push_back(0);
+            ed.push_back(r.error);
+            }
+            else
+            { xf.push_back(i);
+                yf.push_back(r.luminosity);
+                exf.push_back(0);
+                ef.push_back(r.error);
+            }
+            double emax=std::max(std::fabs(r.error),std::fabs(r.deltaL));
+            ymin=std::min(ymin,r.luminosity-emax);
+            ymax=std::max(ymax,r.luminosity+emax);
         }
-        if(xall.empty())continue;if(ymin>0)ymin*=.95;ymax*=1.08;if(ymax<=ymin)ymax=ymin+1;
-        TCanvas*c=new TCanvas(Form("c_phase_single_%d",spot),"",2400,850);c->SetGrid();c->SetBottomMargin(.18);
-        TH1D*frame=new TH1D(Form("frame_single_%d",spot),Form("%s - Spot %d: luminosity vs phase",full_condition.c_str(),spot),(int)phases.size(),-1.0,(double)phases.size()-1.0);
-        frame->SetMinimum(ymin);frame->SetMaximum(ymax);frame->GetXaxis()->SetTitle("annealing phase");frame->GetYaxis()->SetTitle("luminosity");
+        if(xall.empty())continue;
+        if(ymin>0)ymin*=.95;ymax*=1.08;
+        if(ymax<=ymin)ymax=ymin+1;
+        TCanvas*c = new TCanvas(Form("c_phase_single_%d",spot),"",2400,850);
+        c->SetGrid();
+        c->SetBottomMargin(.18);
+        TH1D*frame=new TH1D(Form("frame_single_%d",spot),Form("%s - Spot %d: luminosity vs phase",full_condition.c_str(),spot),(int)phases.size(),-1.0,(double)phases.size());
+        
+        frame->SetMinimum(ymin);
+        frame->SetMaximum(ymax);
+        frame->GetXaxis()->SetTitle("Annealing phase");
+        frame->GetYaxis()->SetTitle("Luminosity");
         for(int i=0;i<(int)phases.size();++i)frame->GetXaxis()->SetBinLabel(i+1,phase_short_label(phases[i]).c_str());
-        frame->GetXaxis()->LabelsOption("h");frame->GetXaxis()->SetLabelSize(.034);frame->GetYaxis()->SetTitleOffset(1.15);frame->Draw();
-        TGraph*line=new TGraph((int)xall.size(),xall.data(),yall.data());line->SetLineColor(kP10Gray);line->SetLineWidth(2);line->Draw("L SAME");
-        TGraphErrors*gy=new TGraphErrors((int)xs.size(),xs.data(),ys.data(),exs.data(),esyst.data());gy->SetLineColor(kP10Violet);gy->SetLineWidth(2);gy->SetMarkerSize(0);gy->Draw("[] SAME");
-        TGraphErrors*gd=nullptr;if(!xd.empty()){gd=new TGraphErrors((int)xd.size(),xd.data(),yd.data(),exd.data(),ed.data());gd->SetLineColor(DETECTED_COLOR);gd->SetMarkerColor(DETECTED_COLOR);gd->SetMarkerStyle(20);gd->SetMarkerSize(1.25);gd->Draw("PE SAME");}
-        TGraphErrors*gf=nullptr;if(!xf.empty()){gf=new TGraphErrors((int)xf.size(),xf.data(),yf.data(),exf.data(),ef.data());gf->SetLineColor(FORCED_COLOR);gf->SetMarkerColor(FORCED_COLOR);gf->SetMarkerStyle(25);gf->SetMarkerSize(1.25);gf->Draw("PE SAME");}
-        TLegend*leg=new TLegend(.66,.68,.92,.90);leg->SetBorderSize(0);leg->SetFillStyle(0);if(gd)leg->AddEntry(gd,"Detected: filled blue circle","lep");if(gf)leg->AddEntry(gf,"Forced: open red square","lep");leg->AddEntry(gy,"Systematic uncertainty","l");leg->Draw();
+        frame->GetXaxis()->LabelsOption("h");
+        frame->GetXaxis()->SetLabelSize(.034);
+        frame->GetYaxis()->SetTitleOffset(1.15);
+        frame->Draw();
+
+        TGraph*line=new TGraph((int)xall.size(),xall.data(),yall.data());
+        line->SetLineColor(kP10Gray);
+        line->SetLineWidth(2);
+        line->Draw("L SAME");
+        TGraphErrors*gy=new TGraphErrors((int)xs.size(),xs.data(),ys.data(),exs.data(),esyst.data());
+        gy->SetLineColor(kP10Violet);
+        gy->SetLineWidth(2);
+        gy->SetMarkerSize(0);
+        gy->Draw("[] SAME");
+        TGraphErrors*gd=nullptr;
+        if(!xd.empty())
+        {gd=new TGraphErrors((int)xd.size(),xd.data(),yd.data(),exd.data(),ed.data());
+        gd->SetLineColor(DETECTED_COLOR);
+        gd->SetMarkerColor(DETECTED_COLOR);
+        gd->SetMarkerStyle(20);
+        gd->SetMarkerSize(1.5);
+        gd->Draw("PE SAME");}
+        TGraphErrors*gf=nullptr;
+        if(!xf.empty())
+        {gf=new TGraphErrors((int)xf.size(),xf.data(),yf.data(),exf.data(),ef.data());
+        gf->SetLineColor(DETECTED_COLOR);
+        gf->SetMarkerColor(DETECTED_COLOR);
+        gf->SetMarkerStyle(20);
+        gf->SetMarkerSize(1.5);
+        gf->Draw("PE SAME");}
+        TLegend*leg=new TLegend(.66,.68,.92,.90);
+        leg->SetBorderSize(0);
+        leg->SetFillStyle(0);
+        if(gd)leg->AddEntry(gd,"Detected hotspots' luminosity","lep");
+        //if(gf)leg->AddEntry(gf,"Forced: open red square","lep");
+        leg->AddEntry(gy,"Systematic uncertainty","l");
+        leg->Draw();
         save_canvas_both(c,Form("%s/single_spots/%s_luminosity_vs_phase_spot%d",out.c_str(),pref.c_str(),spot));delete c;
     }
 
