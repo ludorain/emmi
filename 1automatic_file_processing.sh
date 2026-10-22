@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ============================================================
-# AUTOMATED EMMI ANALYSIS
+# AUTOMATED EMMI processing
 #
 # Usage:
 #   ./automatic_irradiated_analysis.sh A1

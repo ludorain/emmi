@@ -33,9 +33,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ------------------------------------------------------------
 # Input files
 # ------------------------------------------------------------
-FILE_24="${SCRIPT_DIR}/pixels=24/hotspot_phase_summary_all_sensors_pixel=24.csv"
-FILE_30="${SCRIPT_DIR}/pixels=30/hotspot_phase_summary_all_sensors_pixel=30.csv"
-FILE_36="${SCRIPT_DIR}/pixels=36/hotspot_phase_summary_all_sensors_pixel=36.csv"
+FILE_24="${SCRIPT_DIR}/pixels=24/hotspot_phase_summary_all_sensors.csv"
+FILE_30="${SCRIPT_DIR}/pixels=30/hotspot_phase_summary_all_sensors.csv"
+FILE_36="${SCRIPT_DIR}/pixels=36/hotspot_phase_summary_all_sensors.csv"
 
 
 # ------------------------------------------------------------

@@ -226,12 +226,12 @@ static void draw_horizontal_phase_labels(TPad* pad,
         TLatex* lab = new TLatex();
         lab->SetNDC();
         lab->SetTextFont(42);
-        lab->SetTextSize(0.028);   // leggermente più piccolo per evitare overlap
+        lab->SetTextSize(0.022);   // leggermente più piccolo per evitare overlap
         lab->SetTextAlign(22);
-        if (i == 0 || i== 2 || i == 4 || i == 6 || i == 8) {
-            lab->DrawLatex(x_ndc - 0.003, 0.15, two_line_phase_label(phases[i]).c_str());
+        if (i == 0 || i== 2 || i == 4 || i == 6 || i == 9) {
+            lab->DrawLatex(x_ndc - 0.005, 0.15, two_line_phase_label(phases[i]).c_str());
         } else {
-            lab->DrawLatex(x_ndc + 0.002, 0.15, two_line_phase_label(phases[i]).c_str());
+            lab->DrawLatex(x_ndc + 0.007, 0.15, two_line_phase_label(phases[i]).c_str());
         }
         //lab->DrawLatex(x_ndc, 0.25, two_line_phase_label(phases[i]).c_str());
     }
@@ -262,6 +262,18 @@ inline void run_phase_analysis(const char* csvfile,const char* output_dir,const 
     if (pref == "A1_T=20") {
 
         MANUAL_GROUPS = {
+            {
+                "Hotspot 10: disappearing",
+                {10}
+            },
+            {
+                "Hotspot 22: decreasing",
+                {22}
+            },
+            {
+                "Hotspot 78: various behaviours",
+                {78}
+            },
             {
                 "Decreasing and disappearing uniformly, L>1000",
                 {13, 64}
@@ -597,7 +609,7 @@ MANUAL_GROUPS = {
             if(xall.empty())continue;int col=line_colors[ig%line_colors.size()];TGraph*line=new TGraph((int)xall.size(),xall.data(),yall.data());line->SetLineColor(col);line->SetLineWidth(3);line->Draw("L SAME");
             TGraphErrors*gy=new TGraphErrors((int)xs.size(),xs.data(),ys.data(),exs.data(),esyst.data());gy->SetLineColor(col);gy->SetLineStyle(2);gy->SetLineWidth(1);gy->SetMarkerSize(0);gy->Draw("[] SAME");
             if(!xd.empty()){TGraphErrors*gd=new TGraphErrors((int)xd.size(),xd.data(),yd.data(),exd.data(),ed.data());gd->SetLineColor(DETECTED_COLOR);gd->SetMarkerColor(DETECTED_COLOR);gd->SetMarkerStyle(20);gd->SetMarkerSize(1.15);gd->Draw("PE SAME");if(!det_ex)det_ex=gd;}
-            if(!xf.empty()){TGraphErrors*gf=new TGraphErrors((int)xf.size(),xf.data(),yf.data(),exf.data(),ef.data());gf->SetLineColor(FORCED_COLOR);gf->SetMarkerColor(FORCED_COLOR);gf->SetMarkerStyle(25);gf->SetMarkerSize(1.15);gf->Draw("PE SAME");if(!for_ex)for_ex=gf;}
+            if(!xf.empty()){TGraphErrors*gf=new TGraphErrors((int)xf.size(),xf.data(),yf.data(),exf.data(),ef.data());gf->SetLineColor(FORCED_COLOR);gf->SetMarkerColor(FORCED_COLOR);gf->SetMarkerStyle(20);gf->SetMarkerSize(1.15);gf->Draw("PE SAME");if(!for_ex)for_ex=gf;}
             leg->AddEntry(line,Form("spot %d",id),"l");++ig;}
         leg->Draw();TLegend*status=new TLegend(.10,.76,.42,.90);status->SetBorderSize(0);status->SetFillStyle(0);status->SetTextSize(.030);if(det_ex)status->AddEntry(det_ex,"Detected measurement","lep");if(for_ex)status->AddEntry(for_ex,"Forced measurement","lep");status->Draw();
         save_canvas_both(c,Form("%s/grouped/%s_luminosity_vs_phase_group_%02d_order_%d",out.c_str(),pref.c_str(),counter,gkv.first));delete c;++counter;
@@ -836,7 +848,7 @@ MANUAL_GROUPS = {
 
                 gf->SetLineColor(DETECTED_COLOR);
                 gf->SetMarkerColor(DETECTED_COLOR);
-                gf->SetMarkerStyle(25);
+                gf->SetMarkerStyle(20);
                 gf->SetMarkerSize(1.15);
                 gf->Draw("PE SAME");
 

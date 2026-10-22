@@ -51,7 +51,7 @@ case "$SENSOR" in
 esac
 
 BASE_DIR="${SCRIPT_DIR}/DATA_irradiated_isolated_R=20"
-OUTPUT_DIR="${SCRIPT_DIR}/analysis/total_luminosity_sum"
+OUTPUT_DIR="${SCRIPT_DIR}/total_luminosity_sum"
 
 if [[ ! -d "$BASE_DIR" ]]; then
     echo "ERROR: input directory not found:"

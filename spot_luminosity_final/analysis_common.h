@@ -115,7 +115,7 @@ inline CsvTable read_analysis_csv(const string& filename, bool require_vfin=fals
             r.v_fin = has_col(t,"v_fin") && !f[t.col["v_fin"]].empty() ? std::stod(f[t.col["v_fin"]]) : r.v;
             if (has_col(t,"detection") && !f[t.col["detection"]].empty()) r.detected = parse_bool_safe(f[t.col["detection"]]);
             else if (has_col(t,"detected") && !f[t.col["detected"]].empty()) r.detected = parse_bool_safe(f[t.col["detected"]]);
-            // New pipeline convention: a single symmetric luminosity systematic.
+            // A single symmetric luminosity systematic.
             if (has_col(t,"deltaL") && !f[t.col["deltaL"]].empty()) {
                 r.deltaL = std::fabs(std::stod(f[t.col["deltaL"]]));
             }

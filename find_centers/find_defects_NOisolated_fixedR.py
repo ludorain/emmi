@@ -779,9 +779,7 @@ def display_source_circles(
     Display ALL detected sources with the same fixed integration radius.
     """
 
-    norm = ImageNormalize(
-        stretch=SqrtStretch()
-    )
+    norm = ImageNormalize(stretch=SqrtStretch())
 
     fig, ax = plt.subplots(
         figsize=(8, 8)

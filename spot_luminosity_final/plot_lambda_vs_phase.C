@@ -199,14 +199,14 @@ static void draw_horizontal_phase_labels(TPad* pad,
         TLatex* lab = new TLatex();
         lab->SetNDC();
         lab->SetTextFont(42);
-        lab->SetTextSize(0.031);
+        lab->SetTextSize(0.029);
         lab->SetTextAlign(22);
-        if(i == 0 || i == 2 || i == 4 || i == 5){
-            lab->DrawLatex(x_ndc - 0.006, 0.135,
+        if(i == 0 || i == 2 || i == 5 || i == 8){
+            lab->DrawLatex(x_ndc - 0.009, 0.135,
                        two_line_phase_label(phases[i]).c_str());
         }
         else 
-        {lab->DrawLatex(x_ndc + 0.006, 0.135,
+        {lab->DrawLatex(x_ndc + 0.014, 0.135,
                        two_line_phase_label(phases[i]).c_str());}
 
     }
@@ -446,7 +446,7 @@ void plot_lambda_vs_phase(
     gr_mean->SetLineWidth(2);
     gr_mean->Draw("PZ SAME");
 
-    TLegend* leg1 = new TLegend(0.10, 0.70, 0.58, 0.88);
+    TLegend* leg1 = new TLegend(0.12, 0.70, 0.78, 0.88);
     leg1->SetBorderSize(1);
     leg1->SetFillStyle(1001); // Imposta lo sfondo come solido
     leg1->SetFillColor(0);    // Colora lo sfondo di bianco
@@ -557,7 +557,7 @@ void plot_lambda_vs_phase(
     c2->SetTopMargin(0.10);
 
     string title2 = Form(
-        "Sensor %s - Individual fit parameter #lambda values vs annealing phases;Annealing phase;#lambda",
+        "Sensor %s - Individual fit parameter #lambda values vs annealing phases;Annealing phase;#lambda (#circ C ^{-1})",
         sensor
     );
 
@@ -614,7 +614,7 @@ void plot_lambda_vs_phase(
     gr_mean_overlay->SetLineWidth(3);
     gr_mean_overlay->Draw("PZ SAME");
 
-    TLegend* leg2 = new TLegend(0.13, 0.69, 0.58, 0.88);
+    TLegend* leg2 = new TLegend(0.13, 0.69, 0.68, 0.88);
     leg2->SetBorderSize(1);
     leg2->SetFillStyle(1001);
     leg2->SetFillColor(0);
@@ -628,6 +628,11 @@ void plot_lambda_vs_phase(
                    "Brackets: RMS",
                    "");
     leg2->Draw();
+
+    TLegend* leg3 = new TLegend(0.79, 0.69, 0.95, 0.88);
+    leg3->SetBorderSize(0);
+    leg3->SetFillStyle(1001);
+    leg3->Draw();
 
     c2->Update();
 

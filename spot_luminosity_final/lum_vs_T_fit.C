@@ -434,9 +434,7 @@ static void write_augmented_T_csv(const CsvTable& original, const string& phase,
     for (int idx:kept_columns) {
 
         if (!first) fout << ',';
-
         fout << original.header[idx];
-
         first=false;
 
     }
@@ -515,23 +513,17 @@ void lum_vs_T_fit(const char* all_phases_csv,
                   const char* lambda_summary_csv = "") {
 
     gStyle->SetOptStat(0);
-
-    gStyle->SetOptFit(0);
+    gStyle->SetOptFit(111);
 
     // Statistical errors are drawn with option Z (no end caps).
     // Systematic errors are drawn with ROOT bracket option [].
 
 
     string ph=phase,outdir=output_dir,pref=prefix;
-
     const string r16_file=(r16_all_phases_csv ? r16_all_phases_csv : "");
-
     const string r24_file=(r24_all_phases_csv ? r24_all_phases_csv : "");
-
     const string lambda_summary_file=(lambda_summary_csv ? lambda_summary_csv : "");
-
     const bool comparison_mode=(!r16_file.empty() || !r24_file.empty());
-
     ensure_dir(outdir);
 
     CsvTable table=read_analysis_csv(all_phases_csv,false);
@@ -541,7 +533,6 @@ void lum_vs_T_fit(const char* all_phases_csv,
     if (selected.empty()) {
 
         std::cerr << "No rows for phase " << ph << std::endl;
-
         return;
 
     }
@@ -557,23 +548,16 @@ void lum_vs_T_fit(const char* all_phases_csv,
     for (auto& entry:spots) {
 
         int spot=entry.first;
-
         auto rows=entry.second;
-
         std::sort(rows.begin(),rows.end(),[](const AnalysisRow&a,const AnalysisRow&b){return a.T<b.T;});
-
         TNominalFit info;
-
         info.spot=spot;
-
         info.rows=rows;
-
         int n=(int)rows.size();
 
         if (n<3) {
 
             fits[spot]=info;
-
             continue;
 
         }
@@ -589,11 +573,8 @@ void lum_vs_T_fit(const char* all_phases_csv,
         for (int i=0;i<n;++i) {
 
             xv[i]=rows[i].T;
-
             yv[i]=rows[i].luminosity;
-
             eyv[i]=rows[i].error;
-
             esyst[i]=rows[i].deltaL;
 
         }
@@ -605,17 +586,11 @@ void lum_vs_T_fit(const char* all_phases_csv,
                                   pref.c_str(),spot,rows[0].x,rows[0].y,rows[0].v,ph.c_str()));
 
         info.graph->SetMarkerStyle(20);
-
         info.graph->SetMarkerSize(1.4);
-
         info.graph->SetLineWidth(2);
-
         info.syst_graph=new TGraphErrors(n,xv.data(),yv.data(),exv.data(),esyst.data());
-
         info.syst_graph->SetLineColor(kBlack);
-
         info.syst_graph->SetLineWidth(2);
-
         info.syst_graph->SetMarkerSize(0);
 
         double A0,l0;
@@ -633,25 +608,15 @@ void lum_vs_T_fit(const char* all_phases_csv,
         info.status=(int)fit;
 
         info.covstatus=fit->CovMatrixStatus();
-
         info.edm=fit->Edm();
-
         info.A=info.func->GetParameter(0);
-
         info.Aerr=info.func->GetParError(0);
-
         info.lambda=info.func->GetParameter(1);
-
         info.lambdaerr=info.func->GetParError(1);
-
         info.chi2=info.func->GetChisquare();
-
         info.ndf=info.func->GetNDF();
-
         info.chi2ndf=(info.ndf>0)?info.chi2/info.ndf:0.0;
-
         info.prob=info.func->GetProb();
-
         info.converged=(info.status==0 && finite_number(info.lambda));
 
         // Symmetric systematic on lambda:
@@ -661,11 +626,8 @@ void lum_vs_T_fit(const char* all_phases_csv,
         if (sys.count(spot) && sys[spot].has_delta) {
 
             // Computed upstream from R16/R20/R24 fits using exactly the same
-
             // common set of genuinely-detected temperature points.
-
             info.deltaLambda=sys[spot].deltaLambda;
-
             info.has_param_syst=true;
 
         }
@@ -675,7 +637,6 @@ void lum_vs_T_fit(const char* all_phases_csv,
     }
 
     map<int,TRadiusOverlayFit> fits16;
-
     map<int,TRadiusOverlayFit> fits24;
 
     if (!r16_file.empty()) {
@@ -705,14 +666,12 @@ void lum_vs_T_fit(const char* all_phases_csv,
         if (!info.fit_done || !info.graph) continue;
 
         TCanvas* c=new TCanvas(Form("c_T_spot_%d",spot),
-
                                Form("Spot %d - Luminosity vs T",spot),
-
                                1200,800);
 
         info.graph->SetMarkerColor(kBlack);
         info.graph->SetLineColor(kBlack);
-        info.func->SetLineColor(kBlack);
+        info.func->SetLineColor(kP8Red);
         info.func->SetLineWidth(2);
         info.func->SetLineStyle(1);
 
@@ -750,7 +709,6 @@ void lum_vs_T_fit(const char* all_phases_csv,
         ymax*=1.25;
 
         info.graph->SetMinimum(ymin);
-
         info.graph->SetMaximum(ymax);
 
         // Statistical uncertainty: vertical bars only (ROOT option Z removes end caps).
@@ -909,7 +867,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
     //
     // The same hotspot-quality selection used for the old Canvas 5 is kept.
     // -------------------------------------------------------------------------
-    vector<double> x, ex, L, Lstat, Lsyst;
+ vector<double> x, ex, L, Lstat, Lsyst;
 
     for (auto& kv : fits) {
         const auto& f = kv.second;
@@ -918,6 +876,7 @@ void lum_vs_T_fit(const char* all_phases_csv,
             !finite_number(f.lambda) ||
             !finite_number(f.lambdaerr) ||
             !finite_number(f.A) ||
+            f.lambda < -0.5 ||
             f.ndf <= 0 ||
             f.chi2ndf >= 3.5) {
             continue;
@@ -933,29 +892,49 @@ void lum_vs_T_fit(const char* all_phases_csv,
     double lambda_mean = std::numeric_limits<double>::quiet_NaN();
     double lambda_mean_stat_error = std::numeric_limits<double>::quiet_NaN();
     double lambda_rms = std::numeric_limits<double>::quiet_NaN();
+    double lambda_median = std::numeric_limits<double>::quiet_NaN();
+    double lambda_median_error = std::numeric_limits<double>::quiet_NaN();
 
     if (!L.empty()) {
         const double N = (double)L.size();
 
         double sum_lambda = 0.0;
-        double sum_stat2 = 0.0;
-
         for (size_t i = 0; i < L.size(); ++i) {
             sum_lambda += L[i];
-            sum_stat2 += Lstat[i] * Lstat[i];
         }
 
         lambda_mean = sum_lambda / N;
-        lambda_mean_stat_error = std::sqrt(sum_stat2) / N;
 
         double sum_sq_dev = 0.0;
         for (double lambda_i : L) {
             const double d = lambda_i - lambda_mean;
             sum_sq_dev += d * d;
         }
+        
         lambda_rms = std::sqrt(sum_sq_dev / N);
-    }
 
+        // Errore standard della media: sqrt( sum(x_i - mean)^2 / (N * (N-1)) )
+        if (N > 1.0) {
+            lambda_mean_stat_error = std::sqrt(sum_sq_dev / (N * (N - 1.0)));
+        }
+
+        // Calcolo della mediana
+        std::vector<double> L_sorted = L;
+        std::sort(L_sorted.begin(), L_sorted.end()); // Assicurati di includere <algorithm>
+        
+        size_t mid = L_sorted.size() / 2;
+        if (L_sorted.size() % 2 == 0) {
+            lambda_median = (L_sorted[mid - 1] + L_sorted[mid]) / 2.0;
+        } else {
+            lambda_median = L_sorted[mid];
+        }
+
+        // Errore sulla mediana (approssimazione asintotica gaussiana)
+        if (N > 1.0) {
+            const double pi = std::acos(-1.0); // Costante pi greco portabile
+            lambda_median_error = std::sqrt(pi / 2.0) * lambda_mean_stat_error;
+        }
+    }
     // -------------------------------------------------------------------------
     // Save one summary row for this annealing phase.
     // -------------------------------------------------------------------------

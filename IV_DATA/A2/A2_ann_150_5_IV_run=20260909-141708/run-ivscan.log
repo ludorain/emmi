@@ -1,0 +1,838 @@
+ --- switching Gude light off 
+ switched light off 
+ --- switching Gude moving off 
+ switched moving off 
+ --- temperature: 17 C 
+Wed Sep  9 02:17:09 PM CEST 2026
+ --- peltier goto setpoint: 17.0 
+ --- update peltier setpoint: 22.9 
+ --- update peltier setpoint: 22.8 
+ --- update peltier setpoint: 22.7 
+ --- update peltier setpoint: 22.6 
+ --- update peltier setpoint: 22.5 
+ --- update peltier setpoint: 22.4 
+ --- update peltier setpoint: 22.3 
+ --- update peltier setpoint: 22.2 
+ --- update peltier setpoint: 22.1 
+ --- update peltier setpoint: 22.0 
+ --- update peltier setpoint: 21.9 
+ --- update peltier setpoint: 21.8 
+ --- update peltier setpoint: 21.7 
+ --- update peltier setpoint: 21.6 
+ --- update peltier setpoint: 21.5 
+ --- update peltier setpoint: 21.4 
+ --- update peltier setpoint: 21.3 
+ --- update peltier setpoint: 21.2 
+ --- update peltier setpoint: 21.1 
+ --- update peltier setpoint: 21.0 
+ --- update peltier setpoint: 20.9 
+ --- update peltier setpoint: 20.8 
+ --- update peltier setpoint: 20.7 
+ --- update peltier setpoint: 20.6 
+ --- update peltier setpoint: 20.5 
+ --- update peltier setpoint: 20.4 
+ --- update peltier setpoint: 20.3 
+ --- update peltier setpoint: 20.2 
+ --- update peltier setpoint: 20.1 
+ --- update peltier setpoint: 20.0 
+ --- update peltier setpoint: 19.9 
+ --- update peltier setpoint: 19.8 
+ --- update peltier setpoint: 19.7 
+ --- update peltier setpoint: 19.6 
+ --- update peltier setpoint: 19.5 
+ --- update peltier setpoint: 19.4 
+ --- update peltier setpoint: 19.3 
+ --- update peltier setpoint: 19.2 
+ --- update peltier setpoint: 19.1 
+ --- update peltier setpoint: 19.0 
+ --- update peltier setpoint: 18.9 
+ --- update peltier setpoint: 18.8 
+ --- update peltier setpoint: 18.7 
+ --- update peltier setpoint: 18.6 
+ --- update peltier setpoint: 18.5 
+ --- update peltier setpoint: 18.4 
+ --- update peltier setpoint: 18.3 
+ --- update peltier setpoint: 18.2 
+ --- update peltier setpoint: 18.1 
+ --- update peltier setpoint: 18.0 
+ --- update peltier setpoint: 17.9 
+ --- update peltier setpoint: 17.8 
+ --- update peltier setpoint: 17.7 
+ --- update peltier setpoint: 17.6 
+ --- update peltier setpoint: 17.5 
+ --- update peltier setpoint: 17.4 
+ --- update peltier setpoint: 17.3 
+ --- update peltier setpoint: 17.2 
+ --- update peltier setpoint: 17.1 
+ --- update peltier setpoint: 17.0 
+ temp=17.0094699136 | tset=17.0 | diff=.0094699136 | good=1/1 | stable=0/300s 
+ temp=16.9802943464 | tset=17.0 | diff=.0197056536 | good=2/2 | stable=0/300s 
+ temp=16.9801686232 | tset=17.0 | diff=.0198313768 | good=3/3 | stable=0/300s 
+ temp=16.9796028688 | tset=17.0 | diff=.0203971312 | good=4/4 | stable=0/300s 
+ temp=16.9785342216 | tset=17.0 | diff=.0214657784 | good=5/5 | stable=0/300s 
+ temp=16.9468441904 | tset=17.0 | diff=.0531558096 | good=5/6 | stable=0/300s 
+ temp=16.9452097888 | tset=17.0 | diff=.0547902112 | good=5/7 | stable=0/300s 
+ temp=16.9744482176 | tset=17.0 | diff=.0255517824 | good=6/8 | stable=0/300s 
+ temp=17.0044409856 | tset=17.0 | diff=.0044409856 | good=7/9 | stable=0/300s 
+ temp=17.0039380928 | tset=17.0 | diff=.0039380928 | good=8/10 | stable=3/300s 
+ temp=16.9719337536 | tset=17.0 | diff=.0280662464 | good=8/10 | stable=6/300s 
+ temp=17.0016750752 | tset=17.0 | diff=.0016750752 | good=8/10 | stable=9/300s 
+ temp=17.0014236288 | tset=17.0 | diff=.0014236288 | good=8/10 | stable=12/300s 
+ temp=17.0009835976 | tset=17.0 | diff=.0009835976 | good=8/10 | stable=15/300s 
+ temp=17.000606428 | tset=17.0 | diff=.000606428 | good=8/10 | stable=18/300s 
+ temp=17.0003549816 | tset=17.0 | diff=.0003549816 | good=9/10 | stable=21/300s 
+ temp=17.0007950128 | tset=17.0 | diff=.0007950128 | good=10/10 | stable=24/300s 
+ temp=16.9701107672 | tset=17.0 | diff=.0298892328 | good=10/10 | stable=27/300s 
+ temp=17.000920736 | tset=17.0 | diff=.000920736 | good=10/10 | stable=30/300s 
+ temp=17.0006692896 | tset=17.0 | diff=.0006692896 | good=10/10 | stable=33/300s 
+ temp=17.0629178432 | tset=17.0 | diff=.0629178432 | good=9/10 | stable=36/300s 
+ temp=16.9708022448 | tset=17.0 | diff=.0291977552 | good=9/10 | stable=39/300s 
+ temp=16.9699221824 | tset=17.0 | diff=.0300778176 | good=9/10 | stable=42/300s 
+ temp=17.0006692896 | tset=17.0 | diff=.0006692896 | good=9/10 | stable=45/300s 
+ temp=17.0319192896 | tset=17.0 | diff=.0319192896 | good=9/10 | stable=48/300s 
+ temp=16.969985044 | tset=17.0 | diff=.030014956 | good=9/10 | stable=51/300s 
+ temp=17.0629807048 | tset=17.0 | diff=.0629807048 | good=8/10 | stable=54/300s 
+ temp=17.0330507984 | tset=17.0 | diff=.0330507984 | good=8/10 | stable=57/300s 
+ temp=17.0029951688 | tset=17.0 | diff=.0029951688 | good=8/10 | stable=60/300s 
+ temp=17.0031837536 | tset=17.0 | diff=.0031837536 | good=8/10 | stable=63/300s 
+ temp=17.0036237848 | tset=17.0 | diff=.0036237848 | good=9/10 | stable=66/300s 
+ temp=16.971556584 | tset=17.0 | diff=.028443416 | good=9/10 | stable=69/300s 
+ temp=16.9719966152 | tset=17.0 | diff=.0280033848 | good=9/10 | stable=72/300s 
+ temp=17.0034980616 | tset=17.0 | diff=.0034980616 | good=9/10 | stable=75/300s 
+ temp=17.003749508 | tset=17.0 | diff=.003749508 | good=9/10 | stable=78/300s 
+ temp=17.0345594768 | tset=17.0 | diff=.0345594768 | good=9/10 | stable=81/300s 
+ temp=16.9736310168 | tset=17.0 | diff=.0263689832 | good=10/10 | stable=84/300s 
+ temp=16.971870892 | tset=17.0 | diff=.028129108 | good=10/10 | stable=87/300s 
+ temp=16.9709908296 | tset=17.0 | diff=.0290091704 | good=10/10 | stable=90/300s 
+ temp=17.0016122136 | tset=17.0 | diff=.0016122136 | good=10/10 | stable=93/300s 
+ temp=17.0013607672 | tset=17.0 | diff=.0013607672 | good=10/10 | stable=96/300s 
+ temp=17.0009835976 | tset=17.0 | diff=.0009835976 | good=10/10 | stable=99/300s 
+ temp=16.969985044 | tset=17.0 | diff=.030014956 | good=10/10 | stable=102/300s 
+ temp=16.9695450128 | tset=17.0 | diff=.0304549872 | good=10/10 | stable=105/300s 
+ temp=16.9686020888 | tset=17.0 | diff=.0313979112 | good=10/10 | stable=108/300s 
+ temp=16.9989091648 | tset=17.0 | diff=.0010908352 | good=10/10 | stable=111/300s 
+ temp=16.997777656 | tset=17.0 | diff=.002222344 | good=10/10 | stable=114/300s 
+ temp=16.997777656 | tset=17.0 | diff=.002222344 | good=10/10 | stable=117/300s 
+ temp=17.0289019328 | tset=17.0 | diff=.0289019328 | good=10/10 | stable=120/300s 
+ temp=17.0295305488 | tset=17.0 | diff=.0295305488 | good=10/10 | stable=123/300s 
+ temp=17.029656272 | tset=17.0 | diff=.029656272 | good=10/10 | stable=126/300s 
+ temp=16.99872058 | tset=17.0 | diff=.00127942 | good=10/10 | stable=129/300s 
+ temp=16.9985319952 | tset=17.0 | diff=.0014680048 | good=10/10 | stable=132/300s 
+ temp=17.0303477496 | tset=17.0 | diff=.0303477496 | good=10/10 | stable=135/300s 
+ temp=17.00029212 | tset=17.0 | diff=.00029212 | good=10/10 | stable=138/300s 
+ temp=17.0322335976 | tset=17.0 | diff=.0322335976 | good=10/10 | stable=141/300s 
+ temp=17.0019893832 | tset=17.0 | diff=.0019893832 | good=10/10 | stable=144/300s 
+ temp=17.064992275999998 | tset=17.0 | diff=.064992275999998 | good=9/10 | stable=147/300s 
+ temp=17.004378124 | tset=17.0 | diff=.004378124 | good=9/10 | stable=150/300s 
+ temp=16.973128124 | tset=17.0 | diff=.026871876 | good=9/10 | stable=153/300s 
+ temp=17.0040009544 | tset=17.0 | diff=.0040009544 | good=9/10 | stable=156/300s 
+ temp=16.9730024008 | tset=17.0 | diff=.0269975992 | good=9/10 | stable=159/300s 
+ temp=17.0042524008 | tset=17.0 | diff=.0042524008 | good=9/10 | stable=162/300s 
+ temp=17.0048181552 | tset=17.0 | diff=.0048181552 | good=9/10 | stable=165/300s 
+ temp=16.9733795704 | tset=17.0 | diff=.0266204296 | good=9/10 | stable=168/300s 
+ temp=17.0044409856 | tset=17.0 | diff=.0044409856 | good=9/10 | stable=171/300s 
+ temp=16.9728766776 | tset=17.0 | diff=.0271233224 | good=9/10 | stable=174/300s 
+ temp=17.0036237848 | tset=17.0 | diff=.0036237848 | good=10/10 | stable=177/300s 
+ temp=17.0024294144 | tset=17.0 | diff=.0024294144 | good=10/10 | stable=180/300s 
+ temp=16.971116552799998 | tset=17.0 | diff=.028883447200002 | good=10/10 | stable=183/300s 
+ temp=16.9395522448 | tset=17.0 | diff=.0604477552 | good=9/10 | stable=186/300s 
+ temp=16.9379178432 | tset=17.0 | diff=.0620821568 | good=8/10 | stable=189/300s 
+ temp=16.9994120576 | tset=17.0 | diff=.0005879424 | good=8/10 | stable=192/300s 
+ temp=16.96747058 | tset=17.0 | diff=.03252942 | good=8/10 | stable=195/300s 
+ temp=17.0285247632 | tset=17.0 | diff=.0285247632 | good=8/10 | stable=198/300s 
+ temp=17.0289647944 | tset=17.0 | diff=.0289647944 | good=8/10 | stable=201/300s 
+ temp=17.0285247632 | tset=17.0 | diff=.0285247632 | good=8/10 | stable=204/300s 
+ temp=17.029027656 | tset=17.0 | diff=.029027656 | good=8/10 | stable=207/300s 
+ temp=16.9977147944 | tset=17.0 | diff=.0022852056 | good=8/10 | stable=210/300s 
+ temp=17.0284619016 | tset=17.0 | diff=.0284619016 | good=8/10 | stable=213/300s 
+ temp=17.060591964 | tset=17.0 | diff=.060591964 | good=8/10 | stable=216/300s 
+ temp=17.03154212 | tset=17.0 | diff=.03154212 | good=9/10 | stable=219/300s 
+ temp=17.0021151064 | tset=17.0 | diff=.0021151064 | good=9/10 | stable=222/300s 
+ temp=17.033805137599998 | tset=17.0 | diff=.033805137599998 | good=9/10 | stable=225/300s 
+ temp=17.0358795704 | tset=17.0 | diff=.0358795704 | good=9/10 | stable=228/300s 
+ temp=17.0055096328 | tset=17.0 | diff=.0055096328 | good=9/10 | stable=231/300s 
+ temp=17.0060753872 | tset=17.0 | diff=.0060753872 | good=9/10 | stable=234/300s 
+ temp=17.0067040032 | tset=17.0 | diff=.0067040032 | good=9/10 | stable=237/300s 
+ temp=16.975956896 | tset=17.0 | diff=.024043104 | good=9/10 | stable=240/300s 
+ temp=16.9763969272 | tset=17.0 | diff=.0236030728 | good=9/10 | stable=243/300s 
+ temp=16.9761454808 | tset=17.0 | diff=.0238545192 | good=10/10 | stable=246/300s 
+ temp=16.9751396952 | tset=17.0 | diff=.0248603048 | good=10/10 | stable=249/300s 
+ temp=17.0057610792 | tset=17.0 | diff=.0057610792 | good=10/10 | stable=252/300s 
+ temp=17.0372625256 | tset=17.0 | diff=.0372625256 | good=10/10 | stable=255/300s 
+ temp=17.0060753872 | tset=17.0 | diff=.0060753872 | good=10/10 | stable=258/300s 
+ temp=17.0054467712 | tset=17.0 | diff=.0054467712 | good=10/10 | stable=261/300s 
+ temp=16.9741967712 | tset=17.0 | diff=.0258032288 | good=10/10 | stable=264/300s 
+ temp=17.0046295704 | tset=17.0 | diff=.0046295704 | good=10/10 | stable=267/300s 
+ temp=17.0045038472 | tset=17.0 | diff=.0045038472 | good=10/10 | stable=270/300s 
+ temp=17.0048810168 | tset=17.0 | diff=.0048810168 | good=10/10 | stable=273/300s 
+ temp=16.9740081864 | tset=17.0 | diff=.0259918136 | good=10/10 | stable=276/300s 
+ temp=17.0050696016 | tset=17.0 | diff=.0050696016 | good=10/10 | stable=279/300s 
+ temp=16.974385356 | tset=17.0 | diff=.025614644 | good=10/10 | stable=282/300s 
+ temp=17.00500674 | tset=17.0 | diff=.00500674 | good=10/10 | stable=285/300s 
+ temp=17.0669409856 | tset=17.0 | diff=.0669409856 | good=9/10 | stable=288/300s 
+ temp=17.0056982176 | tset=17.0 | diff=.0056982176 | good=9/10 | stable=291/300s 
+ temp=17.0055096328 | tset=17.0 | diff=.0055096328 | good=9/10 | stable=294/300s 
+ temp=16.975013972 | tset=17.0 | diff=.024986028 | good=9/10 | stable=297/300s 
+ temp=17.0056982176 | tset=17.0 | diff=.0056982176 | good=9/10 | stable=300/300s 
+ --- temperature: 17 C 
+Wed Sep  9 02:53:35 PM CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_290K_A2
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_290K_A2.zero.csv
+--- commands written to file: HAMA3_sn31_290K_A2.zero.scpi
+
+--- Keithley 'zero' program completed: 42.406618 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_290K_A2
+--- calculate expected Vbd for HAMA3 at T = 290 K
+--- Vbd = 50.568 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.6
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.6, 55.6], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1359 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_290K_A2.ivscan.csv
+--- commands written to file: HAMA3_sn31_290K_A2.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 212.091937 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_290K_A2_zoom
+--- calculate expected Vbd for HAMA3 at T = 290 K
+--- Vbd = 50.568 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.6
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.6, 55.6], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_290K_A2_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_290K_A2_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 151.826983 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 19 C 
+Wed Sep  9 03:00:36 PM CEST 2026
+ --- peltier goto setpoint: 19.0 
+ --- update peltier setpoint: 17.1 
+ --- update peltier setpoint: 17.2 
+ --- update peltier setpoint: 17.3 
+ --- update peltier setpoint: 17.4 
+ --- update peltier setpoint: 17.5 
+ --- update peltier setpoint: 17.6 
+ --- update peltier setpoint: 17.7 
+ --- update peltier setpoint: 17.8 
+ --- update peltier setpoint: 17.9 
+ --- update peltier setpoint: 18.0 
+ --- update peltier setpoint: 18.1 
+ --- update peltier setpoint: 18.2 
+ --- update peltier setpoint: 18.3 
+ --- update peltier setpoint: 18.4 
+ --- update peltier setpoint: 18.5 
+ --- update peltier setpoint: 18.6 
+ --- update peltier setpoint: 18.7 
+ --- update peltier setpoint: 18.8 
+ --- update peltier setpoint: 18.9 
+ --- update peltier setpoint: 19.0 
+ temp=19.01141804 | tset=19.0 | diff=.01141804 | good=1/1 | stable=0/300s 
+ temp=19.011732348 | tset=19.0 | diff=.011732348 | good=2/2 | stable=0/300s 
+ temp=19.0130524416 | tset=19.0 | diff=.0130524416 | good=3/3 | stable=0/300s 
+ temp=19.0140582272 | tset=19.0 | diff=.0140582272 | good=4/4 | stable=0/300s 
+ temp=19.0149382896 | tset=19.0 | diff=.0149382896 | good=5/5 | stable=0/300s 
+ temp=19.0474455216 | tset=19.0 | diff=.0474455216 | good=6/6 | stable=0/300s 
+ temp=19.0483884456 | tset=19.0 | diff=.0483884456 | good=7/7 | stable=0/300s 
+ temp=19.018332816 | tset=19.0 | diff=.018332816 | good=8/8 | stable=0/300s 
+ temp=19.0190871552 | tset=19.0 | diff=.0190871552 | good=9/9 | stable=0/300s 
+ temp=19.0512172176 | tset=19.0 | diff=.0512172176 | good=9/10 | stable=3/300s 
+ temp=19.0527887576 | tset=19.0 | diff=.0527887576 | good=8/10 | stable=6/300s 
+ temp=19.0231731592 | tset=19.0 | diff=.0231731592 | good=8/10 | stable=9/300s 
+ temp=18.9931175296 | tset=19.0 | diff=.0068824704 | good=8/10 | stable=12/300s 
+ temp=18.9938090072 | tset=19.0 | diff=.0061909928 | good=8/10 | stable=15/300s 
+ temp=18.9945633464 | tset=19.0 | diff=.0054366536 | good=8/10 | stable=18/300s 
+ temp=19.026504824 | tset=19.0 | diff=.026504824 | good=8/10 | stable=21/300s 
+ temp=19.0270705784 | tset=19.0 | diff=.0270705784 | good=8/10 | stable=24/300s 
+ temp=18.9962606096 | tset=19.0 | diff=.0037393904 | good=8/10 | stable=27/300s 
+ temp=18.9966377792 | tset=19.0 | diff=.0033622208 | good=8/10 | stable=30/300s 
+ temp=18.9969520872 | tset=19.0 | diff=.0030479128 | good=9/10 | stable=33/300s 
+ temp=18.965262056 | tset=19.0 | diff=.034737944 | good=10/10 | stable=36/300s 
+ temp=18.9953176856 | tset=19.0 | diff=.0046823144 | good=10/10 | stable=39/300s 
+ temp=18.9951291008 | tset=19.0 | diff=.0048708992 | good=10/10 | stable=42/300s 
+ temp=18.964004824 | tset=19.0 | diff=.035995176 | good=10/10 | stable=45/300s 
+ temp=18.9945633464 | tset=19.0 | diff=.0054366536 | good=10/10 | stable=48/300s 
+ temp=18.9945004848 | tset=19.0 | diff=.0054995152 | good=10/10 | stable=51/300s 
+ temp=19.024933284 | tset=19.0 | diff=.024933284 | good=10/10 | stable=54/300s 
+ temp=18.9934946992 | tset=19.0 | diff=.0065053008 | good=10/10 | stable=57/300s 
+ temp=18.9931803912 | tset=19.0 | diff=.0068196088 | good=10/10 | stable=60/300s 
+ temp=18.9928032216 | tset=19.0 | diff=.0071967784 | good=10/10 | stable=63/300s 
+ temp=19.054926052 | tset=19.0 | diff=.054926052 | good=9/10 | stable=66/300s 
+ temp=18.993997592 | tset=19.0 | diff=.006002408 | good=9/10 | stable=69/300s 
+ temp=18.9936204224 | tset=19.0 | diff=.0063795776 | good=9/10 | stable=72/300s 
+ temp=18.9935575608 | tset=19.0 | diff=.0064424392 | good=9/10 | stable=75/300s 
+ temp=18.9629361768 | tset=19.0 | diff=.0370638232 | good=9/10 | stable=78/300s 
+ temp=19.0248075608 | tset=19.0 | diff=.0248075608 | good=9/10 | stable=81/300s 
+ temp=19.0255619 | tset=19.0 | diff=.0255619 | good=9/10 | stable=84/300s 
+ temp=18.9943119 | tset=19.0 | diff=.0056881 | good=9/10 | stable=87/300s 
+ temp=18.9944376232 | tset=19.0 | diff=.0055623768 | good=9/10 | stable=90/300s 
+ temp=18.9945633464 | tset=19.0 | diff=.0054366536 | good=9/10 | stable=93/300s 
+ temp=18.9946890696 | tset=19.0 | diff=.0053109304 | good=10/10 | stable=96/300s 
+ temp=19.0248075608 | tset=19.0 | diff=.0248075608 | good=10/10 | stable=99/300s 
+ temp=18.9943119 | tset=19.0 | diff=.0056881 | good=10/10 | stable=102/300s 
+ temp=18.9942490384 | tset=19.0 | diff=.0057509616 | good=10/10 | stable=105/300s 
+ temp=18.9629990384 | tset=19.0 | diff=.0370009616 | good=10/10 | stable=108/300s 
+ temp=18.9629990384 | tset=19.0 | diff=.0370009616 | good=10/10 | stable=111/300s 
+ temp=18.9929918064 | tset=19.0 | diff=.0070081936 | good=10/10 | stable=114/300s 
+ temp=18.9923631904 | tset=19.0 | diff=.0076368096 | good=10/10 | stable=117/300s 
+ temp=19.023361744 | tset=19.0 | diff=.023361744 | good=10/10 | stable=120/300s 
+ temp=19.0548631904 | tset=19.0 | diff=.0548631904 | good=9/10 | stable=123/300s 
+ temp=18.9932432528 | tset=19.0 | diff=.0067567472 | good=9/10 | stable=126/300s 
+ temp=19.0241789448 | tset=19.0 | diff=.0241789448 | good=9/10 | stable=129/300s 
+ temp=19.0241789448 | tset=19.0 | diff=.0241789448 | good=9/10 | stable=132/300s 
+ temp=19.0247446992 | tset=19.0 | diff=.0247446992 | good=9/10 | stable=135/300s 
+ temp=18.9941233152 | tset=19.0 | diff=.0058766848 | good=9/10 | stable=138/300s 
+ temp=19.0260647928 | tset=19.0 | diff=.0260647928 | good=9/10 | stable=141/300s 
+ temp=18.9963234712 | tset=19.0 | diff=.0036765288 | good=9/10 | stable=144/300s 
+ temp=18.9963234712 | tset=19.0 | diff=.0036765288 | good=9/10 | stable=147/300s 
+ temp=19.0279506408 | tset=19.0 | diff=.0279506408 | good=9/10 | stable=150/300s 
+ temp=18.9979578728 | tset=19.0 | diff=.0020421272 | good=10/10 | stable=153/300s 
+ temp=18.9667707344 | tset=19.0 | diff=.0332292656 | good=10/10 | stable=156/300s 
+ temp=18.9657020872 | tset=19.0 | diff=.0342979128 | good=10/10 | stable=159/300s 
+ temp=18.9658278104 | tset=19.0 | diff=.0341721896 | good=10/10 | stable=162/300s 
+ temp=18.964947748 | tset=19.0 | diff=.035052252 | good=10/10 | stable=165/300s 
+ temp=18.9951919624 | tset=19.0 | diff=.0048080376 | good=10/10 | stable=168/300s 
+ temp=18.9633133464 | tset=19.0 | diff=.0366866536 | good=10/10 | stable=171/300s 
+ temp=19.024933284 | tset=19.0 | diff=.024933284 | good=10/10 | stable=174/300s 
+ temp=18.9932432528 | tset=19.0 | diff=.0067567472 | good=10/10 | stable=177/300s 
+ temp=19.0239274984 | tset=19.0 | diff=.0239274984 | good=10/10 | stable=180/300s 
+ temp=19.023361744 | tset=19.0 | diff=.023361744 | good=10/10 | stable=183/300s 
+ temp=19.023361744 | tset=19.0 | diff=.023361744 | good=10/10 | stable=186/300s 
+ temp=19.02399036 | tset=19.0 | diff=.02399036 | good=10/10 | stable=189/300s 
+ temp=18.9934318376 | tset=19.0 | diff=.0065681624 | good=10/10 | stable=192/300s 
+ temp=18.9937461456 | tset=19.0 | diff=.0062538544 | good=10/10 | stable=195/300s 
+ temp=19.0256247616 | tset=19.0 | diff=.0256247616 | good=10/10 | stable=198/300s 
+ temp=19.0576291008 | tset=19.0 | diff=.0576291008 | good=9/10 | stable=201/300s 
+ temp=19.0285792568 | tset=19.0 | diff=.0285792568 | good=9/10 | stable=204/300s 
+ temp=18.9664564264 | tset=19.0 | diff=.0335435736 | good=9/10 | stable=207/300s 
+ temp=18.9978950112 | tset=19.0 | diff=.0021049888 | good=9/10 | stable=210/300s 
+ temp=18.966833596 | tset=19.0 | diff=.033166404 | good=9/10 | stable=213/300s 
+ temp=18.9975807032 | tset=19.0 | diff=.0024192968 | good=9/10 | stable=216/300s 
+ temp=19.0288307032 | tset=19.0 | diff=.0288307032 | good=9/10 | stable=219/300s 
+ temp=18.9980207344 | tset=19.0 | diff=.0019792656 | good=9/10 | stable=222/300s 
+ temp=18.9982721808 | tset=19.0 | diff=.0017278192 | good=9/10 | stable=225/300s 
+ temp=18.9985236272 | tset=19.0 | diff=.0014763728 | good=9/10 | stable=228/300s 
+ temp=18.9981464576 | tset=19.0 | diff=.0018535424 | good=10/10 | stable=231/300s 
+ temp=18.997140672 | tset=19.0 | diff=.002859328 | good=10/10 | stable=234/300s 
+ temp=18.9654506408 | tset=19.0 | diff=.0345493592 | good=10/10 | stable=237/300s 
+ temp=18.9965749176 | tset=19.0 | diff=.0034250824 | good=10/10 | stable=240/300s 
+ temp=18.9963863328 | tset=19.0 | diff=.0036136672 | good=10/10 | stable=243/300s 
+ temp=18.9967635024 | tset=19.0 | diff=.0032364976 | good=10/10 | stable=246/300s 
+ temp=18.996512056 | tset=19.0 | diff=.003487944 | good=10/10 | stable=249/300s 
+ temp=19.0270077168 | tset=19.0 | diff=.0270077168 | good=10/10 | stable=252/300s 
+ temp=18.9963234712 | tset=19.0 | diff=.0036765288 | good=10/10 | stable=255/300s 
+ temp=18.9960720248 | tset=19.0 | diff=.0039279752 | good=10/10 | stable=258/300s 
+ temp=18.9646963016 | tset=19.0 | diff=.0353036984 | good=10/10 | stable=261/300s 
+ temp=18.9951291008 | tset=19.0 | diff=.0048708992 | good=10/10 | stable=264/300s 
+ temp=19.026190516 | tset=19.0 | diff=.026190516 | good=10/10 | stable=267/300s 
+ temp=18.9959463016 | tset=19.0 | diff=.0040536984 | good=10/10 | stable=270/300s 
+ temp=19.0268819936 | tset=19.0 | diff=.0268819936 | good=10/10 | stable=273/300s 
+ temp=18.9962606096 | tset=19.0 | diff=.0037393904 | good=10/10 | stable=276/300s 
+ temp=18.996197748 | tset=19.0 | diff=.003802252 | good=10/10 | stable=279/300s 
+ temp=18.9962606096 | tset=19.0 | diff=.0037393904 | good=10/10 | stable=282/300s 
+ temp=18.9956948552 | tset=19.0 | diff=.0043051448 | good=10/10 | stable=285/300s 
+ temp=19.0270077168 | tset=19.0 | diff=.0270077168 | good=10/10 | stable=288/300s 
+ temp=19.0275734712 | tset=19.0 | diff=.0275734712 | good=10/10 | stable=291/300s 
+ temp=19.0288307032 | tset=19.0 | diff=.0288307032 | good=10/10 | stable=294/300s 
+ temp=19.0295850424 | tset=19.0 | diff=.0295850424 | good=10/10 | stable=297/300s 
+ temp=18.998712212 | tset=19.0 | diff=.001287788 | good=10/10 | stable=300/300s 
+ --- temperature: 19 C 
+Wed Sep  9 03:16:23 PM CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_292K_A2
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_292K_A2.zero.csv
+--- commands written to file: HAMA3_sn31_292K_A2.zero.scpi
+
+--- Keithley 'zero' program completed: 42.106272 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_292K_A2
+--- calculate expected Vbd for HAMA3 at T = 292 K
+--- Vbd = 50.676 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.7
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.7, 55.7], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1296 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_292K_A2.ivscan.csv
+--- commands written to file: HAMA3_sn31_292K_A2.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 204.675713 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_292K_A2_zoom
+--- calculate expected Vbd for HAMA3 at T = 292 K
+--- Vbd = 50.676 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.7
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.7, 55.7], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_292K_A2_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_292K_A2_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 151.035978 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 21 C 
+Wed Sep  9 03:23:15 PM CEST 2026
+ --- peltier goto setpoint: 21.0 
+ --- update peltier setpoint: 19.1 
+ --- update peltier setpoint: 19.2 
+ --- update peltier setpoint: 19.3 
+ --- update peltier setpoint: 19.4 
+ --- update peltier setpoint: 19.5 
+ --- update peltier setpoint: 19.6 
+ --- update peltier setpoint: 19.7 
+ --- update peltier setpoint: 19.8 
+ --- update peltier setpoint: 19.9 
+ --- update peltier setpoint: 20.0 
+ --- update peltier setpoint: 20.1 
+ --- update peltier setpoint: 20.2 
+ --- update peltier setpoint: 20.3 
+ --- update peltier setpoint: 20.4 
+ --- update peltier setpoint: 20.5 
+ --- update peltier setpoint: 20.6 
+ --- update peltier setpoint: 20.7 
+ --- update peltier setpoint: 20.8 
+ --- update peltier setpoint: 20.9 
+ --- update peltier setpoint: 21.0 
+ temp=21.0216327584 | tset=21.0 | diff=.0216327584 | good=1/1 | stable=0/300s 
+ temp=21.0208155576 | tset=21.0 | diff=.0208155576 | good=2/2 | stable=0/300s 
+ temp=21.0216327584 | tset=21.0 | diff=.0216327584 | good=3/3 | stable=0/300s 
+ temp=21.022638544 | tset=21.0 | diff=.022638544 | good=4/4 | stable=0/300s 
+ temp=20.99201716 | tset=21.0 | diff=.00798284 | good=5/5 | stable=0/300s 
+ temp=21.0228899904 | tset=21.0 | diff=.0228899904 | good=6/6 | stable=0/300s 
+ temp=21.023895776 | tset=21.0 | diff=.023895776 | good=7/7 | stable=0/300s 
+ temp=21.0247758384 | tset=21.0 | diff=.0247758384 | good=8/8 | stable=0/300s 
+ temp=21.0264731016 | tset=21.0 | diff=.0264731016 | good=9/9 | stable=0/300s 
+ temp=20.996417472 | tset=21.0 | diff=.003582528 | good=10/10 | stable=3/300s 
+ temp=21.0272274408 | tset=21.0 | diff=.0272274408 | good=10/10 | stable=6/300s 
+ temp=21.0282332264 | tset=21.0 | diff=.0282332264 | good=10/10 | stable=9/300s 
+ temp=21.0290504272 | tset=21.0 | diff=.0290504272 | good=10/10 | stable=12/300s 
+ temp=20.9986804896 | tset=21.0 | diff=.0013195104 | good=10/10 | stable=15/300s 
+ temp=20.9988690744 | tset=21.0 | diff=.0011309256 | good=10/10 | stable=18/300s 
+ temp=20.9684991368 | tset=21.0 | diff=.0315008632 | good=10/10 | stable=21/300s 
+ temp=20.936746244 | tset=21.0 | diff=.063253756 | good=9/10 | stable=24/300s 
+ temp=20.9356775968 | tset=21.0 | diff=.0643224032 | good=8/10 | stable=27/300s 
+ temp=20.9968575032 | tset=21.0 | diff=.0031424968 | good=8/10 | stable=30/300s 
+ temp=20.996417472 | tset=21.0 | diff=.003582528 | good=8/10 | stable=33/300s 
+ temp=21.0274788872 | tset=21.0 | diff=.0274788872 | good=8/10 | stable=36/300s 
+ temp=20.9959145792 | tset=21.0 | diff=.0040854208 | good=8/10 | stable=39/300s 
+ temp=21.0261587936 | tset=21.0 | diff=.0261587936 | good=8/10 | stable=42/300s 
+ temp=20.994531624 | tset=21.0 | diff=.005468376 | good=8/10 | stable=45/300s 
+ temp=21.0252787312 | tset=21.0 | diff=.0252787312 | good=8/10 | stable=48/300s 
+ temp=21.0254044544 | tset=21.0 | diff=.0254044544 | good=8/10 | stable=51/300s 
+ temp=21.026095932 | tset=21.0 | diff=.026095932 | good=9/10 | stable=54/300s 
+ temp=21.0275417488 | tset=21.0 | diff=.0275417488 | good=10/10 | stable=57/300s 
+ temp=21.029239012 | tset=21.0 | diff=.029239012 | good=10/10 | stable=60/300s 
+ temp=20.9988062128 | tset=21.0 | diff=.0011937872 | good=10/10 | stable=63/300s 
+ temp=20.9993719672 | tset=21.0 | diff=.0006280328 | good=10/10 | stable=66/300s 
+ temp=20.9994348288 | tset=21.0 | diff=.0005651712 | good=10/10 | stable=69/300s 
+ temp=21.000189168 | tset=21.0 | diff=.000189168 | good=10/10 | stable=72/300s 
+ temp=20.968939168 | tset=21.0 | diff=.031060832 | good=10/10 | stable=75/300s 
+ temp=21.0002520296 | tset=21.0 | diff=.0002520296 | good=10/10 | stable=78/300s 
+ temp=20.968939168 | tset=21.0 | diff=.031060832 | good=10/10 | stable=81/300s 
+ temp=20.9994348288 | tset=21.0 | diff=.0005651712 | good=10/10 | stable=84/300s 
+ temp=20.9679333824 | tset=21.0 | diff=.0320666176 | good=10/10 | stable=87/300s 
+ temp=20.9980518736 | tset=21.0 | diff=.0019481264 | good=10/10 | stable=90/300s 
+ temp=20.9974232576 | tset=21.0 | diff=.0025767424 | good=10/10 | stable=93/300s 
+ temp=21.0284218112 | tset=21.0 | diff=.0284218112 | good=10/10 | stable=96/300s 
+ temp=20.9974232576 | tset=21.0 | diff=.0025767424 | good=10/10 | stable=99/300s 
+ temp=21.0282332264 | tset=21.0 | diff=.0282332264 | good=10/10 | stable=102/300s 
+ temp=20.9972975344 | tset=21.0 | diff=.0027024656 | good=10/10 | stable=105/300s 
+ temp=20.9976118424 | tset=21.0 | diff=.0023881576 | good=10/10 | stable=108/300s 
+ temp=20.9974232576 | tset=21.0 | diff=.0025767424 | good=10/10 | stable=111/300s 
+ temp=20.9666761504 | tset=21.0 | diff=.0333238496 | good=10/10 | stable=114/300s 
+ temp=20.9971718112 | tset=21.0 | diff=.0028281888 | good=10/10 | stable=117/300s 
+ temp=20.9978004272 | tset=21.0 | diff=.0021995728 | good=10/10 | stable=120/300s 
+ temp=20.997674704 | tset=21.0 | diff=.002325296 | good=10/10 | stable=123/300s 
+ temp=21.028924704 | tset=21.0 | diff=.028924704 | good=10/10 | stable=126/300s 
+ temp=20.966424704 | tset=21.0 | diff=.033575296 | good=10/10 | stable=129/300s 
+ temp=21.028296088 | tset=21.0 | diff=.028296088 | good=10/10 | stable=132/300s 
+ temp=21.0283589496 | tset=21.0 | diff=.0283589496 | good=10/10 | stable=135/300s 
+ temp=21.0288618424 | tset=21.0 | diff=.0288618424 | good=10/10 | stable=138/300s 
+ temp=20.9668647352 | tset=21.0 | diff=.0331352648 | good=10/10 | stable=141/300s 
+ temp=20.9662989808 | tset=21.0 | diff=.0337010192 | good=10/10 | stable=144/300s 
+ temp=20.997674704 | tset=21.0 | diff=.002325296 | good=10/10 | stable=147/300s 
+ temp=20.9977375656 | tset=21.0 | diff=.0022624344 | good=10/10 | stable=150/300s 
+ temp=20.9978004272 | tset=21.0 | diff=.0021995728 | good=10/10 | stable=153/300s 
+ temp=20.9665504272 | tset=21.0 | diff=.0334495728 | good=10/10 | stable=156/300s 
+ temp=20.9965431952 | tset=21.0 | diff=.0034568048 | good=10/10 | stable=159/300s 
+ temp=21.0284846728 | tset=21.0 | diff=.0284846728 | good=10/10 | stable=162/300s 
+ temp=20.9969832264 | tset=21.0 | diff=.0030167736 | good=10/10 | stable=165/300s 
+ temp=21.0274788872 | tset=21.0 | diff=.0274788872 | good=10/10 | stable=168/300s 
+ temp=20.996103164 | tset=21.0 | diff=.003896836 | good=10/10 | stable=171/300s 
+ temp=20.9652303336 | tset=21.0 | diff=.0347696664 | good=10/10 | stable=174/300s 
+ temp=20.9650417488 | tset=21.0 | diff=.0349582512 | good=10/10 | stable=177/300s 
+ temp=20.995474548 | tset=21.0 | diff=.004525452 | good=10/10 | stable=180/300s 
+ temp=20.9952859632 | tset=21.0 | diff=.0047140368 | good=10/10 | stable=183/300s 
+ temp=21.0262845168 | tset=21.0 | diff=.0262845168 | good=10/10 | stable=186/300s 
+ temp=20.9960403024 | tset=21.0 | diff=.0039596976 | good=10/10 | stable=189/300s 
+ temp=20.9957259944 | tset=21.0 | diff=.0042740056 | good=10/10 | stable=192/300s 
+ temp=21.0262845168 | tset=21.0 | diff=.0262845168 | good=10/10 | stable=195/300s 
+ temp=20.9956631328 | tset=21.0 | diff=.0043368672 | good=10/10 | stable=198/300s 
+ temp=21.026095932 | tset=21.0 | diff=.026095932 | good=10/10 | stable=201/300s 
+ temp=20.9954116864 | tset=21.0 | diff=.0045883136 | good=10/10 | stable=204/300s 
+ temp=21.0271017176 | tset=21.0 | diff=.0271017176 | good=10/10 | stable=207/300s 
+ temp=21.0283589496 | tset=21.0 | diff=.0283589496 | good=10/10 | stable=210/300s 
+ temp=20.9666132888 | tset=21.0 | diff=.0333867112 | good=10/10 | stable=213/300s 
+ temp=20.9975489808 | tset=21.0 | diff=.0024510192 | good=10/10 | stable=216/300s 
+ temp=20.966110396 | tset=21.0 | diff=.033889604 | good=10/10 | stable=219/300s 
+ temp=20.9346089496 | tset=21.0 | diff=.0653910504 | good=9/10 | stable=222/300s 
+ temp=20.964853164 | tset=21.0 | diff=.035146836 | good=9/10 | stable=225/300s 
+ temp=21.0262216552 | tset=21.0 | diff=.0262216552 | good=9/10 | stable=228/300s 
+ temp=21.057974548 | tset=21.0 | diff=.057974548 | good=8/10 | stable=231/300s 
+ temp=21.0269759944 | tset=21.0 | diff=.0269759944 | good=8/10 | stable=234/300s 
+ temp=21.027353164 | tset=21.0 | diff=.027353164 | good=8/10 | stable=237/300s 
+ temp=21.0271645792 | tset=21.0 | diff=.0271645792 | good=8/10 | stable=240/300s 
+ temp=21.0271017176 | tset=21.0 | diff=.0271017176 | good=8/10 | stable=243/300s 
+ temp=21.0283589496 | tset=21.0 | diff=.0283589496 | good=8/10 | stable=246/300s 
+ temp=21.0289875656 | tset=21.0 | diff=.0289875656 | good=8/10 | stable=249/300s 
+ temp=20.999246244 | tset=21.0 | diff=.000753756 | good=9/10 | stable=252/300s 
+ temp=21.0008806456 | tset=21.0 | diff=.0008806456 | good=9/10 | stable=255/300s 
+ temp=20.9708878776 | tset=21.0 | diff=.0291121224 | good=9/10 | stable=258/300s 
+ temp=21.0330735696 | tset=21.0 | diff=.0330735696 | good=10/10 | stable=261/300s 
+ temp=21.0023264624 | tset=21.0 | diff=.0023264624 | good=10/10 | stable=264/300s 
+ temp=20.9713279088 | tset=21.0 | diff=.0286720912 | good=10/10 | stable=267/300s 
+ temp=20.9708878776 | tset=21.0 | diff=.0291121224 | good=10/10 | stable=270/300s 
+ temp=20.9703221232 | tset=21.0 | diff=.0296778768 | good=10/10 | stable=273/300s 
+ temp=21.0007549224 | tset=21.0 | diff=.0007549224 | good=10/10 | stable=276/300s 
+ temp=21.0003148912 | tset=21.0 | diff=.0003148912 | good=10/10 | stable=279/300s 
+ temp=21.0308734136 | tset=21.0 | diff=.0308734136 | good=10/10 | stable=282/300s 
+ temp=21.0000634448 | tset=21.0 | diff=.0000634448 | good=10/10 | stable=285/300s 
+ temp=20.9997491368 | tset=21.0 | diff=.0002508632 | good=10/10 | stable=288/300s 
+ temp=21.000189168 | tset=21.0 | diff=.000189168 | good=10/10 | stable=291/300s 
+ temp=20.9680591056 | tset=21.0 | diff=.0319408944 | good=10/10 | stable=294/300s 
+ temp=20.9984919048 | tset=21.0 | diff=.0015080952 | good=10/10 | stable=297/300s 
+ temp=20.9675562128 | tset=21.0 | diff=.0324437872 | good=10/10 | stable=300/300s 
+ --- temperature: 21 C 
+Wed Sep  9 03:39:02 PM CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_294K_A2
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_294K_A2.zero.csv
+--- commands written to file: HAMA3_sn31_294K_A2.zero.scpi
+
+--- Keithley 'zero' program completed: 42.117953 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_294K_A2
+--- calculate expected Vbd for HAMA3 at T = 294 K
+--- Vbd = 50.784 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.8
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.8, 55.8], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1269 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_294K_A2.ivscan.csv
+--- commands written to file: HAMA3_sn31_294K_A2.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 200.597067 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_294K_A2_zoom
+--- calculate expected Vbd for HAMA3 at T = 294 K
+--- Vbd = 50.784 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.8
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.8, 55.8], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_294K_A2_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_294K_A2_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 151.042073 seconds
+--- plot is ready and saved: waiting for 5 seconds
+ --- temperature: 23 C 
+Wed Sep  9 03:45:50 PM CEST 2026
+ --- peltier goto setpoint: 23.0 
+ --- update peltier setpoint: 21.1 
+ --- update peltier setpoint: 21.2 
+ --- update peltier setpoint: 21.3 
+ --- update peltier setpoint: 21.4 
+ --- update peltier setpoint: 21.5 
+ --- update peltier setpoint: 21.6 
+ --- update peltier setpoint: 21.7 
+ --- update peltier setpoint: 21.8 
+ --- update peltier setpoint: 21.9 
+ --- update peltier setpoint: 22.0 
+ --- update peltier setpoint: 22.1 
+ --- update peltier setpoint: 22.2 
+ --- update peltier setpoint: 22.3 
+ --- update peltier setpoint: 22.4 
+ --- update peltier setpoint: 22.5 
+ --- update peltier setpoint: 22.6 
+ --- update peltier setpoint: 22.7 
+ --- update peltier setpoint: 22.8 
+ --- update peltier setpoint: 22.9 
+ --- update peltier setpoint: 23.0 
+ temp=23.0406481008 | tset=23.0 | diff=.0406481008 | good=1/1 | stable=0/300s 
+ temp=23.039516592 | tset=23.0 | diff=.039516592 | good=2/2 | stable=0/300s 
+ temp=23.071709516 | tset=23.0 | diff=.071709516 | good=2/3 | stable=0/300s 
+ temp=23.073595364 | tset=23.0 | diff=.073595364 | good=2/4 | stable=0/300s 
+ temp=23.0447341048 | tset=23.0 | diff=.0447341048 | good=3/5 | stable=0/300s 
+ temp=23.0158728456 | tset=23.0 | diff=.0158728456 | good=4/6 | stable=0/300s 
+ temp=23.0175701088 | tset=23.0 | diff=.0175701088 | good=5/7 | stable=0/300s 
+ temp=22.9878916488 | tset=23.0 | diff=.0121083512 | good=6/8 | stable=0/300s 
+ temp=22.9885202648 | tset=23.0 | diff=.0114797352 | good=7/9 | stable=0/300s 
+ temp=22.9893374656 | tset=23.0 | diff=.0106625344 | good=8/10 | stable=3/300s 
+ temp=22.9588418048 | tset=23.0 | diff=.0411581952 | good=8/10 | stable=6/300s 
+ temp=22.9895260504 | tset=23.0 | diff=.0104739496 | good=8/10 | stable=9/300s 
+ temp=23.0207760504 | tset=23.0 | diff=.0207760504 | good=9/10 | stable=12/300s 
+ temp=22.9892117424 | tset=23.0 | diff=.0107882576 | good=10/10 | stable=15/300s 
+ temp=23.019267372 | tset=23.0 | diff=.019267372 | good=10/10 | stable=18/300s 
+ temp=23.0190787872 | tset=23.0 | diff=.0190787872 | good=10/10 | stable=21/300s 
+ temp=23.0191416488 | tset=23.0 | diff=.0191416488 | good=10/10 | stable=24/300s 
+ temp=23.0190787872 | tset=23.0 | diff=.0190787872 | good=10/10 | stable=27/300s 
+ temp=22.9883945416 | tset=23.0 | diff=.0116054584 | good=10/10 | stable=30/300s 
+ temp=22.98833168 | tset=23.0 | diff=.01166832 | good=10/10 | stable=33/300s 
+ temp=22.9883945416 | tset=23.0 | diff=.0116054584 | good=10/10 | stable=36/300s 
+ temp=22.9890231576 | tset=23.0 | diff=.0109768424 | good=10/10 | stable=39/300s 
+ temp=22.9578360192 | tset=23.0 | diff=.0421639808 | good=10/10 | stable=42/300s 
+ temp=22.9879545104 | tset=23.0 | diff=.0120454896 | good=10/10 | stable=45/300s 
+ temp=22.9880802336 | tset=23.0 | diff=.0119197664 | good=10/10 | stable=48/300s 
+ temp=22.9873258944 | tset=23.0 | diff=.0126741056 | good=10/10 | stable=51/300s 
+ temp=23.0178215552 | tset=23.0 | diff=.0178215552 | good=10/10 | stable=54/300s 
+ temp=23.0176329704 | tset=23.0 | diff=.0176329704 | good=10/10 | stable=57/300s 
+ temp=22.9860686624 | tset=23.0 | diff=.0139313376 | good=10/10 | stable=60/300s 
+ temp=23.0169414928 | tset=23.0 | diff=.0169414928 | good=10/10 | stable=63/300s 
+ temp=23.0171929392 | tset=23.0 | diff=.0171929392 | good=10/10 | stable=66/300s 
+ temp=23.0174443856 | tset=23.0 | diff=.0174443856 | good=10/10 | stable=69/300s 
+ temp=22.9865086936 | tset=23.0 | diff=.0134913064 | good=10/10 | stable=72/300s 
+ temp=22.9869487248 | tset=23.0 | diff=.0130512752 | good=10/10 | stable=75/300s 
+ temp=23.0181358632 | tset=23.0 | diff=.0181358632 | good=10/10 | stable=78/300s 
+ temp=23.0188902024 | tset=23.0 | diff=.0188902024 | good=10/10 | stable=81/300s 
+ temp=22.9883945416 | tset=23.0 | diff=.0116054584 | good=10/10 | stable=84/300s 
+ temp=22.9879545104 | tset=23.0 | diff=.0120454896 | good=10/10 | stable=87/300s 
+ temp=23.0188902024 | tset=23.0 | diff=.0188902024 | good=10/10 | stable=90/300s 
+ temp=22.9885202648 | tset=23.0 | diff=.0114797352 | good=10/10 | stable=93/300s 
+ temp=22.956767372 | tset=23.0 | diff=.043232628 | good=10/10 | stable=96/300s 
+ temp=22.9870115864 | tset=23.0 | diff=.0129884136 | good=10/10 | stable=99/300s 
+ temp=23.0177586936 | tset=23.0 | diff=.0177586936 | good=10/10 | stable=102/300s 
+ temp=22.9870115864 | tset=23.0 | diff=.0129884136 | good=10/10 | stable=105/300s 
+ temp=22.98676014 | tset=23.0 | diff=.01323986 | good=10/10 | stable=108/300s 
+ temp=23.0172558008 | tset=23.0 | diff=.0172558008 | good=10/10 | stable=111/300s 
+ temp=23.0171300776 | tset=23.0 | diff=.0171300776 | good=10/10 | stable=114/300s 
+ temp=22.9862572472 | tset=23.0 | diff=.0137427528 | good=10/10 | stable=117/300s 
+ temp=23.0172558008 | tset=23.0 | diff=.0172558008 | good=10/10 | stable=120/300s 
+ temp=23.017067216 | tset=23.0 | diff=.017067216 | good=10/10 | stable=123/300s 
+ temp=22.9862572472 | tset=23.0 | diff=.0137427528 | good=10/10 | stable=126/300s 
+ temp=22.9866972784 | tset=23.0 | diff=.0133027216 | good=10/10 | stable=129/300s 
+ temp=22.9866344168 | tset=23.0 | diff=.0133655832 | good=10/10 | stable=132/300s 
+ temp=23.0173186624 | tset=23.0 | diff=.0173186624 | good=10/10 | stable=135/300s 
+ temp=22.9868230016 | tset=23.0 | diff=.0131769984 | good=10/10 | stable=138/300s 
+ temp=23.01801014 | tset=23.0 | diff=.01801014 | good=10/10 | stable=141/300s 
+ temp=23.0180730016 | tset=23.0 | diff=.0180730016 | good=10/10 | stable=144/300s 
+ temp=23.0181358632 | tset=23.0 | diff=.0181358632 | good=10/10 | stable=147/300s 
+ temp=22.9875773408 | tset=23.0 | diff=.0124226592 | good=10/10 | stable=150/300s 
+ temp=22.9870115864 | tset=23.0 | diff=.0129884136 | good=10/10 | stable=153/300s 
+ temp=22.9865715552 | tset=23.0 | diff=.0134284448 | good=10/10 | stable=156/300s 
+ temp=22.9866972784 | tset=23.0 | diff=.0133027216 | good=10/10 | stable=159/300s 
+ temp=23.0179472784 | tset=23.0 | diff=.0179472784 | good=10/10 | stable=162/300s 
+ temp=22.9873258944 | tset=23.0 | diff=.0126741056 | good=10/10 | stable=165/300s 
+ temp=23.0178844168 | tset=23.0 | diff=.0178844168 | good=10/10 | stable=168/300s 
+ temp=23.0185758944 | tset=23.0 | diff=.0185758944 | good=10/10 | stable=171/300s 
+ temp=23.0185758944 | tset=23.0 | diff=.0185758944 | good=10/10 | stable=174/300s 
+ temp=22.9874516176 | tset=23.0 | diff=.0125483824 | good=10/10 | stable=177/300s 
+ temp=22.9869487248 | tset=23.0 | diff=.0130512752 | good=10/10 | stable=180/300s 
+ temp=22.987074448 | tset=23.0 | diff=.012925552 | good=10/10 | stable=183/300s 
+ temp=22.987074448 | tset=23.0 | diff=.012925552 | good=10/10 | stable=186/300s 
+ temp=22.9870115864 | tset=23.0 | diff=.0129884136 | good=10/10 | stable=189/300s 
+ temp=23.0182615864 | tset=23.0 | diff=.0182615864 | good=10/10 | stable=192/300s 
+ temp=23.0182615864 | tset=23.0 | diff=.0182615864 | good=10/10 | stable=195/300s 
+ temp=23.0188902024 | tset=23.0 | diff=.0188902024 | good=10/10 | stable=198/300s 
+ temp=23.0188902024 | tset=23.0 | diff=.0188902024 | good=10/10 | stable=201/300s 
+ temp=23.0190159256 | tset=23.0 | diff=.0190159256 | good=10/10 | stable=204/300s 
+ temp=22.9878916488 | tset=23.0 | diff=.0121083512 | good=10/10 | stable=207/300s 
+ temp=22.988017372 | tset=23.0 | diff=.011982628 | good=10/10 | stable=210/300s 
+ temp=22.9881430952 | tset=23.0 | diff=.0118569048 | good=10/10 | stable=213/300s 
+ temp=22.9882688184 | tset=23.0 | diff=.0117311816 | good=10/10 | stable=216/300s 
+ temp=22.9884574032 | tset=23.0 | diff=.0115425968 | good=10/10 | stable=219/300s 
+ temp=23.019833126400002 | tset=23.0 | diff=.019833126400002 | good=10/10 | stable=222/300s 
+ temp=22.9887717112 | tset=23.0 | diff=.0112282888 | good=10/10 | stable=225/300s 
+ temp=22.98833168 | tset=23.0 | diff=.01166832 | good=10/10 | stable=228/300s 
+ temp=22.9878916488 | tset=23.0 | diff=.0121083512 | good=10/10 | stable=231/300s 
+ temp=22.9872630328 | tset=23.0 | diff=.0127369672 | good=10/10 | stable=234/300s 
+ temp=22.9865086936 | tset=23.0 | diff=.0134913064 | good=10/10 | stable=237/300s 
+ temp=22.9862572472 | tset=23.0 | diff=.0137427528 | good=10/10 | stable=240/300s 
+ temp=22.9858800776 | tset=23.0 | diff=.0141199224 | good=10/10 | stable=243/300s 
+ temp=22.985502908 | tset=23.0 | diff=.014497092 | good=10/10 | stable=246/300s 
+ temp=23.0163128768 | tset=23.0 | diff=.0163128768 | good=10/10 | stable=249/300s 
+ temp=23.0478143232 | tset=23.0 | diff=.0478143232 | good=10/10 | stable=252/300s 
+ temp=23.016752908 | tset=23.0 | diff=.016752908 | good=10/10 | stable=255/300s 
+ temp=23.0170043544 | tset=23.0 | diff=.0170043544 | good=10/10 | stable=258/300s 
+ temp=23.0174443856 | tset=23.0 | diff=.0174443856 | good=10/10 | stable=261/300s 
+ temp=22.98676014 | tset=23.0 | diff=.01323986 | good=10/10 | stable=264/300s 
+ temp=22.9868230016 | tset=23.0 | diff=.0131769984 | good=10/10 | stable=267/300s 
+ temp=23.0182615864 | tset=23.0 | diff=.0182615864 | good=10/10 | stable=270/300s 
+ temp=23.0190787872 | tset=23.0 | diff=.0190787872 | good=10/10 | stable=273/300s 
+ temp=22.9887088496 | tset=23.0 | diff=.0112911504 | good=10/10 | stable=276/300s 
+ temp=22.9890860192 | tset=23.0 | diff=.0109139808 | good=10/10 | stable=279/300s 
+ temp=22.9888974344 | tset=23.0 | diff=.0111025656 | good=10/10 | stable=282/300s 
+ temp=22.9881430952 | tset=23.0 | diff=.0118569048 | good=10/10 | stable=285/300s 
+ temp=22.9879545104 | tset=23.0 | diff=.0120454896 | good=10/10 | stable=288/300s 
+ temp=22.9874516176 | tset=23.0 | diff=.0125483824 | good=10/10 | stable=291/300s 
+ temp=23.0180730016 | tset=23.0 | diff=.0180730016 | good=10/10 | stable=294/300s 
+ temp=22.9873258944 | tset=23.0 | diff=.0126741056 | good=10/10 | stable=297/300s 
+ temp=22.9873258944 | tset=23.0 | diff=.0126741056 | good=10/10 | stable=300/300s 
+ --- temperature: 23 C 
+Wed Sep  9 04:01:37 PM CEST 2026
+--- Keithley 'zero' program started: HAMA3_sn31_296K_A2
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = None, Naver = 4
+--- configuring the trigger model: Twait = 10.0, Tstep = 0.0, Tmeas = 30.0, Nmeas = INF
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 485 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_296K_A2.zero.csv
+--- commands written to file: HAMA3_sn31_296K_A2.zero.scpi
+
+--- Keithley 'zero' program completed: 42.101153 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_296K_A2
+--- calculate expected Vbd for HAMA3 at T = 296 K
+--- Vbd = 50.892 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.9
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.9, 55.9], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 1215 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_296K_A2.ivscan.csv
+--- commands written to file: HAMA3_sn31_296K_A2.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 194.200033 seconds
+--- plot is ready and saved: waiting for 5 seconds
+--- Keithley 'ivscan' program started: HAMA3_sn31_296K_A2_zoom
+--- calculate expected Vbd for HAMA3 at T = 296 K
+--- Vbd = 50.892 V (refV = 51.0, refT = 25.0, coef = 0.054)
+--- rounding at first decimal: Vbd = 50.9
+KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a
+--- instrument initialised: KEITHLEY INSTRUMENTS,MODEL 2450,04474830,1.7.16a 
+--- read configuration from file: config.keithley
+--- configuring the source and measure list: Vsmart = [50.9, 55.9], Naver = 1
+--- configuring the trigger model: Twait = 30.0, Tstep = 0.5, Tmeas = 0.0, Nmeas = 9
+--- starting the trigger model
+--- waiting for the trigger model to terminate
+--- reading measurements: there are 720 points in the buffer
+/opt/emmi/measure/ivscan/keithley.py:235: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.pause(0.1)
+--- measurements written to file: HAMA3_sn31_296K_A2_zoom.ivscan.csv
+--- commands written to file: HAMA3_sn31_296K_A2_zoom.ivscan.scpi
+
+--- Keithley 'ivscan' program completed: 150.200313 seconds
+--- plot is ready and saved: waiting for 5 seconds
+
+Processing ivscan_vbreak.C("31", "A2", {17,19,21,23})...
+ --- open zero volt level file: HAMA3_sn31_290K_A2.zero.csv
+ --- zero volt level: -7.20801 +- 0.307169 pA
+ --- open iv scan file: HAMA3_sn31_290K_A2_zoom.ivscan.csv
+ --- writing output file: HAMA3_sn31_290K_A2_zoom.ivscan.makeiv.root
+Info in <TCanvas::Print>: png file HAMA3_sn31_290K_A2_zoom.ivscan.csv.ldfit.png has been created
+ --- open zero volt level file: HAMA3_sn31_292K_A2.zero.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pzero (Potential memory leak).
+ --- zero volt level: -8.14278 +- 0.315534 pA
+ --- open iv scan file: HAMA3_sn31_292K_A2_zoom.ivscan.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pivscan (Potential memory leak).
+Warning in <TROOT::Append>: Replacing existing TH1: hivscan (Potential memory leak).
+ --- writing output file: HAMA3_sn31_292K_A2_zoom.ivscan.makeiv.root
+Info in <TCanvas::Print>: png file HAMA3_sn31_292K_A2_zoom.ivscan.csv.ldfit.png has been created
+ --- open zero volt level file: HAMA3_sn31_294K_A2.zero.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pzero (Potential memory leak).
+ --- zero volt level: -8.86598 +- 0.319894 pA
+ --- open iv scan file: HAMA3_sn31_294K_A2_zoom.ivscan.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pivscan (Potential memory leak).
+Warning in <TROOT::Append>: Replacing existing TH1: hivscan (Potential memory leak).
+ --- writing output file: HAMA3_sn31_294K_A2_zoom.ivscan.makeiv.root
+Info in <TCanvas::Print>: png file HAMA3_sn31_294K_A2_zoom.ivscan.csv.ldfit.png has been created
+ --- open zero volt level file: HAMA3_sn31_296K_A2.zero.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pzero (Potential memory leak).
+ --- zero volt level: -8.76178 +- 0.315426 pA
+ --- open iv scan file: HAMA3_sn31_296K_A2_zoom.ivscan.csv
+Warning in <TROOT::Append>: Replacing existing TH1: pivscan (Potential memory leak).
+Warning in <TROOT::Append>: Replacing existing TH1: hivscan (Potential memory leak).
+ --- writing output file: HAMA3_sn31_296K_A2_zoom.ivscan.makeiv.root
+Info in <TCanvas::Print>: png file HAMA3_sn31_296K_A2_zoom.ivscan.csv.ldfit.png has been created
+****************************************
+Minimizer is Linear / Migrad
+Chi2                      =      3.04304
+NDf                       =            2
+p0                        =      50.1579   +/-   0.0315469   
+p1                        =    0.0585093   +/-   0.00155183  
+Info in <TCanvas::Print>: png file ivscan_vbreak.png has been created
+ --- all done, so long 
+real 6673.79
+user 12.28
+sys 8.64

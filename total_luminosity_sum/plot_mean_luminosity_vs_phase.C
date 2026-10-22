@@ -1,6 +1,8 @@
-//root -l 'plot_mean_luminosity_vs_phase.C("A1_T=20_v=5_total_luminosity_sum.csv","A1","A1_mean_luminosity_vs_phase")'
-//root -l 'plot_mean_luminosity_vs_phase.C("B1_T=20_v=3_total_luminosity_sum.csv","B1","B1_mean_luminosity_vs_phase")'
-
+// ROOT usage (from the directory containing the CSVs):
+// root -l 'plot_mean_luminosity_vs_phase.C("A1_T=20_v=5_total_luminosity_sum.csv","B1_T=20_v=3_total_luminosity_sum.csv","A1_B1_mean_luminosity_vs_phase")'
+//
+// Expected CSV columns: phase,mean_luminosity,error
+// Accepts both annealing_150_125 and annealing_T=150_h=125 phase names.
 
 #include <TCanvas.h>
 #include <TColor.h>
@@ -16,6 +18,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -27,1562 +30,399 @@
 
 using namespace std;
 
-
 // ============================================================================
-// Data structures
+// Data and phase parsing
 // ============================================================================
 
 struct LuminosityRow {
-
     string phase;
-
-    double mean_luminosity =
-        numeric_limits<double>::quiet_NaN();
-
-    double error =
-        numeric_limits<double>::quiet_NaN();
+    double mean_luminosity;
+    double error;
 };
-
 
 struct PhaseInfo {
-
-    string raw;
-
+    bool valid = false;
     bool before = false;
-
-    double temperature =
-        numeric_limits<double>::quiet_NaN();
-
-    double hours =
-        numeric_limits<double>::quiet_NaN();
+    double temperature = numeric_limits<double>::quiet_NaN();
+    double hours = numeric_limits<double>::quiet_NaN();
 };
-
-
-// ============================================================================
-// General utilities
-// ============================================================================
 
 static string trim_copy(const string& s)
 {
-    const char* ws = " \t\n\r\f\v";
-
-    const auto begin =
-        s.find_first_not_of(ws);
-
-    if (begin == string::npos)
-        return "";
-
-    const auto end =
-        s.find_last_not_of(ws);
-
-    return s.substr(
-        begin,
-        end - begin + 1
-    );
+    const auto first = s.find_first_not_of(" \t\n\r\f\v");
+    if (first == string::npos) return "";
+    const auto last = s.find_last_not_of(" \t\n\r\f\v");
+    return s.substr(first, last - first + 1);
 }
 
-
-static vector<string> split_csv_simple(
-    const string& line)
+static vector<string> split_csv_simple(const string& line)
 {
-    vector<string> out;
-
+    vector<string> result;
     stringstream ss(line);
-
     string item;
-
-    while (getline(ss, item, ','))
-
-        out.push_back(
-            trim_copy(item)
-        );
-
-    return out;
+    while (getline(ss, item, ',')) result.push_back(trim_copy(item));
+    return result;
 }
 
-
-static bool finite_value(double x)
+static PhaseInfo parse_phase(const string& input)
 {
-    return std::isfinite(x);
-}
-
-
-// ============================================================================
-// Phase handling
-// ============================================================================
-
-static string canonical_phase(
-    const string& phase)
-{
-    string p =
-        trim_copy(phase);
-
-    if (p == "bef_ann" ||
-        p == "before_ann" ||
-        p == "before_annealing")
-
-        return "before_annealing";
-
-    return p;
-}
-
-
-// Supports:
-//
-// before_annealing
-// annealing_T=75_h=5
-// annealing_75_5
-//
-static PhaseInfo parse_phase(
-    const string& phase_input)
-{
-    const string phase =
-        canonical_phase(
-            phase_input
-        );
-
-
+    const string name = trim_copy(input);
     PhaseInfo p;
 
-    p.raw = phase;
-
-
-    // ------------------------------------------------------------------------
-    // Before annealing
-    // ------------------------------------------------------------------------
-
-    if (phase == "before_annealing") {
-
+    if (name == "before_annealing" || name == "before_ann" || name == "bef_ann") {
+        p.valid = true;
         p.before = true;
-
         return p;
     }
 
+    double T = 0.0, h = 0.0;
+    int consumed = -1;
 
-    // ------------------------------------------------------------------------
-    // Convention:
-    //
-    // annealing_75_5
-    // ------------------------------------------------------------------------
+    // Format 1: annealing_75_5
+    bool matched =
+        sscanf(name.c_str(), "annealing_%lf_%lf%n", &T, &h, &consumed) == 2 &&
+        consumed == (int)name.size();
 
-    const string simple_prefix =
-        "annealing_";
-
-
-    if (phase.find(simple_prefix) == 0 &&
-        phase.find("annealing_T=") != 0) {
-
-        const string rest =
-            phase.substr(
-                simple_prefix.size()
-            );
-
-
-        const size_t pos =
-            rest.find('_');
-
-
-        if (pos != string::npos) {
-
-            try {
-
-                p.temperature =
-                    stod(
-                        rest.substr(
-                            0,
-                            pos
-                        )
-                    );
-
-
-                p.hours =
-                    stod(
-                        rest.substr(
-                            pos + 1
-                        )
-                    );
-
-
-                return p;
-
-            } catch (...) {
-
-                p.temperature =
-                    numeric_limits<double>::quiet_NaN();
-
-                p.hours =
-                    numeric_limits<double>::quiet_NaN();
-            }
-        }
+    if (!matched) {
+        consumed = -1;
+        // Format 2: annealing_T=75_h=5
+        matched =
+            sscanf(name.c_str(), "annealing_T=%lf_h=%lf%n", &T, &h, &consumed) == 2 &&
+            consumed == (int)name.size();
     }
 
-
-    // ------------------------------------------------------------------------
-    // Convention:
-    //
-    // annealing_T=75_h=5
-    // ------------------------------------------------------------------------
-
-    const string old_prefix =
-        "annealing_T=";
-
-
-    if (phase.find(old_prefix) == 0) {
-
-        const size_t pos_h =
-            phase.find("_h=");
-
-
-        if (pos_h != string::npos) {
-
-            try {
-
-                p.temperature =
-                    stod(
-                        phase.substr(
-                            old_prefix.size(),
-                            pos_h -
-                            old_prefix.size()
-                        )
-                    );
-
-
-                p.hours =
-                    stod(
-                        phase.substr(
-                            pos_h + 3
-                        )
-                    );
-
-            } catch (...) {
-
-                p.temperature =
-                    numeric_limits<double>::quiet_NaN();
-
-                p.hours =
-                    numeric_limits<double>::quiet_NaN();
-            }
-        }
+    if (matched && isfinite(T) && isfinite(h) && h > 0) {
+        p.valid = true;
+        p.temperature = T;
+        p.hours = h;
     }
-
-
     return p;
 }
 
-
-// ============================================================================
-// Annealing phase spacing
-//
-// before annealing -> x = 0
-//
-// 75 C, 5 h       -> x = 1
-// 75 C, 25 h      -> x = 6
-//
-// 100 C, 5 h      -> x = 7
-// 100 C, 25 h     -> x = 12
-//
-// 125 C, 5 h      -> x = 13
-// 125 C, 25 h     -> x = 18
-//
-// 150 C, 5 h      -> x = 19
-// 150 C, 25 h     -> x = 24
-//
-// ============================================================================
-
-static double phase_step_units(
-    const string& phase)
+// Normalize both naming conventions to the same map key.
+static string canonical_phase(const string& input)
 {
-    const PhaseInfo p =
-        parse_phase(
-            phase
-        );
-
-
-    if (p.before)
-        return 0.0;
-
-
-    if (finite_value(p.hours) &&
-        p.hours > 0.0)
-
-        return p.hours / 5.0;
-
-
-    return 1.0;
+    const PhaseInfo p = parse_phase(input);
+    if (p.before) return "before_annealing";
+    if (!p.valid) return trim_copy(input);
+    ostringstream ss;
+    ss << "annealing_" << p.temperature << "_" << p.hours;
+    return ss.str();
 }
 
+// ============================================================================
+// Annealing positions
+// ============================================================================
 
-static vector<double> build_phase_positions(
-    const vector<string>& phases)
+static vector<double> build_phase_positions(const vector<string>& phases)
 {
-    vector<double> x(
-        phases.size(),
-        0.0
-    );
+    vector<double> x(phases.size(), 0.0);
 
+    for (size_t i = 1; i < phases.size(); ++i) {
+        const PhaseInfo current  = parse_phase(phases[i]);
+        const PhaseInfo previous = parse_phase(phases[i - 1]);
+        if (!current.valid || current.before)
+            throw runtime_error("Unknown annealing phase: " + phases[i]);
 
-    if (phases.empty())
-        return x;
+        // Keep the original positions of all the existing phases:
+        // 0, 1, 6, 7, 12, 13, 18, 19, 24.
+        double step = current.hours / 5.0;
 
+        // Extra-long annealing at the SAME temperature:
+        // 150 C, 25 h -> 150 C, 125 h: delta_t = 100 h = 20 units.
+        // Thus the new position is x = 24 + 20 = 44.
+        if (previous.valid && !previous.before &&
+            fabs(current.temperature - previous.temperature) < 1e-9 &&
+            current.hours > 25.0 && current.hours > previous.hours) {
+            step = (current.hours - previous.hours) / 5.0;
+        }
 
-    x[0] = 0.0;
-
-
-    for (size_t i = 1;
-         i < phases.size();
-         ++i) {
-
-        double step =
-            phase_step_units(
-                phases[i]
-            );
-
-
-        if (!(step > 0.0) ||
-            !finite_value(step))
-
-            step = 1.0;
-
-
-        x[i] =
-            x[i - 1] +
-            step;
+        if (!(step > 0.0) || !isfinite(step))
+            throw runtime_error("Invalid phase spacing: " + phases[i]);
+        x[i] = x[i - 1] + step;
     }
-
-
     return x;
 }
 
-
 // ============================================================================
-// CSV reader
+// CSV reading (independently for A1 and B1)
 // ============================================================================
 
-static vector<LuminosityRow>
-read_luminosity_csv(
-    const char* csv_path)
+static map<string, pair<double, double>> read_luminosity_csv(const char* path)
 {
-    ifstream fin(
-        csv_path
-    );
-
-
-    if (!fin.is_open())
-
-        throw runtime_error(
-            string(
-                "Cannot open CSV file: "
-            ) +
-            csv_path
-        );
-
-
-    string header;
-
-
-    if (!getline(fin, header))
-
-        throw runtime_error(
-            string(
-                "CSV file is empty: "
-            ) +
-            csv_path
-        );
-
-
-    vector<string> header_fields =
-        split_csv_simple(
-            header
-        );
-
-
-    map<string, int> col;
-
-
-    for (int i = 0;
-         i < (int)header_fields.size();
-         ++i)
-
-        col[
-            header_fields[i]
-        ] = i;
-
-
-    const vector<string> required = {
-
-        "phase",
-        "mean_luminosity",
-        "error"
-
-    };
-
-
-    for (const auto& name :
-         required) {
-
-        if (!col.count(name))
-
-            throw runtime_error(
-                "Missing required column in CSV: "
-                + name
-            );
-    }
-
-
-    vector<LuminosityRow> rows;
+    ifstream fin(path);
+    if (!fin.is_open()) throw runtime_error(string("Cannot open CSV file: ") + path);
 
     string line;
+    if (!getline(fin, line)) throw runtime_error(string("Empty CSV file: ") + path);
 
+    const vector<string> header = split_csv_simple(line);
+    map<string, size_t> col;
+    for (size_t i = 0; i < header.size(); ++i) col[header[i]] = i;
+
+    for (const string& required : {"phase", "mean_luminosity", "error"}) {
+        if (!col.count(required))
+            throw runtime_error(string("Missing column '") + required + "' in " + path);
+    }
+
+    const size_t max_col = max({col["phase"], col["mean_luminosity"], col["error"]});
+    map<string, pair<double, double>> data;
 
     while (getline(fin, line)) {
-
-        line =
-            trim_copy(
-                line
-            );
-
-
-        if (line.empty())
-            continue;
-
-
-        vector<string> fields =
-            split_csv_simple(
-                line
-            );
-
-
-        const int max_needed =
-            max({
-
-                col["phase"],
-                col["mean_luminosity"],
-                col["error"]
-
-            });
-
-
-        if ((int)fields.size() <=
-            max_needed) {
-
-            cerr
-                << "WARNING: malformed row skipped:"
-                << endl
-                << line
-                << endl;
-
+        if (trim_copy(line).empty()) continue;
+        const vector<string> fields = split_csv_simple(line);
+        if (fields.size() <= max_col) {
+            cerr << "WARNING: incomplete row in " << path << ": " << line << endl;
             continue;
         }
-
-
         try {
-
-            LuminosityRow r;
-
-
-            r.phase =
-                canonical_phase(
-                    fields[
-                        col["phase"]
-                    ]
-                );
-
-
-            r.mean_luminosity =
-                stod(
-                    fields[
-                        col["mean_luminosity"]
-                    ]
-                );
-
-
-            r.error =
-                stod(
-                    fields[
-                        col["error"]
-                    ]
-                );
-
-
-            if (!finite_value(
-                    r.mean_luminosity
-                ) ||
-                !finite_value(
-                    r.error
-                ))
-
-                continue;
-
-
-            rows.push_back(
-                r
-            );
-
-
-        } catch (...) {
-
-            cerr
-                << "WARNING: malformed row skipped:"
-                << endl
-                << line
-                << endl;
+            const string phase = canonical_phase(fields[col["phase"]]);
+            const double y = stod(fields[col["mean_luminosity"]]);
+            const double ey = stod(fields[col["error"]]);
+            if (!isfinite(y) || !isfinite(ey) || ey < 0.0) continue;
+            if (data.count(phase))
+                cerr << "WARNING: repeated phase " << phase << " in " << path
+                     << " (keeping last value)" << endl;
+            data[phase] = {y, ey};
+        } catch (const exception&) {
+            cerr << "WARNING: invalid row in " << path << ": " << line << endl;
         }
     }
-
-
-    if (rows.empty())
-
-        throw runtime_error(
-            "No valid rows found in CSV."
-        );
-
-
-    return rows;
+    if (data.empty()) throw runtime_error(string("No valid data in ") + path);
+    return data;
 }
 
-
-// ============================================================================
-// Bottom annealing-time labels
-// ============================================================================
-
-static void draw_time_labels(
-    TPad* pad,
+// Build one graph. Missing phases remain gaps in the observations;
+// positions are ALWAYS shared between the two sensors.
+static TGraphErrors* make_sensor_graph(
+    const string& name,
+    const map<string, pair<double, double>>& data,
     const vector<string>& phases,
-    const vector<double>& xpos,
-    double xmin,
-    double xmax)
+    const vector<double>& x,
+    int color,
+    int marker)
 {
-    if (!pad ||
-        phases.empty() ||
-        xpos.empty() ||
-        !(xmax > xmin))
+    vector<double> xv, yv, ex, ey;
+    for (size_t i = 0; i < phases.size(); ++i) {
+        const auto it = data.find(phases[i]);
+        if (it == data.end()) {
+            cerr << "WARNING: " << name << " missing " << phases[i] << endl;
+            continue;
+        }
+        xv.push_back(x[i]);
+        yv.push_back(it->second.first);
+        ex.push_back(0.0);
+        ey.push_back(it->second.second);
+    }
 
-        return;
+    if (xv.empty()) throw runtime_error("No plotted values for " + name);
+    auto* gr = new TGraphErrors((int)xv.size(), xv.data(), yv.data(),
+                                ex.data(), ey.data());
+    gr->SetName(("gr_mean_luminosity_" + name).c_str());
+    gr->SetLineColor(color);
+    gr->SetMarkerColor(color);
+    gr->SetMarkerStyle(marker);
+    gr->SetMarkerSize(1.45);
+    gr->SetLineWidth(3);
+    return gr;
+}
 
+// ============================================================================
+// Bottom time labels and top annealing temperature labels
+// ============================================================================
 
+static void draw_time_labels(TPad* pad, const vector<string>& phases,
+                             const vector<double>& x, double xmin, double xmax)
+{
+    if (!pad || phases.empty() || !(xmax > xmin)) return;
     pad->Update();
+    const double left = pad->GetLeftMargin();
+    const double usable = 1.0 - left - pad->GetRightMargin();
 
+    for (size_t i = 0; i < phases.size(); ++i) {
+        const PhaseInfo p = parse_phase(phases[i]);
+        if (p.before || !p.valid) continue;
 
-    const double left =
-        pad->GetLeftMargin();
-
-    const double right =
-        pad->GetRightMargin();
-
-    const double usable =
-        1.0 -
-        left -
-        right;
-
-
-    for (size_t i = 0;
-         i < phases.size();
-         ++i) {
-
-        const double frac =
-            (
-                xpos[i] -
-                xmin
-            )
-            /
-            (
-                xmax -
-                xmin
-            );
-
-
-        const double x_ndc =
-            left +
-            frac * usable;
-
-
-        const PhaseInfo p =
-            parse_phase(
-                phases[i]
-            );
-
-
-        // No time label for before annealing.
-        if (p.before)
-            continue;
-
-
-        string label;
-
-
-        if (finite_value(
-                p.hours
-            )) {
-
-            const double hround =
-                round(
-                    p.hours
-                );
-
-
-            if (fabs(
-                    p.hours -
-                    hround
-                ) < 1e-9)
-
-                label =
-                    Form(
-                        "%.0f h",
-                        p.hours
-                    );
-
-            else
-
-                label =
-                    Form(
-                        "%.1f h",
-                        p.hours
-                    );
-
-        } else {
-
-            label =
-                phases[i];
+        double x_ndc = left + (x[i] - xmin) / (xmax - xmin) * usable;
+        if (i == 2 || i == 4 || i == 6 || i == 9){
+            x_ndc = x_ndc - 0.01;
+        } else if (i == 3 || i == 5 || i == 7 ){
+            x_ndc = x_ndc + 0.01;
         }
 
-
-        TLatex* lab =
-            new TLatex();
-
-
+        const string label = Form("%g h", p.hours);
+        auto* lab = new TLatex();
         lab->SetNDC();
-
         lab->SetTextFont(42);
-
-        lab->SetTextSize(
-            0.032
-        );
-
-        lab->SetTextAlign(
-            22
-        );
-
-
-        // ------------------------------------------------------------
-        // Lower than in the original version because the bottom margin
-        // has been reduced.
-        // ------------------------------------------------------------
-
-        lab->DrawLatex(
-            x_ndc,
-            0.10,
-            label.c_str()
-        );
+        lab->SetTextSize(0.032);
+        lab->SetTextAlign(22);
+        lab->DrawLatex(x_ndc, 0.13, label.c_str());
     }
 
-
-    // ========================================================================
-    // X-axis title
-    // ========================================================================
-
-    TLatex* title =
-        new TLatex();
-
-
+    auto* title = new TLatex();
     title->SetNDC();
-
     title->SetTextFont(42);
-
-    title->SetTextSize(
-        0.047
-    );
-
-    title->SetTextAlign(
-        22
-    );
-
-
-    title->DrawLatex(
-        0.5,
-        0.032,
-        "Annealing time"
-    );
+    title->SetTextSize(0.047);
+    title->SetTextAlign(22);
+    title->DrawLatex(0.5, 0.08, "Annealing time");
 }
 
-
-// ============================================================================
-// Annealing-temperature labels and vertical separators
-// ============================================================================
-
-static void draw_temperature_blocks(
-    const vector<string>& phases,
-    const vector<double>& xpos,
-    double ymin,
-    double ymax)
+static void draw_temperature_blocks(const vector<string>& phases,
+                                    const vector<double>& x,
+                                    double ymin, double ymax)
 {
-    if (phases.size() !=
-            xpos.size() ||
-        phases.empty())
-
-        return;
-
-
-    map<
-        double,
-        vector<double>
-    > temp_positions;
-
-
-    for (size_t i = 0;
-         i < phases.size();
-         ++i) {
-
-        const PhaseInfo p =
-            parse_phase(
-                phases[i]
-            );
-
-
-        if (!p.before &&
-            finite_value(
-                p.temperature
-            ))
-
-            temp_positions[
-                p.temperature
-            ].push_back(
-                xpos[i]
-            );
+    map<double, vector<double>> by_temperature;
+    for (size_t i = 0; i < phases.size(); ++i) {
+        const PhaseInfo p = parse_phase(phases[i]);
+        if (p.valid && !p.before) by_temperature[p.temperature].push_back(x[i]);
     }
 
-
-    const double yrange =
-        ymax -
-        ymin;
-
-
-    const double ytext =
-        ymax -
-        0.055 * yrange;
-
-
+    const double ytext = ymax - 0.055 * (ymax - ymin);
     TLatex latex;
+    latex.SetTextFont(42);
+    latex.SetTextAlign(22);
+    latex.SetTextSize(0.030);
+    latex.DrawLatex(x.front() - 1.0, ytext, "#splitline{Before}{annealing}");
+    latex.SetTextSize(0.034);
 
-
-    latex.SetTextFont(
-        42
-    );
-
-    latex.SetTextSize(
-        0.034
-    );
-
-    latex.SetTextAlign(
-        22
-    );
-
-
-    // ========================================================================
-    // Before annealing
-    // ========================================================================
-
-    latex.SetTextSize(
-        0.030
-    );
-
-
-    latex.DrawLatex(
-        xpos.front() - 1.0,
-        ytext,
-        "#splitline{Before}{annealing}"
-    );
-
-
-    latex.SetTextSize(
-        0.034
-    );
-
-
-    // ========================================================================
-    // Annealing temperatures
-    // ========================================================================
-
-    for (const auto& kv :
-         temp_positions) {
-
-        if (kv.second.empty())
-            continue;
-
-
-        const double xmin_block =
-            *min_element(
-                kv.second.begin(),
-                kv.second.end()
-            );
-
-
-        const double xmax_block =
-            *max_element(
-                kv.second.begin(),
-                kv.second.end()
-            );
-
-
-        const double xcentre =
-            0.5 *
-            (
-                xmin_block +
-                xmax_block
-            );
-
-
-        const double Tround =
-            round(
-                kv.first
-            );
-
-
-        string tlabel;
-
-
-        if (fabs(
-                kv.first -
-                Tround
-            ) < 1e-9)
-
-            tlabel =
-                Form(
-                    "T = %.0f#circC",
-                    kv.first
-                );
-
-        else
-
-            tlabel =
-                Form(
-                    "T = %.1f#circC",
-                    kv.first
-                );
-
-
-        latex.DrawLatex(
-            xcentre,
-            ytext,
-            tlabel.c_str()
-        );
+    for (const auto& kv : by_temperature) {
+        const auto mm = minmax_element(kv.second.begin(), kv.second.end());
+        const double centre = 0.5 * (*mm.first + *mm.second);
+        const string label = Form("T = %g#circC", kv.first);
+        latex.DrawLatex(centre, ytext, label.c_str());
     }
 
-
-    // ========================================================================
-    // Vertical separators
-    // ========================================================================
-
-    const vector<double>
-    separators = {
-
-        0.5,
-        6.5,
-        12.5,
-        18.5
-
-    };
-
-
-    for (double xsep :
-         separators) {
-
-        TLine* line =
-            new TLine(
-                xsep,
-                ymin,
-                xsep,
-                ymax
-            );
-
-
-        line->SetLineColor(
-            kGray + 1
-        );
-
-        line->SetLineStyle(
-            2
-        );
-
-        line->SetLineWidth(
-            1
-        );
-
-
-        line->Draw(
-            "same"
-        );
+    // Draw separators at temperature changes, using actual x positions.
+    for (size_t i = 1; i < phases.size(); ++i) {
+        const PhaseInfo prev = parse_phase(phases[i - 1]);
+        const PhaseInfo next = parse_phase(phases[i]);
+        if (next.before || !next.valid) continue;
+        if (prev.before || fabs(prev.temperature - next.temperature) > 1e-9) {
+            const double separator = 0.5 * (x[i - 1] + x[i]);
+            auto* line = new TLine(separator, ymin, separator, ymax);
+            line->SetLineColor(kGray + 1);
+            line->SetLineStyle(2);
+            line->SetLineWidth(1);
+            line->Draw("same");
+        }
     }
 }
 
-
 // ============================================================================
-// MAIN MACRO
+// Main macro: A1 red, B1 yellow, BOTH on the same canvas
 // ============================================================================
 
 void plot_mean_luminosity_vs_phase(
-    const char* csv_path = "mean_luminosity_vs_phase.csv",
-    const char* sensor = "A1",
-    const char* output_prefix = "mean_luminosity_vs_phase")
+    const char* csv_A1 = "A1_T=20_v=5_total_luminosity_sum.csv",
+    const char* csv_B1 = "B1_T=20_v=3_total_luminosity_sum.csv",
+    const char* output_prefix = "A1_B1_mean_luminosity_vs_phase")
 {
-    gStyle->SetOptStat(
-        0
-    );
-
-
-    // ========================================================================
-    // Measurement conditions
-    // ========================================================================
-
-    const double measurement_temperature =
-        20.0;
-
-
-    double overvoltage =
-        numeric_limits<double>::quiet_NaN();
-
-
-    if (string(sensor) == "A1")
-
-        overvoltage =
-            5.0;
-
-
-    else if (string(sensor) == "B1")
-
-        overvoltage =
-            3.0;
-
-
-    else
-
-        throw runtime_error(
-            string(
-                "Unknown sensor: "
-            ) +
-            sensor +
-            ". Expected A1 or B1."
-        );
-
-
-    // ========================================================================
-    // Plot title
-    // ========================================================================
-
-    const string plot_title =
-        Form(
-            "Sensor %s - Mean luminosity vs annealing phase, "
-            "T = %.0f#circC, v_{over} = %.0f V",
-            sensor,
-            measurement_temperature,
-            overvoltage
-        );
-
-
-    // ========================================================================
-    // Annealing phases
-    // ========================================================================
+    gStyle->SetOptStat(0);
 
     const vector<string> phases = {
-
         "before_annealing",
-
-        "annealing_T=75_h=5",
-        "annealing_T=75_h=25",
-
-        "annealing_T=100_h=5",
-        "annealing_T=100_h=25",
-
-        "annealing_T=125_h=5",
-        "annealing_T=125_h=25",
-
-        "annealing_T=150_h=5",
-        "annealing_T=150_h=25"
-
+        "annealing_75_5",  "annealing_75_25",
+        "annealing_100_5", "annealing_100_25",
+        "annealing_125_5", "annealing_125_25",
+        "annealing_150_5", "annealing_150_25",
+        "annealing_150_125"
     };
+    const vector<double> x = build_phase_positions(phases);
 
+    const auto data_A1 = read_luminosity_csv(csv_A1);
+    const auto data_B1 = read_luminosity_csv(csv_B1);
 
-    // ========================================================================
-    // Phase positions
-    // ========================================================================
-
-    const vector<double> x =
-        build_phase_positions(
-            phases
-        );
-
-
-    map<string, double>
-    x_phase;
-
-
-    for (size_t i = 0;
-         i < phases.size();
-         ++i)
-
-        x_phase[
-            phases[i]
-        ] =
-            x[i];
-
-
-    // ========================================================================
-    // Read CSV
-    // ========================================================================
-
-    const vector<LuminosityRow> rows =
-        read_luminosity_csv(
-            csv_path
-        );
-
-
-    map<
-        string,
-        pair<double, double>
-    > data;
-
-
-    double ymin_data =
-        numeric_limits<double>::infinity();
-
-
-    double ymax_data =
-        -numeric_limits<double>::infinity();
-
-
-    for (const auto& r :
-         rows) {
-
-        if (!x_phase.count(
-                r.phase
-            ))
-
-            continue;
-
-
-        data[
-            r.phase
-        ] = {
-
-            r.mean_luminosity,
-            r.error
-
-        };
-
-
-        ymin_data =
-            min(
-                ymin_data,
-                r.mean_luminosity -
-                r.error
-            );
-
-
-        ymax_data =
-            max(
-                ymax_data,
-                r.mean_luminosity +
-                r.error
-            );
+    // Range of both sensors together (including measurement errors).
+    double ymin_data = numeric_limits<double>::infinity();
+    double ymax_data = -numeric_limits<double>::infinity();
+    for (const auto& data : {data_A1, data_B1}) {
+        for (const auto& phase : phases) {
+            const auto it = data.find(phase);
+            if (it == data.end()) continue;
+            ymin_data = min(ymin_data, it->second.first - it->second.second);
+            ymax_data = max(ymax_data, it->second.first + it->second.second);
+        }
     }
-
-
-    if (!finite_value(
-            ymin_data
-        ) ||
-        !finite_value(
-            ymax_data
-        ))
-
-        throw runtime_error(
-            "No valid mean_luminosity values found in the CSV."
-        );
-
-
-    // ========================================================================
-    // Graph vectors
-    // ========================================================================
-
-    vector<double> xv;
-    vector<double> yv;
-
-    vector<double> ex;
-    vector<double> ey;
-
-
-    for (size_t i = 0;
-         i < phases.size();
-         ++i) {
-
-        auto it =
-            data.find(
-                phases[i]
-            );
-
-
-        if (it ==
-            data.end())
-
-            continue;
-
-
-        xv.push_back(
-            x[i]
-        );
-
-
-        yv.push_back(
-            it->second.first
-        );
-
-
-        ex.push_back(
-            0.0
-        );
-
-
-        ey.push_back(
-            it->second.second
-        );
-    }
-
-
-    if (xv.empty())
-
-        throw runtime_error(
-            "No valid points available for plotting."
-        );
-
-
-    // ========================================================================
-    // Y range
-    // ========================================================================
-
-    double yrange =
-        ymax_data -
-        ymin_data;
-
-
-    if (!(yrange > 0.0))
-
-        yrange =
-            max(
-                1.0,
-                fabs(
-                    ymax_data
-                ) * 0.10
-            );
-
-
-    const double ymin =
-        max(
-            0.0,
-            ymin_data -
-            0.12 * yrange
-        );
-
-
-    const double ymax =
-        ymax_data +
-        0.25 * yrange;
-
-
-    // ========================================================================
-    // X range
-    // ========================================================================
-
-    const int max_unit =
-        max(
-            0,
-            (int)llround(
-                x.back()
-            )
-        );
-
-
-    const double xmin =
-        -2.5;
-
-
-    const double xmax =
-        max_unit +
-        0.5;
-
-
-    const int nbins =
-        max_unit +
-        1;
-
-
-    // ========================================================================
-    // Canvas
-    // ========================================================================
-
-    TCanvas* c =
-        new TCanvas(
-            "c_mean_luminosity_vs_phase",
-            "mean luminosity vs annealing phase",
-            2250,
-            1000
-        );
-
-
-    // ------------------------------------------------------------------------
-    // Reduced from 0.20 to 0.16.
-    //
-    // This extends the plot area downward and removes part of the large
-    // empty gap previously present between the graph and the x-axis title.
-    // ------------------------------------------------------------------------
-
-    c->SetBottomMargin(
-        0.16
-    );
-
-
-    c->SetLeftMargin(
-        0.10
-    );
-
-
-    c->SetRightMargin(
-        0.04
-    );
-
-
-    c->SetTopMargin(
-        0.10
-    );
-
-
-    c->SetTicks(
-        1,
-        1
-    );
-
-
-    // ========================================================================
-    // Frame
-    // ========================================================================
-
-    TH1D* frame =
-        new TH1D(
-            "frame_mean_luminosity_vs_phase",
-
-            Form(
-                "%s;;Mean luminosity",
-                plot_title.c_str()
-            ),
-
-            nbins,
-            xmin,
-            xmax
-        );
-
-
-    frame->SetMinimum(
-        ymin
-    );
-
-
-    frame->SetMaximum(
-        ymax
-    );
-
-
-    // ========================================================================
-    // Plot title style
-    // ========================================================================
-
-    frame->SetTitleSize(
-        0.045
-    );
-
-
-    frame->SetTitleOffset(
-        1.0
-    );
-
-
-    // ========================================================================
-    // X axis
-    // ========================================================================
-
-    frame->GetXaxis()
-        ->SetLabelSize(
-            0.0
-        );
-
-
-    frame->GetXaxis()
-        ->SetTitle(
-            ""
-        );
-
-
-    frame->GetXaxis()
-        ->SetNdivisions(
-            0
-        );
-
-
-    frame->GetXaxis()
-        ->SetTickLength(
-            0.0
-        );
-
-
-    // ========================================================================
-    // Y axis
-    // ========================================================================
-
-    frame->GetYaxis()
-        ->SetLabelSize(
-            0.040
-        );
-
-
-    frame->GetYaxis()
-        ->SetTitleSize(
-            0.047
-        );
-
-
-    frame->GetYaxis()
-        ->SetTitleOffset(
-            1.05
-        );
-
-
+    if (!isfinite(ymin_data) || !isfinite(ymax_data))
+        throw runtime_error("No valid phases found in either CSV.");
+
+    double yrange = ymax_data - ymin_data;
+    if (!(yrange > 0)) yrange = max(1.0, fabs(ymax_data) * 0.10);
+    const double ymin = max(0.0, ymin_data - 0.12 * yrange);
+    const double ymax = ymax_data + 0.25 * yrange;
+    const double xmin = -4.5;
+    const double xmax = x.back() + 0.5;
+    const int nbins = (int)llround(x.back()) + 1;
+
+    auto* c = new TCanvas("c_mean_luminosity_vs_phase",
+                          "mean luminosity vs annealing phase", 2250, 1000);
+    c->SetBottomMargin(0.16);
+    c->SetLeftMargin(0.10);
+    c->SetRightMargin(0.04);
+    c->SetTopMargin(0.10);
+    c->SetTicks(1, 1);
+
+    const string plot_title =
+        "Sensors A1 and B1 - Mean luminosity vs annealing phase, T = 20#circC";
+    auto* frame = new TH1D("frame_mean_luminosity_vs_phase",
+                           Form("%s;;Mean luminosity (a.u)", plot_title.c_str()),
+                           nbins, xmin, xmax);
+    frame->SetMinimum(ymin);
+    frame->SetMaximum(ymax);
+    frame->SetTitleSize(0.045);
+    frame->SetTitleOffset(1.0);
+    frame->GetXaxis()->SetLabelSize(0.0);
+    frame->GetXaxis()->SetTitle("");
+    frame->GetXaxis()->SetNdivisions(0);
+    frame->GetXaxis()->SetTickLength(0.0);
+    frame->GetYaxis()->SetLabelSize(0.040);
+    frame->GetYaxis()->SetTitleSize(0.047);
+    frame->GetYaxis()->SetTitleOffset(1.05);
     frame->Draw();
 
-
-    // ========================================================================
-    // Manual x ticks
-    // ========================================================================
-
-    const double tick_height =
-        0.018 *
-        (
-            ymax -
-            ymin
-        );
-
-
-    for (double xpos :
-         x) {
-
-        TLine* tick =
-            new TLine(
-                xpos,
-                ymin,
-                xpos,
-                ymin +
-                tick_height
-            );
-
-
-        tick->SetLineColor(
-            kBlack
-        );
-
-
-        tick->SetLineWidth(
-            1
-        );
-
-
-        tick->Draw(
-            "same"
-        );
+    const double tick_height = 0.018 * (ymax - ymin);
+    for (double xi : x) {
+        auto* tick = new TLine(xi, ymin, xi, ymin + tick_height);
+        tick->SetLineColor(kBlack);
+        tick->SetLineWidth(1);
+        tick->Draw("same");
     }
 
+    draw_temperature_blocks(phases, x, ymin, ymax);
 
-    // ========================================================================
-    // Temperature labels + separators
-    // ========================================================================
+    const int red_A1    = kP6Red;
+    const int yellow_B1 = kP6Yellow;
+    auto* gr_A1 = make_sensor_graph("A1", data_A1, phases, x, red_A1, 20);
+    auto* gr_B1 = make_sensor_graph("B1", data_B1, phases, x, yellow_B1, 22);
+    gr_A1->Draw("PL E1 SAME");
+    gr_B1->Draw("PL E1 SAME");
 
-    draw_temperature_blocks(
-        phases,
-        x,
-        ymin,
-        ymax
-    );
-
-
-    // ========================================================================
-    // Mean luminosity graph
-    // ========================================================================
-
-    TGraphErrors* gr =
-        new TGraphErrors(
-            (int)xv.size(),
-            xv.data(),
-            yv.data(),
-            ex.data(),
-            ey.data()
-        );
-
-
-    gr->SetName(
-        "gr_mean_luminosity"
-    );
-
-
-    gr->SetLineColor(
-        kP6Red
-    );
-
-
-    gr->SetMarkerColor(
-        kP6Red
-    );
-
-
-    gr->SetMarkerStyle(
-        20
-    );
-
-
-    gr->SetMarkerSize(
-        1.45
-    );
-
-
-    gr->SetLineWidth(
-        3
-    );
-
-
-    gr->Draw(
-        "PL E1 SAME"
-    );
-
-
-    // ========================================================================
-    // Legend
-    // ========================================================================
-
-    TLegend* leg = new TLegend(0.70,0.60,0.83,0.70);
+    auto* leg = new TLegend(0.69, 0.58, 0.88, 0.71);
     leg->SetBorderSize(0);
     leg->SetFillStyle(0);
     leg->SetTextSize(0.038);
-    leg->AddEntry(gr,"mean luminosity","lep");
+    leg->AddEntry(gr_A1, "A1 (v_{over} = 5 V)", "lep");
+    leg->AddEntry(gr_B1, "B1 (v_{over} = 3 V)", "lep");
     leg->Draw();
 
-
-    // ========================================================================
-    // Bottom labels
-    // ========================================================================
-
     c->Modified();
     c->Update();
-
-
-    draw_time_labels(
-        c,
-        phases,
-        x,
-        frame->GetXaxis()->GetXmin(),
-        frame->GetXaxis()->GetXmax()
-    );
-
-
+    draw_time_labels(c, phases, x,
+                     frame->GetXaxis()->GetXmin(),
+                     frame->GetXaxis()->GetXmax());
     gPad->RedrawAxis();
-
-
     c->Modified();
     c->Update();
 
+    c->SaveAs(Form("%s.png", output_prefix));
+    c->SaveAs(Form("%s.pdf", output_prefix));
 
-    // ========================================================================
-    // Save
-    // ========================================================================
-
-    c->SaveAs(
-        Form(
-            "%s.png",
-            output_prefix
-        )
-    );
-
-
-    c->SaveAs(
-        Form(
-            "%s.pdf",
-            output_prefix
-        )
-    );
-
-
-    // ========================================================================
-    // Terminal output
-    // ========================================================================
-
-    cout << endl;
-
-
-    cout
-        << "Sensor: "
-        << sensor
-        << endl;
-
-
-    cout
-        << "Conditions: T = "
-        << measurement_temperature
-        << " C, v_over = "
-        << overvoltage
-        << " V"
-        << endl;
-
-
-    cout
-        << "Number of plotted phases: "
-        << xv.size()
-        << endl;
-
-
-    cout
-        << "Saved plots:"
-        << endl;
-
-
-    cout
-        << "  "
-        << output_prefix
-        << ".png"
-        << endl;
-
-
-    cout
-        << "  "
-        << output_prefix
-        << ".pdf"
-        << endl;
-
-
-    cout << endl;
-
-
-    cout
-        << "Phase x positions:"
-        << endl;
-
-
-    for (size_t i = 0;
-         i < phases.size();
-         ++i)
-
-        cout
-            << "  "
-            << phases[i]
-            << " -> x = "
-            << x[i]
-            << endl;
-
-
-    cout
-        << "Spacing rule: "
-        << "5 h = +1 unit, "
-        << "25 h = +5 units."
-        << endl;
+    cout << "\nSensors: A1 (20 C, v_over=5 V) and B1 (20 C, v_over=3 V)\n";
+    cout << "CSV A1: " << csv_A1 << "\nCSV B1: " << csv_B1 << "\n";
+    cout << "Phase positions (5 h = 1 unit):\n";
+    for (size_t i = 0; i < phases.size(); ++i)
+        cout << "  " << phases[i] << " -> x = " << x[i] << '\n';
+    cout << "150 C: 25 h -> 125 h = +100 h = +20 units\n";
+    cout << "Saved: " << output_prefix << ".png and "
+         << output_prefix << ".pdf\n\n";
 }

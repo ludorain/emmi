@@ -630,7 +630,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
         info.graph->SetMarkerColor(kBlack);
         info.graph->SetLineColor(kBlack);
         info.graph->SetLineWidth(2);
-        info.func->SetLineColor(kBlack);
+        info.func->SetLineColor(kP8Red);
         info.func->SetLineWidth(2);
         info.func->SetLineStyle(1);
         info.graph->GetXaxis()->SetTitleSize(0.045);
@@ -797,6 +797,7 @@ void lum_vs_v_fit(const char* all_phases_csv,
         if (!f.fit_done ||
             !f.converged ||
             !finite_number(f.B) ||
+            f.B < -2 ||
             !finite_number(f.Berr) ||
             f.ndf <= 0 ||
             f.chi2ndf >= 3.5) {

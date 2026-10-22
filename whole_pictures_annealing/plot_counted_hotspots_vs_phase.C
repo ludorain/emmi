@@ -1,4 +1,4 @@
-// root -l 'plot_counted_hotspots_vs_phase.C("hotspot_phase_summary_gold_error.csv", "hotspots_gold")'
+// root -l 'plot_counted_hotspots_vs_phase.C("hotspot_phase_summary_all_sensor_error.csv", "hotspots_all_sensor")'
 
 #include <TCanvas.h>
 #include <TColor.h>
@@ -119,7 +119,9 @@ static double phase_step_units(const string& phase)
 {
     const PhaseInfo p = parse_phase(phase);
     if (p.before) return 0.0;
-
+    // Additional 100 hours between 150_25 and 150_125
+    if (phase == "annealing_150_125")
+        return (125.0 - 25.0) / 5.0;
     if (finite_value(p.hours) && p.hours > 0.0)
         return p.hours / 5.0;
 
@@ -258,8 +260,16 @@ static void draw_time_labels(
     const double usable = 1.0 - left - right;
 
     for (size_t i = 0; i < phases.size(); ++i) {
-        const double frac  = (xpos[i] - xmin) / (xmax - xmin);
-        const double x_ndc = left + frac * usable;
+
+        const double frac = (xpos[i] - xmin) / (xmax - xmin);
+        double x_ndc = left + frac * usable;
+
+        if (i == 2 || i == 4 || i == 6 || i == 9) {
+            x_ndc -= 0.01;
+        }
+        else if (i == 3 || i == 5 || i == 7) {
+            x_ndc += 0.01;
+        }
 
         string label;
         const PhaseInfo p = parse_phase(phases[i]);
@@ -283,7 +293,7 @@ static void draw_time_labels(
         lab->SetTextFont(42);
         lab->SetTextSize(0.032);
         lab->SetTextAlign(22);
-        lab->DrawLatex(x_ndc, 0.13, label.c_str());
+        lab->DrawLatex(x_ndc, 0.18, label.c_str());
     }
 
     TLatex* title = new TLatex();
@@ -291,7 +301,7 @@ static void draw_time_labels(
     title->SetTextFont(42);
     title->SetTextSize(0.047);
     title->SetTextAlign(22);
-    title->DrawLatex(0.5, 0.035, "Annealing time");
+    title->DrawLatex(0.5, 0.04, "Annealing time");
 }
 
 // Draw one temperature label centred above each 5 h / 25 h pair and
@@ -369,7 +379,9 @@ void plot_counted_hotspots_vs_phase(
         "annealing_125_5",
         "annealing_125_25",
         "annealing_150_5",
-        "annealing_150_25"
+        "annealing_150_25",
+        "annealing_150_125"
+
     };
 
     // IMPORTANT: this is exactly the same cumulative spacing prescription as
@@ -438,7 +450,7 @@ void plot_counted_hotspots_vs_phase(
     //
     // This extra empty x-range moves the x=0 "Before annealing" label away
     // from the y-axis labels/title without altering the annealing spacing.
-    const double xmin = -2.5;
+    const double xmin = -4.0;
     const double xmax = max_unit + 0.5;
     const int nbins = max_unit + 1;
 
@@ -454,13 +466,12 @@ void plot_counted_hotspots_vs_phase(
     c->SetRightMargin(0.04);
     c->SetTopMargin(0.09);
     c->SetTicks(1,1);
-
+    const string plot_title =
+        "All sensors - Counted hotspots vs annealing phase, T = 20#circC";
     TH1D* frame = new TH1D(
         "frame_counted_hotspots",
-        ";;Counted hotspots",
-        nbins,
-        xmin,
-        xmax
+        Form("%s;;Counted hotspots", plot_title.c_str()),
+                           nbins, xmin, xmax
     );
 
     frame->SetMinimum(ymin);

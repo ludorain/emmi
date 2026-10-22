@@ -162,7 +162,7 @@ static TH1D* make_phase_frame(const char* name,
     const int nbins = max_unit + 1;
 
     TH1D* frame = new TH1D(name, title, nbins, -0.5, max_unit + 0.5);
-    frame->SetMinimum(ymin);
+    frame->SetMinimum(-2);
     frame->SetMaximum(ymax);
 
     // Hide ROOT's categorical bin labels. They are drawn manually below
@@ -203,14 +203,14 @@ static void draw_horizontal_phase_labels(TPad* pad,
         TLatex* lab = new TLatex();
         lab->SetNDC();
         lab->SetTextFont(42);
-        lab->SetTextSize(0.031);
+        lab->SetTextSize(0.029);
         lab->SetTextAlign(22);
-        if(i == 0 || i == 2 || i == 4 || i == 6 || i == 8){
-            lab->DrawLatex(x_ndc - 0.006, 0.135,
+        if(i == 0 || i == 2 || i == 4 || i == 6 || i == 9){
+            lab->DrawLatex(x_ndc - 0.007, 0.135,
                        two_line_phase_label(phases[i]).c_str());
         }
         else 
-        {lab->DrawLatex(x_ndc + 0.006, 0.135,
+        {lab->DrawLatex(x_ndc + 0.012, 0.135,
                        two_line_phase_label(phases[i]).c_str());}
 
         
@@ -400,8 +400,8 @@ void plot_B_vs_phase(
     TCanvas* c1 = new TCanvas(
         "c_B_mean_vs_phase",
         "Mean B vs annealing phase",
-        2100,
-        950
+        2600,
+        800
     );
 
     c1->SetBottomMargin(0.20);
@@ -566,8 +566,8 @@ void plot_B_vs_phase(
     TCanvas* c2 = new TCanvas(
         "c_B_all_points_vs_phase",
         "Individual B values vs annealing phase",
-        2200,
-        1000
+        2600,
+        800
     );
 
     c2->SetBottomMargin(0.20);

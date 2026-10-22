@@ -30,6 +30,8 @@
 #python find_defects_isolated_fixedR.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/2processed/run=20260514-062228_x=0_y=0_z=0_T=21_v=56.35_data=diff_processed.tif" --focus_area 418 127 10
 #python find_defects_isolated_fixedR.py --input "/Users/ludovicarainero/emmi_fixed_radius/DATA_irradiated/before_annealing/A1_v=5_run=20260514-062228/2processed/run=20260514-062228_x=0_y=0_z=0_T=23_v=56.46_data=diff_processed.tif" --focus_area 418 127 10
 
+#python find_defects_NOisolated_fixedR.py --input /Users/ludovicarainero/emmi/DATA_irradiated_isolated_R=20/before_annealing/A1_v=5_run=20260514-062228/2processed/run=20260514-062228_x=0_y=0_z=0_T=23_v=56.46_data=diff_processed.tif --circles
+
 
 import argparse
 import sys

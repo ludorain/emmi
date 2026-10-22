@@ -44,7 +44,7 @@ shopt -s nullglob
 # ------------------------------------------------------------
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="$BASE_DIR/whole_pictures_annealing/pixels=36"
+DATA_DIR="$BASE_DIR/whole_pictures_annealing/pixels=24"
 
 PROCESS_IMAGE="$BASE_DIR/manipulate_images/process_image.py"
 TIF2TH2="$BASE_DIR/manipulate_images/tif2th2.py"
@@ -90,6 +90,7 @@ PHASES=(
     "annealing_125_25"
     "annealing_150_5"
     "annealing_150_25"
+    "annealing_150_125"
 )
 
 ALL_SENSORS=(A1 A2 B1 B2)
@@ -228,6 +229,9 @@ phase_prefix() {
         annealing_150_25)
             printf '%s\n' "${sensor}_ann_150_25_whole"
             ;;
+        annealing_150_125)
+            printf '%s\n' "${sensor}_ann_150_25_whole"
+            ;;    
         *)
             die "Unknown phase: $phase"
             ;;

@@ -35,7 +35,7 @@ from photutils.segmentation import (
 )
 
 CIRCLE_RADIUS = 20.0
-FOCUS_HALF_SIZE = 40
+FOCUS_HALF_SIZE = 24
 
 
 def parse_arguments():

@@ -80,7 +80,7 @@ echo
 
 
 # Skip first line because it contains the header.
-tail -n +2 "$CSV_FILE" | while IFS=';' read -r phase run sensor
+tail -n +2 "$CSV_FILE" | while IFS=';' read -r phase run sensor || [[ -n "$phase$run$sensor" ]]
 do
 
     # Remove possible Windows carriage returns and surrounding spaces.
@@ -142,51 +142,47 @@ do
 
 
     # --------------------------------------------------------
-    # COPY FILES
+    # COPY AND RENAME FILES INDEPENDENTLY
+    # If one file is missing, keep the others.
     # --------------------------------------------------------
 
-    sshpass -p "$PASSWORD" scp \
-        "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE}/${run}/overlay.png" \
-        "$tmp_dir/"
+    remote_files=(
+        "overlay.png"
+        "stitched.data=light.tif"
+        "stitched.data=diff-denoised.png"
+        "stitched.data=diff-denoised.tif"
+    )
 
-    if [[ $? -ne 0 ]]; then
-        echo "ERROR: failed to download overlay.png for run $run"
-        rm -rf "$tmp_dir"
-        continue
-    fi
+    output_suffixes=(
+        "overlay.png"
+        "data=light.tif"
+        "data=diff-denoised.png"
+        "data=diff-denoised.tif"
+    )
 
-    sshpass -p "$PASSWORD" scp \
-        "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE}/${run}/stitched.data=light.tif" \
-        "$tmp_dir/"
+    downloaded=0
+    missing=0
 
-    if [[ $? -ne 0 ]]; then
-        echo "ERROR: failed to download stitched.data=light.tif for run $run"
-        rm -rf "$tmp_dir"
-        continue
-    fi
+    for i in "${!remote_files[@]}"; do
+        remote_file="${remote_files[$i]}"
+        output_file="${output_dir}/${prefix}_run=${run}_${output_suffixes[$i]}"
 
+        if sshpass -p "$PASSWORD" scp \
+            "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE}/${run}/${remote_file}" \
+            "$tmp_dir/"; then
 
-    # Check whether scp succeeded.
-    if [[ $? -ne 0 ]]; then
-        echo "ERROR: scp failed for run $run."
-        rm -rf "$tmp_dir"
-        echo
-        continue
-    fi
-
-
-    # --------------------------------------------------------
-    # RENAME FILES
-    # --------------------------------------------------------
-
-    mv \
-        "$tmp_dir/overlay.png" \
-        "${output_dir}/${prefix}_run=${run}_overlay.png"
-
-    mv \
-        "$tmp_dir/stitched.data=light.tif" \
-        "${output_dir}/${prefix}_run=${run}_data=light.tif"
-
+            if mv "$tmp_dir/$remote_file" "$output_file"; then
+                echo "OK: $output_file"
+                ((downloaded+=1))
+            else
+                echo "ERROR: failed to rename $remote_file for run $run"
+                ((missing+=1))
+            fi
+        else
+            echo "WARNING: unable to download $remote_file for run $run"
+            ((missing+=1))
+        fi
+    done
 
     # --------------------------------------------------------
     # REMOVE TEMPORARY DIRECTORY
@@ -194,6 +190,7 @@ do
 
     rm -rf "$tmp_dir"
 
+    echo "Run $run: $downloaded downloaded, $missing missing or failed."
 
     echo "Done."
     echo
